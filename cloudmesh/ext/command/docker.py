@@ -1,7 +1,7 @@
 from __future__ import print_function
 from cloudmesh_client.shell.command import command
 from cloudmesh_client.shell.command import PluginCommand
-
+from cloudmesh.api.docker_client import Docker
 
 class DockerCommand(PluginCommand):
 
@@ -9,9 +9,7 @@ class DockerCommand(PluginCommand):
     def do_docker(self, args, arguments):
         """
         Usage:
-            docker service start CLOUD
-            docker service cloud list
-            docker service cloud delete
+            docker images list
             docker container create NAME IMAGE
             docker container start NAME
             docker container stop NAME
@@ -20,7 +18,6 @@ class DockerCommand(PluginCommand):
             docker container attach NAME
             docker container pause NAME
             docker container unpause NAME
-            docker images list
 
         Manages a virtual docker on a cloud
 
@@ -36,7 +33,55 @@ class DockerCommand(PluginCommand):
            -v       verbose mode
 
         """
-        print(arguments)
+        #print (arguments)
+
+        if arguments["container"] and arguments["create"] and arguments["NAME"] and arguments["IMAGE"]:
+            Docker().docker_container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["start"] and arguments["NAME"]:
+            status = "start"
+            Docker().docker_container_status_change(status, "{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["stop"] and arguments["NAME"]:
+            status = "stop"
+            Docker().docker_container_status_change(status, "{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["list"]:
+            Docker().docker_container_list()
+            return
+
+        if arguments["container"] and arguments["delete"] and arguments["NAME"]:
+            Docker().docker_container_delete("{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["attach"] and arguments["NAME"]:
+            Docker().docker_container_attach("{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["pause"] and arguments["NAME"]:
+            status = "pause"
+            Docker().docker_container_status_change(status, "{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["unpause"] and arguments["NAME"]:
+            status = "unpause"
+            Docker().docker_container_status_change(status, "{NAME}".format(**arguments))
+            return
+
+        if arguments["container"] and arguments["restart"] and arguments["NAME"]:
+            status = "restart"
+            Docker().docker_container_status_change("{NAME}".format(**arguments))
+            return
+
+        if arguments["images"] and arguments["list"]:
+            Docker().docker_images_list()
+            return
+
+        return
+
 
 
 
