@@ -39,14 +39,12 @@ class Docker(object):
 
 
         """
-        container = client.containers.get(containerName)
-
-        if container == None:
-            print("Container does not exist")
-            return
-
-
-        resp = container.attach()
+        try:
+           container = client.containers.get(containerName)
+           resp = container.attach()
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
 
     def docker_container_status_change(self, status=None, containerName=None):
         """Change status of docker container
@@ -62,16 +60,25 @@ class Docker(object):
             print("No status specified")
             return
 
-        container = client.containers.get(containerName)
-
-        if container == None:
-            print("Container does not exist")
+        try:
+            container = client.containers.get(containerName)
+            if status is "start" :
+                container.start()
+            elif status is "pause":
+                container.pause()
+            elif status is "unpause":
+                container.unpause()
+            elif status is "stop":
+                container.stop()
+            else:
+                print ('Invalid Commmand')
+                return
+        except docker.errors.APIError as e:
+            print(e.explanation)
             return
 
-        if status is "unpause" or status is "start":
-            status = "running"
 
-        container.update(set__containerStatus=status)
+
 
     def docker_container_delete(self, containerName=None):
         """Deleting docker container
@@ -83,14 +90,12 @@ class Docker(object):
 
         
         """
-        container = client.containers.get(containerName)
-
-        if container == None:
-            print("Container does not exist")
-            return
-
-
-        resp = container.remove()
+        try:
+           container = client.containers.get(containerName)
+           container.remove()
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
 
     def docker_container_list(self):
         """List of docker containers
@@ -101,7 +106,11 @@ class Docker(object):
 
 
         """
-        containers = client.containers.list(all)
+        try:
+           containers = client.containers.list(all)
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
         if len(containers) == 0:
             print("No containers exist")
             return
@@ -119,8 +128,12 @@ class Docker(object):
 
 
         """
-        images = client.images.list()
-        print(images)
+        try:
+           images = client.images.list()
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
+
         if len(images) == 0:
             print("No images exist")
             return
