@@ -5,8 +5,6 @@ import cloudmesh
 import docker
 import os
 #from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
-#BUG: urllib2 is a library we should not use, use requests
-#import urllib2
 import requests
 import json
 
