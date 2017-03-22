@@ -1,6 +1,6 @@
 from __future__ import print_function
-from cloudmesh_client.shell.command import command
-from cloudmesh_client.shell.command import PluginCommand
+from cloudmesh.shell.command import command
+from cloudmesh.shell.command import PluginCommand
 from cloudmesh.api.docker_client import Docker
 import time
 

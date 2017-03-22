@@ -9,7 +9,13 @@ import urllib2
 import requests
 import json
 
+#TODO: BUG no hardcoding of ips even during development
 os.environ["DOCKER_HOST"] = 'http://52.8.252.51:4243'
+
+# IS THERE NOT ANOTHER WAY TO SET THE HOST VIA API?
+# THIS SEEMS NON SCALABLE SOLUTION TO SET os variable
+
+
 client = docker.from_env()
 class Docker(object):
 
