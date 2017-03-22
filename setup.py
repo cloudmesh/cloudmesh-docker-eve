@@ -32,6 +32,7 @@ tox
 detox
 coverage
 flake8
+docker
 """.split("\n")
 
 # dependency_links = ['http://github.com/nicolaiarocci/eve.git@develop']
@@ -72,6 +73,8 @@ setup \
     tests_require=[
         "flake8",
         "coverage",
+        "tox",
+        "detox"
     ],
     zip_safe=False,
     namespace_packages=['cloudmesh'],
