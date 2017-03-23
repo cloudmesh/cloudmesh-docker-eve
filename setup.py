@@ -73,6 +73,7 @@ setup \
     tests_require=[
         "flake8",
         "coverage",
+        "docker"
     ],
     zip_safe=False,
     namespace_packages=['cloudmesh'],
