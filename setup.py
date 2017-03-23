@@ -32,7 +32,7 @@ tox
 detox
 coverage
 flake8
-cloudmesh_client
+docker
 """.split("\n")
 
 # dependency_links = ['http://github.com/nicolaiarocci/eve.git@develop']
@@ -40,11 +40,11 @@ cloudmesh_client
 version = readfile("VERSION")[0].strip()
 readme = readfile('README.rst')
 
-NAME = "cloudmesh-ext-command"
+NAME = "cloudmesh-docker"
 DESCRIPTION = "A command called command for the cloudmesh shell"
 AUTHOR = "Gregor von Laszewski"
 AUTHOR_EMAIL = "laszewski@gmail.com"
-URL = "https://github.com/cloudmesh/extbar"
+URL = "https://github.com/cloudmesh/docker"
 LONG_DESCRIPTION = "\n".join(readme)
 
 
@@ -73,7 +73,9 @@ setup \
     tests_require=[
         "flake8",
         "coverage",
-        "docker"
+        "docker",
+        "tox",
+        "detox"
     ],
     zip_safe=False,
     namespace_packages=['cloudmesh'],

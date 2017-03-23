@@ -1,6 +1,6 @@
 from __future__ import print_function
-from cloudmesh_client.shell.command import command
-from cloudmesh_client.shell.command import PluginCommand
+from cloudmesh.shell.command import command
+from cloudmesh.shell.command import PluginCommand
 from cloudmesh.api.docker_client import Docker
 import time
 import os
@@ -41,8 +41,10 @@ class DockerCommand(PluginCommand):
 
         start_time = time.time()
 
+        print (arguments.container)
 
-        if arguments["api"] :
+
+        if arguments.api :
             docker = Docker("{URL}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
@@ -50,59 +52,60 @@ class DockerCommand(PluginCommand):
         if "DOCKER_HOST" not in os.environ:
             os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://52.8.252.51:4243): ")
 
-
-        if arguments["container"] and arguments["create"] and arguments["NAME"] and arguments["IMAGE"]:
+        if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
             docker.docker_container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["start"] and arguments["NAME"]:
+        if arguments.container and arguments.start and arguments.NAME:
             status = "start"
             docker.docker_container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["stop"] and arguments["NAME"]:
+        if arguments.container and arguments.stop and arguments.NAME:
             status = "stop"
             docker.docker_container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["list"]:
-            docker.docker_container_list()
+
+        if arguments.container and arguments.list:
+            Docker().docker_container_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["delete"] and arguments["NAME"]:
-            docker.docker_container_delete("{NAME}".format(**arguments))
+        if arguments.container and arguments.delete and arguments.NAME:
+            Docker().docker_container_delete("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["attach"] and arguments["NAME"]:
-            docker.docker_container_attach("{NAME}".format(**arguments))
+        if arguments.container and arguments.attach and arguments.NAME:
+            Docker().docker_container_attach("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["pause"] and arguments["NAME"]:
+        if arguments.container and arguments.pause and arguments.NAME:
             status = "pause"
             docker.docker_container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["unpause"] and arguments["NAME"]:
+        if arguments.container and arguments.unpause and arguments.NAME:
             status = "unpause"
             docker.docker_container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["container"] and arguments["restart"] and arguments["NAME"]:
+        if arguments.container and arguments.restart and arguments.NAME:
             status = "restart"
             docker.docker_container_status_change("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments["images"] and arguments["list"]:
-            docker.docker_images_list()
+
+        if arguments.images and arguments.list:
+            Docker().docker_images_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 

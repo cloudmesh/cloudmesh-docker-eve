@@ -4,12 +4,9 @@ from __future__ import print_function
 import cloudmesh
 import docker
 import os
-from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
-import urllib2
+#from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
 import requests
 import json
-
-#os.environ["DOCKER_HOST"] = 'http://52.8.252.51:4243'
 
 class Docker(object):
     def __init__(self, url):
@@ -102,6 +99,7 @@ class Docker(object):
 
     def docker_container_list(self):
         """List of docker containers
+
 
 
         :returns: None
