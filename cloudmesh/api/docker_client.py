@@ -8,15 +8,10 @@ import os
 import requests
 import json
 
-#TODO: BUG no hardcoding of ips even during development
-os.environ["DOCKER_HOST"] = 'http://52.8.252.51:4243'
-
-# IS THERE NOT ANOTHER WAY TO SET THE HOST VIA API?
-# THIS SEEMS NON SCALABLE SOLUTION TO SET os variable
-
-
-client = docker.from_env()
 class Docker(object):
+    def __init__(self, url):
+        os.environ["DOCKER_HOST"] = url
+        self.client = docker.from_env()
 
     def docker_container_create(self, image, containerName=None, containers=None):
         """Creates docker container
@@ -30,7 +25,7 @@ class Docker(object):
 
 
         """
-        container = client.containers.create(image,name=containerName,detach=True)
+        container = self.client.containers.create(image,name=containerName,detach=True)
         print("Container %s is created" % container.id)
 
 
@@ -45,7 +40,7 @@ class Docker(object):
 
         """
         try:
-           container = client.containers.get(containerName)
+           container = self.client.containers.get(containerName)
            resp = container.attach()
         except docker.errors.APIError as e:
            print(e.explanation)
@@ -66,7 +61,7 @@ class Docker(object):
             return
 
         try:
-            container = client.containers.get(containerName)
+            container = self.client.containers.get(containerName)
             if status is "start" :
                 container.start()
             elif status is "pause":
@@ -96,7 +91,7 @@ class Docker(object):
         
         """
         try:
-           container = client.containers.get(containerName)
+           container = self.client.containers.get(containerName)
            container.remove()
         except docker.errors.APIError as e:
            print(e.explanation)
@@ -113,7 +108,7 @@ class Docker(object):
 
         """
         try:
-           containers = client.containers.list(all)
+           containers = self.client.containers.list(all)
         except docker.errors.APIError as e:
            print(e.explanation)
            return
@@ -135,7 +130,7 @@ class Docker(object):
 
         """
         try:
-           images = client.images.list()
+           images = self.client.images.list()
         except docker.errors.APIError as e:
            print(e.explanation)
            return
