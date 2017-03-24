@@ -41,8 +41,6 @@ class DockerCommand(PluginCommand):
 
         start_time = time.time()
 
-        print (arguments.container)
-
 
         if arguments.api :
             docker = Docker("{URL}".format(**arguments))
@@ -71,17 +69,17 @@ class DockerCommand(PluginCommand):
 
 
         if arguments.container and arguments.list:
-            Docker().docker_container_list()
+            docker.docker_container_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.delete and arguments.NAME:
-            Docker().docker_container_delete("{NAME}".format(**arguments))
+            docker.docker_container_delete("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.attach and arguments.NAME:
-            Docker().docker_container_attach("{NAME}".format(**arguments))
+            docker.docker_container_attach("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
@@ -105,7 +103,7 @@ class DockerCommand(PluginCommand):
 
 
         if arguments.images and arguments.list:
-            Docker().docker_images_list()
+            docker.docker_images_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 

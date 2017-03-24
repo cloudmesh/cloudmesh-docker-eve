@@ -33,6 +33,7 @@ detox
 coverage
 flake8
 docker
+cloudmesh_client
 """.split("\n")
 
 # dependency_links = ['http://github.com/nicolaiarocci/eve.git@develop']
@@ -40,7 +41,7 @@ docker
 version = readfile("VERSION")[0].strip()
 readme = readfile('README.rst')
 
-NAME = "cloudmesh-docker"
+NAME = "cloudmesh-extdocker-command"
 DESCRIPTION = "A command called command for the cloudmesh shell"
 AUTHOR = "Gregor von Laszewski"
 AUTHOR_EMAIL = "laszewski@gmail.com"
