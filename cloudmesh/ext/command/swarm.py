@@ -11,7 +11,8 @@ class SwarmCommand(PluginCommand):
     def do_swarm(self, args, arguments):
         """
         ::
-        Usage:
+
+          Usage:
             swarm api URL
             swarm create NAME ADDR
             swarm join ADDR
@@ -22,18 +23,17 @@ class SwarmCommand(PluginCommand):
             swarm service create IMAGE
             swarm service list
 
-        Manages a virtual docker swarm on a cloud
+          Arguments:
+            NAME     The name of the docker swarm
+            IMAGE    Docker server images
+            ADDR     Swarm Address
+            URL      URL of docker API
 
-        Arguments:
-
-          NAME     The name of the docker swarm
-          IMAGE    Docker server images
-          ADDR     Swarm Address
-          URL      URL of docker API
-
-        Options:
-
-           -v       verbose mode
+          Options:
+             -v       verbose mode
+   
+          Description:
+             Manages a virtual docker swarm on a cloud
 
         """
         print (arguments)
