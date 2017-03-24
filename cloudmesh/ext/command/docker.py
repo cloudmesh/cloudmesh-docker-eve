@@ -12,7 +12,7 @@ class DockerCommand(PluginCommand):
         """
         Usage:
             docker api URL
-            docker images list
+            docker image list
             docker container create NAME IMAGE
             docker container start NAME
             docker container stop NAME
@@ -38,7 +38,9 @@ class DockerCommand(PluginCommand):
 
         """
         #print (arguments)
-
+        # TODO: we have a module stop watch that we could
+        # introduce into common form cloudmesh client. I can do that
+        # today
         start_time = time.time()
 
 
@@ -102,8 +104,13 @@ class DockerCommand(PluginCommand):
             return
 
 
-        if arguments.images and arguments.list:
+        if arguments.image and arguments.list:
+            # TODO: makebe get rid of docker_ and cange images to image I think
+            # thats what they do in openstack. Lets compare openstack if it is
+            # images list or image list and flavors list or flavor list
+            
             docker.docker_images_list()
+            # Whe have a module stopwatch that we may want to move to common. I can do that today
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
