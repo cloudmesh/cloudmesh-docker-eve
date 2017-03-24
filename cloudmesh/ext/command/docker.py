@@ -38,9 +38,7 @@ class DockerCommand(PluginCommand):
 
         """
         #print (arguments)
-        # TODO: we have a module stop watch that we could
-        # introduce into common form cloudmesh client. I can do that
-        # today
+        # TODO: we have a module stop watch that we could use. it is now in common
         start_time = time.time()
 
 
@@ -110,7 +108,7 @@ class DockerCommand(PluginCommand):
             # images list or image list and flavors list or flavor list
             
             docker.docker_images_list()
-            # Whe have a module stopwatch that we may want to move to common. I can do that today
+            # Whe have a module stopwatch 
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
