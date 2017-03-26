@@ -54,12 +54,9 @@ class SwarmCommand(PluginCommand):
             os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://52.8.252.51:4243): ")
 
         if arguments.create:
-            swarm.swarm_create()
+            swarm.create()
+            print("--- %s seconds ---" % (time.time() - start_time))
 
         if arguments.leave:
-            swarm.swarm_leave()
-
-        if arguments.container and arguments.list:
-            docker.docker_container_list()
+            swarm.leave()
             print("--- %s seconds ---" % (time.time() - start_time))
-            return

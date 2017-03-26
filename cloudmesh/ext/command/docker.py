@@ -53,64 +53,59 @@ class DockerCommand(PluginCommand):
             os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://52.8.252.51:4243): ")
 
         if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
-            docker.docker_container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
+            docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.start and arguments.NAME:
             status = "start"
-            docker.docker_container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.stop and arguments.NAME:
             status = "stop"
-            docker.docker_container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
 
         if arguments.container and arguments.list:
-            docker.docker_container_list()
+            docker.container_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.delete and arguments.NAME:
-            docker.docker_container_delete("{NAME}".format(**arguments))
+            docker.container_delete("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.attach and arguments.NAME:
-            docker.docker_container_attach("{NAME}".format(**arguments))
+            docker.container_attach("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.pause and arguments.NAME:
             status = "pause"
-            docker.docker_container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.unpause and arguments.NAME:
             status = "unpause"
-            docker.docker_container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
         if arguments.container and arguments.restart and arguments.NAME:
             status = "restart"
-            docker.docker_container_status_change("{NAME}".format(**arguments))
+            docker.container_status_change("{NAME}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
 
         if arguments.image and arguments.list:
-            # TODO: makebe get rid of docker_ and cange images to image I think
-            # thats what they do in openstack. Lets compare openstack if it is
-            # images list or image list and flavors list or flavor list
-            
-            docker.docker_images_list()
-            # Whe have a module stopwatch 
+            docker.images_list()
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
