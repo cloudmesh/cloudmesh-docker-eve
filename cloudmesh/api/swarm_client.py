@@ -13,7 +13,7 @@ class Swarm(object):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
 
-    def swarm_create(self):
+    def create(self):
         """Creates docker Swarm
 
         :returns: None
@@ -24,7 +24,7 @@ class Swarm(object):
         rcode = self.client.swarm.init()
         print("Swarm is created" )
 
-    def swarm_leave(self):
+    def leave(self):
         """Creates docker Swarm
 
         :returns: None
@@ -35,7 +35,7 @@ class Swarm(object):
         rcode = self.client.swarm.leave(True)
         print("Node left Swarm" )
 
-    def docker_container_create(self, image, containerName=None, containers=None):
+    def container_create(self, image, containerName=None, containers=None):
         """Creates docker container
 
 
@@ -51,7 +51,7 @@ class Swarm(object):
         print("Container %s is created" % container.id)
 
 
-    def docker_container_attach(self, containerName=None):
+    def container_attach(self, containerName=None):
         """Docker container attach
 
 
@@ -68,7 +68,7 @@ class Swarm(object):
            print(e.explanation)
            return
 
-    def docker_container_status_change(self, status=None, containerName=None):
+    def container_status_change(self, status=None, containerName=None):
         """Change status of docker container
 
         :param str status: Docker container status to be changed to
@@ -102,7 +102,7 @@ class Swarm(object):
 
 
 
-    def docker_container_delete(self, containerName=None):
+    def container_delete(self, containerName=None):
         """Deleting docker container
         
 
@@ -119,7 +119,7 @@ class Swarm(object):
            print(e.explanation)
            return
 
-    def docker_container_list(self):
+    def container_list(self):
         """List of docker containers
 
 
@@ -142,7 +142,7 @@ class Swarm(object):
         for container in containers:
             print(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
 
-    def docker_images_list(self):
+    def images_list(self):
         """List of docker images
         
         
