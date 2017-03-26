@@ -11,7 +11,8 @@ class SwarmCommand(PluginCommand):
     def do_swarm(self, args, arguments):
         """
         ::
-        Usage:
+
+          Usage:
             swarm api URL
             swarm create NAME ADDR
             swarm join ADDR
@@ -22,18 +23,17 @@ class SwarmCommand(PluginCommand):
             swarm service create IMAGE
             swarm service list
 
-        Manages a virtual docker swarm on a cloud
+          Arguments:
+            NAME     The name of the docker swarm
+            IMAGE    Docker server images
+            ADDR     Swarm Address
+            URL      URL of docker API
 
-        Arguments:
-
-          NAME     The name of the docker swarm
-          IMAGE    Docker server images
-          ADDR     Swarm Address
-          URL      URL of docker API
-
-        Options:
-
-           -v       verbose mode
+          Options:
+             -v       verbose mode
+   
+          Description:
+             Manages a virtual docker swarm on a cloud
 
         """
         print (arguments)
@@ -44,6 +44,11 @@ class SwarmCommand(PluginCommand):
             swarm = Swarm("{URL}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
+        #
+        # TODO: I think we need to move DOCKER_HOST
+        # to a yaml file and use the value read from the yaml file
+        # So instead of using DOCKER HOST we explicitly add it to the
+        # call via the name in the yaml file
         swarm = Swarm(os.environ["DOCKER_HOST"])
         if "DOCKER_HOST" not in os.environ:
             os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://52.8.252.51:4243): ")
