@@ -35,91 +35,7 @@ class Swarm(object):
         rcode = self.client.swarm.leave(True)
         print("Node left Swarm" )
 
-    def container_create(self, image, containerName=None, containers=None):
-        """Creates docker container
-
-
-        :param str image: Available images for docker 
-        :param str containerName: Name of docker container
-        :param int containers: Number of docker containers to be created
-        :returns: None
-        :rtype: NoneType
-
-
-        """
-        container = self.client.containers.create(image,name=containerName,detach=True)
-        print("Container %s is created" % container.id)
-
-
-    def container_attach(self, containerName=None):
-        """Docker container attach
-
-
-        :param str containerName: Name of docker container
-        :returns: None
-        :rtype: NoneType
-
-
-        """
-        try:
-           container = self.client.containers.get(containerName)
-           resp = container.attach()
-        except docker.errors.APIError as e:
-           print(e.explanation)
-           return
-
-    def container_status_change(self, status=None, containerName=None):
-        """Change status of docker container
-
-        :param str status: Docker container status to be changed to
-        :param str containerName: Name of Docker container
-        :returns: None
-        :rtype: NoneType
-
-
-        """
-        if status is None:
-            print("No status specified")
-            return
-
-        try:
-            container = self.client.containers.get(containerName)
-            if status is "start" :
-                container.start()
-            elif status is "pause":
-                container.pause()
-            elif status is "unpause":
-                container.unpause()
-            elif status is "stop":
-                container.stop()
-            else:
-                print ('Invalid Commmand')
-                return
-        except docker.errors.APIError as e:
-            print(e.explanation)
-            return
-
-
-
-
-    def container_delete(self, containerName=None):
-        """Deleting docker container
-        
-
-        :param str containerName: Name of docker container
-        :returns: None
-        :rtype: NoneType
-
-        
-        """
-        try:
-           container = self.client.containers.get(containerName)
-           container.remove()
-        except docker.errors.APIError as e:
-           print(e.explanation)
-           return
-
-    def container_list(self):
+    def node_list(self):
         """List of docker containers
 
 
@@ -130,38 +46,37 @@ class Swarm(object):
 
         """
         try:
-           containers = self.client.containers.list(all)
+            nodes = self.client.nodes.list(all)
         except docker.errors.APIError as e:
-           print(e.explanation)
-           return
-        if len(containers) == 0:
+            print(e.explanation)
+            return
+        if len(nodes) == 0:
             print("No containers exist")
             return
 
         print("Name\t\tImage\t\tStatus")
-        for container in containers:
-            print(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
+        for node in nodes:
+            print(node.name + "\t\t" + str((node.attrs)))
 
-    def images_list(self):
+    def service_list(self):
         """List of docker images
-        
-        
+
+
         :returns: None
         :rtype: NoneType
 
 
         """
         try:
-           images = self.client.images.list()
+            services = self.client.services.list()
         except docker.errors.APIError as e:
-           print(e.explanation)
-           return
+            print(e.explanation)
+            return
 
-        if len(images) == 0:
-            print("No images exist")
+        if len(services) == 0:
+            print("No Services exist")
             return
 
         print("Name")
-        for image in images:
-            print(str(image.tags) )
-
+        for service in services:
+            print(str(service))

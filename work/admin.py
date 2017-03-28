@@ -1,5 +1,4 @@
-    @command
-    def do_admin(self, args, arguments):
+def do_admin(self, args, arguments):
         """
         ::
           Usage:
