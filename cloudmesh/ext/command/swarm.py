@@ -19,9 +19,9 @@ class SwarmCommand(PluginCommand):
             swarm leave
             swarm update
             swarm reload
-            swarm node list
             swarm service create IMAGE
             swarm service list
+            swarm node list
 
           Arguments:
             NAME     The name of the docker swarm
@@ -51,7 +51,7 @@ class SwarmCommand(PluginCommand):
         # call via the name in the yaml file
         swarm = Swarm(os.environ["DOCKER_HOST"])
         if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://52.8.252.51:4243): ")
+            os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://x.x.x.x:yyyy): ")
 
         if arguments.create:
             swarm.create()
@@ -59,4 +59,12 @@ class SwarmCommand(PluginCommand):
 
         if arguments.leave:
             swarm.leave()
+            print("--- %s seconds ---" % (time.time() - start_time))
+
+        if arguments.service and arguments.list:
+            swarm.service_list()
+            print("--- %s seconds ---" % (time.time() - start_time))
+
+        if arguments.node and arguments.list:
+            swarm.node_list()
             print("--- %s seconds ---" % (time.time() - start_time))

@@ -50,7 +50,7 @@ class DockerCommand(PluginCommand):
             return
         docker = Docker(os.environ["DOCKER_HOST"])
         if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://52.8.252.51:4243): ")
+            os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://x.x.x.x:yyyy): ")
 
         if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
             docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
