@@ -15,7 +15,8 @@ class SwarmCommand(PluginCommand):
           Usage:
             swarm api URL
             swarm create NAME ADDR
-            swarm join ADDR
+            swarm join ADDR TOKEN
+            swarm attrbs
             swarm leave
             swarm update
             swarm reload
@@ -27,6 +28,7 @@ class SwarmCommand(PluginCommand):
             NAME     The name of the docker swarm
             IMAGE    Docker server images
             ADDR     Swarm Address
+            TOKEN    Worker Token to join swarm
             URL      URL of docker API
 
           Options:
@@ -54,11 +56,20 @@ class SwarmCommand(PluginCommand):
             os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://x.x.x.x:yyyy): ")
 
         if arguments.create:
-            swarm.create()
+            out=swarm.create("{NAME}".format(**arguments),"{ADDR}".format(**arguments))
+            print (out)
+            print("--- %s seconds ---" % (time.time() - start_time))
+
+        if arguments.attrbs:
+            swarm.get_attrbs()
             print("--- %s seconds ---" % (time.time() - start_time))
 
         if arguments.leave:
             swarm.leave()
+            print("--- %s seconds ---" % (time.time() - start_time))
+
+        if arguments.join and arguments.ADDR and arguments.TOKEN:
+            swarm.join("{ADDR}".format(**arguments),"{TOKEN}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
 
         if arguments.service and arguments.list:
