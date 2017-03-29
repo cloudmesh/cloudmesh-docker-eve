@@ -72,17 +72,18 @@ class Swarm(object):
 
         """
         try:
-            nodes = self.client.nodes.list(all)
+            print("I am here")
+            nodes = self.client.nodes.list()
+            print (nodes)
         except docker.errors.APIError as e:
             print(e.explanation)
             return
         if len(nodes) == 0:
-            print("No containers exist")
+            print("No nodes exist")
             return
 
-        print("Name\t\tImage\t\tStatus")
         for node in nodes:
-            print(node.name + "\t\t" + str((node.attrs)))
+            print(str(node.attrs['Status']['State']))
 
     def service_list(self):
         """List of docker images
@@ -106,3 +107,21 @@ class Swarm(object):
         print("Name")
         for service in services:
             print(str(service))
+
+
+    def service_create(self,image):
+        """List of docker images
+
+        :param str image: Image for service
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            service = self.client.services.create(image, command=None)
+        except docker.errors.APIError as e:
+            print(e.explanation)
+            return
+
+        print(str(service))

@@ -55,27 +55,38 @@ class SwarmCommand(PluginCommand):
         if "DOCKER_HOST" not in os.environ:
             os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://x.x.x.x:yyyy): ")
 
-        if arguments.create:
+        if arguments.create and not(arguments.service):
             out=swarm.create("{NAME}".format(**arguments),"{ADDR}".format(**arguments))
             print (out)
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
 
         if arguments.attrbs:
             swarm.get_attrbs()
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
 
         if arguments.leave:
             swarm.leave()
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
 
         if arguments.join and arguments.ADDR and arguments.TOKEN:
             swarm.join("{ADDR}".format(**arguments),"{TOKEN}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
+
+        if arguments.service and arguments.list:
+            swarm.service_create()
+            print("--- %s seconds ---" % (time.time() - start_time))
+            return
 
         if arguments.service and arguments.list:
             swarm.service_list()
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
 
         if arguments.node and arguments.list:
             swarm.node_list()
             print("--- %s seconds ---" % (time.time() - start_time))
+            return
