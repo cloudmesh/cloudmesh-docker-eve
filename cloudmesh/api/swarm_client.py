@@ -13,7 +13,21 @@ class Swarm(object):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
 
-    def create(self):
+    def create(self,name,addr):
+        """Creates docker Swarm
+
+        :param str addr: Address of Swarm Manager
+        :param str name: Name of the Swarm
+        :returns: {Manager:"",Worker:""}
+        :rtype: NoneType
+
+
+        """
+        rcode = self.client.swarm.init(name=name,listen_addr=addr,advertise_addr =None)
+        print("Swarm is created" )
+        return self.client.swarm.attrs['JoinTokens']
+
+    def get_attrbs(self):
         """Creates docker Swarm
 
         :returns: None
@@ -21,8 +35,7 @@ class Swarm(object):
 
 
         """
-        rcode = self.client.swarm.init()
-        print("Swarm is created" )
+        print(self.client.swarm.attrs)
 
     def leave(self):
         """Creates docker Swarm
@@ -34,6 +47,19 @@ class Swarm(object):
         """
         rcode = self.client.swarm.leave(True)
         print("Node left Swarm" )
+
+    def join(self,addr,token):
+        """Creates docker Swarm
+        :param str addr: Address of Swarm Manager
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        man_list = []
+        man_list.append(addr)
+        rcode = self.client.swarm.join(remote_addrs =man_list,join_token =token,listen_addr = "0.0.0.0:2377")
+        print("Node Joined Swarm" )
 
     def node_list(self):
         """List of docker containers
