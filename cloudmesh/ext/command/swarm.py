@@ -76,8 +76,8 @@ class SwarmCommand(PluginCommand):
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-        if arguments.service and arguments.list:
-            swarm.service_create()
+        if arguments.service and arguments.create:
+            swarm.service_create("{IMAGE}".format(**arguments))
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 

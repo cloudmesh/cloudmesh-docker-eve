@@ -23,6 +23,7 @@ class DockerCommand(PluginCommand):
             docker container attach NAME
             docker container pause NAME
             docker container unpause NAME
+            docker process config
 
   
           Arguments:
@@ -109,8 +110,9 @@ class DockerCommand(PluginCommand):
             print("--- %s seconds ---" % (time.time() - start_time))
             return
 
-
-        return
+        if arguments.process and arguments.config:
+            docker.process_config()
+            return
 
 
 
