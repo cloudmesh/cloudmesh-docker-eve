@@ -22,13 +22,14 @@ class Docker(object):
         :param str image: Available images for docker 
         :param str containerName: Name of docker container
         :param int containers: Number of docker containers to be created
-        :returns: None
+        :returns: str containeID: Id of the docker Container
         :rtype: NoneType
 
 
         """
         container = self.client.containers.create(image,name=containerName,detach=True)
         print("Container %s is created" % container.id)
+        return container.id
 
 
     def container_attach(self, containerName=None):

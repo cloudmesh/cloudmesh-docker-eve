@@ -1,0 +1,45 @@
+meta:
+    version: 4.1
+    kind: container
+cloudmesh:
+    profile:
+        firstname: TBD
+        lastname: TBD
+        email: TBD
+        user: TBD
+    github:
+        username: TBD
+    portal:
+        location: TBD
+        browser: firefox
+    active:
+        - kilo
+    container:
+        docker:
+            cm_heading: Docker
+            cm_host: india
+            cm_label: kilo
+            cm_type: openstack
+            cm_type_version: kilo
+            cm_openrc: ~/.cloudmesh/clouds/india/kilo/openrc.sh
+            credentials:
+                OS_AUTH_URL: https://kilo.futuresystems.org:5000/v3
+                OS_PASSWORD: TBD
+                OS_TENANT_NAME: TBD
+                OS_USERNAME: TBD
+                OS_PROJECT_DOMAIN_ID: default
+                OS_USER_DOMAIN_ID: default
+                OS_PROJECT_NAME: TBD
+                OS_IMAGE_API_VERSION: 2
+                OS_VOLUME_API_VERSION: 2
+            default:
+                flavor: m1.small
+                image: Ubuntu-14.04-64
+    system:
+        data: ~/.cloudmesh/cloudmesh_inventory.yaml
+        console_color: true
+    logging:
+        file: ~/.cloudmesh/cloudmesh.log
+        level: DEBUG
+    config:
+        path: /home/ubuntu/git/cloudmesh.docker/config/

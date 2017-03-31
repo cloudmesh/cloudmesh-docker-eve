@@ -2,7 +2,8 @@ from __future__ import print_function
 from cloudmesh.shell.command import command
 from cloudmesh.shell.command import PluginCommand
 from cloudmesh.api.swarm_client import Swarm
-import time
+from cloudmesh.common.ConfigDict import ConfigDict
+from cloudmesh.common.StopWatch import StopWatch
 import os
 
 class SwarmCommand(PluginCommand):
@@ -38,13 +39,13 @@ class SwarmCommand(PluginCommand):
              Manages a virtual docker swarm on a cloud
 
         """
-        print (arguments)
-
-        start_time = time.time()
+        stopwatch = StopWatch()
+        stopwatch.start('E2E')
 
         if arguments.api :
             swarm = Swarm("{URL}".format(**arguments))
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
         #
         # TODO: I think we need to move DOCKER_HOST
@@ -58,35 +59,42 @@ class SwarmCommand(PluginCommand):
         if arguments.create and not(arguments.service):
             out=swarm.create("{NAME}".format(**arguments),"{ADDR}".format(**arguments))
             print (out)
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.attrbs:
             swarm.get_attrbs()
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.leave:
             swarm.leave()
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.join and arguments.ADDR and arguments.TOKEN:
             swarm.join("{ADDR}".format(**arguments),"{TOKEN}".format(**arguments))
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.service and arguments.create:
             swarm.service_create("{IMAGE}".format(**arguments))
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.service and arguments.list:
             swarm.service_list()
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.node and arguments.list:
             swarm.node_list()
-            print("--- %s seconds ---" % (time.time() - start_time))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
