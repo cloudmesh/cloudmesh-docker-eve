@@ -40,7 +40,7 @@ docker
 version = readfile("VERSION")[0].strip()
 readme = readfile('README.rst')
 
-NAME = "cloudmesh-extdocker-command"
+NAME = "cloudmesh-docker-command"
 DESCRIPTION = "A command called command for the cloudmesh shell"
 AUTHOR = "Gregor von Laszewski"
 AUTHOR_EMAIL = "laszewski@gmail.com"

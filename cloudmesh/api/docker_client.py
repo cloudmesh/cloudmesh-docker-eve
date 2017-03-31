@@ -7,6 +7,8 @@ import os
 #from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
 import requests
 import json
+import sys
+
 
 class Docker(object):
     def __init__(self, url):
@@ -142,4 +144,10 @@ class Docker(object):
         print("Name")
         for image in images:
             print(str(image.tags) )
+
+
+    def process_config(self):
+        Config =  ConfigDict("docker.yaml",
+                   verbose=True,load_order=[r'/home/ubuntu/git/cloudmesh.docker/config'])
+        print (Config['docker'])
 

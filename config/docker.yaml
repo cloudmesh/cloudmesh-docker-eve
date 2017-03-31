@@ -1,0 +1,8 @@
+meta:
+    version: 4.1
+    kind: clouds
+docker:
+    host : http://34.199.228.198:4243
+    container :
+        count: 1
+        Image: elasticsearch
