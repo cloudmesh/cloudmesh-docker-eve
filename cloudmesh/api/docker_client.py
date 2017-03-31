@@ -8,7 +8,7 @@ import os
 import requests
 import json
 import sys
-from cloudmesh.common.BaseConfigDict import read_yaml_config
+
 
 class Docker(object):
     def __init__(self, url):
@@ -147,6 +147,7 @@ class Docker(object):
 
 
     def process_config(self):
-        Config = read_yaml_config('C:\git\cloudmesh.docker\config\docker.yaml')
-        print (Config)
+        Config =  ConfigDict("docker.yaml",
+                   verbose=True,load_order=[r'/home/ubuntu/git/cloudmesh.docker/config'])
+        print (Config['docker'])
 

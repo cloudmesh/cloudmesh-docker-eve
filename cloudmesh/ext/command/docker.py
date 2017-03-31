@@ -4,6 +4,7 @@ from cloudmesh.shell.command import PluginCommand
 from cloudmesh.api.docker_client import Docker
 import time
 import os
+from cloudmesh.common.ConfigDict import ConfigDict
 
 class DockerCommand(PluginCommand):
 
@@ -111,7 +112,11 @@ class DockerCommand(PluginCommand):
             return
 
         if arguments.process and arguments.config:
-            docker.process_config()
+            Config = ConfigDict("docker.yaml",
+                                verbose=True, load_order=[r'/home/ubuntu/git/cloudmesh.docker/config'])
+            print(Config['docker'])
+            docker = Docker(Config['docker']['host'])
+            docker.container_create(Config['docker']['container']['Image'])
             return
 
 
