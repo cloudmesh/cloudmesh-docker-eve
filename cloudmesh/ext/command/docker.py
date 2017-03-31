@@ -46,6 +46,8 @@ class DockerCommand(PluginCommand):
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
+        Base = ConfigDict('cloudmesh_cmd5.yaml',
+                            verbose=False)
 
 
         if arguments.api :
@@ -125,8 +127,11 @@ class DockerCommand(PluginCommand):
             return
 
         if arguments.process and arguments.config and arguments.CNAME:
+            print (Base['cloudmesh']['config']['path'])
+
             Config = ConfigDict(arguments.CNAME,
-                                verbose=False, load_order=[r'/home/ubuntu/git/cloudmesh.docker/config'])
+                                verbose=True, load_order=[Base['cloudmesh']['config']['path']],reload=True)
+            print (Config)
 
             docker = Docker(Config['docker']['host'])
             containerId = docker.container_create(Config['docker']['container']['image'])
