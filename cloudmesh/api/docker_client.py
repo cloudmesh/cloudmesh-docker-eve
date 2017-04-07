@@ -27,10 +27,13 @@ class Docker(object):
 
 
         """
-        container = self.client.containers.create(image,name=containerName,detach=True)
-        print("Container %s is created" % container.id)
-        return container.id
-
+        try:
+            container = self.client.containers.create(image,name=containerName,detach=True)
+            print("Container %s is created" % container.id)
+            return container.id
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
 
     def container_attach(self, containerName=None):
         """Docker container attach
