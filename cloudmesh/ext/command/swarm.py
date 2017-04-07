@@ -15,13 +15,13 @@ class SwarmCommand(PluginCommand):
 
           Usage:
             swarm api URL
-            swarm create NAME ADDR
-            swarm join ADDR TOKEN
-            swarm attrbs
-            swarm leave
-            swarm update
-            swarm reload
-            swarm service create IMAGE
+            swarm create NAME ADDR [ARG...]
+            swarm join ADDR TOKEN [ARG...]
+            swarm attrbs [ARG...]
+            swarm leave [ARG...]
+            swarm update [ARG...]
+            swarm reload [ARG...]
+            swarm service create IMAGE [ARG...]
             swarm service list
             swarm node list
 

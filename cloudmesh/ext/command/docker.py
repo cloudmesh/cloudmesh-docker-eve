@@ -17,14 +17,14 @@ class DockerCommand(PluginCommand):
           Usage:
             docker api URL
             docker image list
-            docker container create NAME IMAGE
-            docker container start NAME
-            docker container stop NAME
+            docker container create NAME IMAGE [ARG...]
+            docker container start NAME [ARG...]
+            docker container stop NAME [ARG...]
             docker container list
-            docker container delete NAME
-            docker container attach NAME
-            docker container pause NAME
-            docker container unpause NAME
+            docker container delete NAME [ARG...]
+            docker container attach NAME [ARG...]
+            docker container pause NAME [ARG...]
+            docker container unpause NAME [ARG...]
             docker process config CNAME
 
   
@@ -44,6 +44,7 @@ class DockerCommand(PluginCommand):
 
         """
 
+        print (arguments)
         stopwatch = StopWatch()
         stopwatch.start('E2E')
         Base = ConfigDict('cloudmesh_cmd5.yaml',
