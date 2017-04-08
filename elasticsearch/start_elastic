@@ -1,1 +1,2 @@
-docker run -p 9200:9200 -p 9300:9300 -v /home/ubuntu/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -e "http.host=0.0.0.0" -e "transport.host=0.0.0.0" -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" -e "-e PUBLISH_AS=34.206.234.116:9300" docker.elastic.co/elasticsearch/elasticsearch:5.3.0
+sudo sysctl -w vm.max_map_count=262144
+docker run  --net=host -v /home/ubuntu/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -e "http.host=0.0.0.0" -e "transport.host=0.0.0.0"  docker.elastic.co/elasticsearch/elasticsearch:5.3.0
