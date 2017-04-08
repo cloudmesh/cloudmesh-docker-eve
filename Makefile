@@ -95,4 +95,4 @@ install:
 	python setup.py install; pip install .
 
 dockerinstall:
-	docker build -f ./docker/ cloudmesh-docker-dockerfile
+	docker build -f $(PWD)/docker/cloudmesh-docker-dockerfile .
