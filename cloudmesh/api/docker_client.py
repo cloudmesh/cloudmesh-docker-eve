@@ -15,20 +15,20 @@ class Docker(object):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
 
-    def container_create(self, image, containerName=None, containers=None):
+    def container_create(self, image, containerName=None, kwargs=None):
         """Creates docker container
 
 
         :param str image: Available images for docker 
         :param str containerName: Name of docker container
-        :param int containers: Number of docker containers to be created
+        :param list arg: custom args for container
         :returns: str containeID: Id of the docker Container
         :rtype: NoneType
 
 
         """
         try:
-            container = self.client.containers.create(image,name=containerName,detach=True)
+            container = self.client.containers.create(image,name=containerName,detach=True,**kwargs)
             print("Container %s is created" % container.id)
             return container.id
         except docker.errors.APIError as e:
