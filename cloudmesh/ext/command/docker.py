@@ -15,7 +15,7 @@ class DockerCommand(PluginCommand):
         ::
 
           Usage:
-            docker api URL
+            docker host URL
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
             docker container start NAME [ARG...]
@@ -53,6 +53,7 @@ class DockerCommand(PluginCommand):
         """
 
         kwargs = {}
+
         if arguments.ARG:
             for j in arguments.ARG:
                 kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
@@ -62,15 +63,19 @@ class DockerCommand(PluginCommand):
         Base = ConfigDict('cloudmesh_cmd5.yaml',
                             verbose=False)
 
-
-        if arguments.api :
+        os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
+        if arguments.host :
             docker = Docker("{URL}".format(**arguments))
             stopwatch.stop('E2E')
+            Base['cloudmesh']['container']['docker']['work']['host'] = "{URL}".format(**arguments)
+            Base.save()
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
-        docker = Docker(os.environ["DOCKER_HOST"])
         if "DOCKER_HOST" not in os.environ:
             os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://x.x.x.x:yyyy): ")
+
+        docker = Docker(os.environ["DOCKER_HOST"])
+
 
         if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
             docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
@@ -94,7 +99,7 @@ class DockerCommand(PluginCommand):
 
 
         if arguments.container and arguments.list:
-            docker.container_list()
+            docker.container_list(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -127,14 +132,14 @@ class DockerCommand(PluginCommand):
 
         if arguments.container and arguments.restart and arguments.NAME:
             status = "restart"
-            docker.container_status_change("{NAME}".format(**arguments))
+            docker.container_status_change("{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
 
         if arguments.image and arguments.list:
-            docker.images_list()
+            docker.images_list(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

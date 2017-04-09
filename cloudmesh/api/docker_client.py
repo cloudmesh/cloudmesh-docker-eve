@@ -35,7 +35,7 @@ class Docker(object):
            print(e.explanation)
            return
 
-    def container_attach(self, containerName=None):
+    def container_attach(self, containerName=None,kwargs=None):
         """Docker container attach
 
 
@@ -47,12 +47,12 @@ class Docker(object):
         """
         try:
            container = self.client.containers.get(containerName)
-           resp = container.attach()
+           resp = container.attach(**kwargs)
         except docker.errors.APIError as e:
            print(e.explanation)
            return
 
-    def container_status_change(self, status=None, containerName=None):
+    def container_status_change(self, status=None, containerName=None,kwargs=None):
         """Change status of docker container
 
         :param str status: Docker container status to be changed to
@@ -69,13 +69,13 @@ class Docker(object):
         try:
             container = self.client.containers.get(containerName)
             if status is "start" :
-                container.start()
+                container.start(**kwargs)
             elif status is "pause":
-                container.pause()
+                container.pause(**kwargs)
             elif status is "unpause":
-                container.unpause()
+                container.unpause(**kwargs)
             elif status is "stop":
-                container.stop()
+                container.stop(**kwargs)
             else:
                 print ('Invalid Commmand')
                 return
@@ -86,7 +86,7 @@ class Docker(object):
 
 
 
-    def container_delete(self, containerName=None):
+    def container_delete(self, containerName=None,kwargs=None):
         """Deleting docker container
         
 
@@ -98,12 +98,12 @@ class Docker(object):
         """
         try:
            container = self.client.containers.get(containerName)
-           container.remove()
+           container.remove(**kwargs)
         except docker.errors.APIError as e:
            print(e.explanation)
            return
 
-    def container_list(self):
+    def container_list(self,kwargs=None):
         """List of docker containers
 
 
@@ -114,7 +114,7 @@ class Docker(object):
 
         """
         try:
-           containers = self.client.containers.list(all)
+           containers = self.client.containers.list(all,**kwargs)
         except docker.errors.APIError as e:
            print(e.explanation)
            return
@@ -126,7 +126,7 @@ class Docker(object):
         for container in containers:
             print(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
 
-    def images_list(self):
+    def images_list(self,kwargs=None):
         """List of docker images
         
         
@@ -136,7 +136,7 @@ class Docker(object):
 
         """
         try:
-           images = self.client.images.list()
+           images = self.client.images.list(**kwargs)
         except docker.errors.APIError as e:
            print(e.explanation)
            return
@@ -179,7 +179,7 @@ class Docker(object):
 
         """
         try:
-            networks = self.client.networks.list()
+            networks = self.client.networks.list(**kwargs)
         except docker.errors.APIError as e:
             print(e.explanation)
             return
