@@ -8,7 +8,7 @@ import os
 import requests
 import json
 import sys
-
+from cloudmesh.common.console import Console
 
 class Docker(object):
     def __init__(self, url):
@@ -29,10 +29,10 @@ class Docker(object):
         """
         try:
             container = self.client.containers.create(image,name=containerName,detach=True,**kwargs)
-            print("Container %s is created" % container.id)
+            Console.ok("Container %s is created" % container.id)
             return container.id
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
 
     def container_attach(self, containerName=None,kwargs=None):
@@ -49,7 +49,7 @@ class Docker(object):
            container = self.client.containers.get(containerName)
            resp = container.attach(**kwargs)
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
 
     def container_status_change(self, status=None, containerName=None,kwargs=None):
@@ -63,7 +63,7 @@ class Docker(object):
 
         """
         if status is None:
-            print("No status specified")
+            Console.info("No status specified")
             return
 
         try:
@@ -77,10 +77,10 @@ class Docker(object):
             elif status is "stop":
                 container.stop(**kwargs)
             else:
-                print ('Invalid Commmand')
+                Console.error ('Invalid Commmand')
                 return
         except docker.errors.APIError as e:
-            print(e.explanation)
+            Console.error(e.explanation)
             return
 
 
@@ -100,7 +100,7 @@ class Docker(object):
            container = self.client.containers.get(containerName)
            container.remove(**kwargs)
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
 
     def container_list(self,kwargs=None):
@@ -116,15 +116,15 @@ class Docker(object):
         try:
            containers = self.client.containers.list(all,**kwargs)
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
         if len(containers) == 0:
             print("No containers exist")
             return
 
-        print("Name\t\tImage\t\tStatus")
+        Console.ok("Name\t\tImage\t\tStatus")
         for container in containers:
-            print(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
+            Console.ok(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
 
     def images_list(self,kwargs=None):
         """List of docker images
@@ -138,16 +138,16 @@ class Docker(object):
         try:
            images = self.client.images.list(**kwargs)
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
 
         if len(images) == 0:
-            print("No images exist")
+            Console.info("No images exist")
             return
 
-        print("Name")
+        Console.ok("Name")
         for image in images:
-            print(str(image.tags) )
+            Console.ok(str(image.tags) )
 
     def network_create(self, image, networkName=None, kwargs=None):
         """Creates docker network
@@ -163,10 +163,10 @@ class Docker(object):
         """
         try:
             network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
-            print("Container %s is created" % network.id)
+            Console.ok("Container %s is created" % network.id)
             return network.id
         except docker.errors.APIError as e:
-           print(e.explanation)
+           Console.error(e.explanation)
            return
 
     def network_list(self,kwargs=None):
@@ -181,19 +181,19 @@ class Docker(object):
         try:
             networks = self.client.networks.list(**kwargs)
         except docker.errors.APIError as e:
-            print(e.explanation)
+            Console.error(e.explanation)
             return
 
         if len(networks) == 0:
-            print("No network exist")
+            Console.info("No network exist")
             return
 
-        print("Id")
+        Console.ok("Id")
         for network in networks:
-            print(str(network.id))
+            Console.ok(str(network.id))
 
     def process_config(self):
         Config =  ConfigDict("docker.yaml",
                    verbose=True,load_order=[r'/home/ubuntu/git/cloudmesh.docker/config'])
-        print (Config['docker'])
+        Console.ok (Config['docker'])
 

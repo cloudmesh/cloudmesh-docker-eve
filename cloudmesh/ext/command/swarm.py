@@ -56,7 +56,7 @@ class SwarmCommand(PluginCommand):
         stopwatch.start('E2E')
         Base = ConfigDict('cloudmesh_cmd5.yaml',
                             verbose=False)
-
+        os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
         if arguments.host :
             swarm = Swarm("{URL}".format(**arguments))
             stopwatch.stop('E2E')
