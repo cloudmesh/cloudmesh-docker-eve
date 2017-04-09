@@ -149,6 +149,48 @@ class Docker(object):
         for image in images:
             print(str(image.tags) )
 
+    def network_create(self, image, networkName=None, kwargs=None):
+        """Creates docker network
+
+
+        :param str image: Available images for docker
+        :param str networkName: Name of docker container
+        :param list arg: custom args for container
+        :returns: str networkID: Id of the docker Container
+        :rtype: NoneType
+
+
+        """
+        try:
+            network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
+            print("Container %s is created" % network.id)
+            return network.id
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
+
+    def network_list(self,kwargs=None):
+        """List of docker networks
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            networks = self.client.networks.list()
+        except docker.errors.APIError as e:
+            print(e.explanation)
+            return
+
+        if len(networks) == 0:
+            print("No network exist")
+            return
+
+        print("Id")
+        for network in networks:
+            print(str(network.id))
 
     def process_config(self):
         Config =  ConfigDict("docker.yaml",

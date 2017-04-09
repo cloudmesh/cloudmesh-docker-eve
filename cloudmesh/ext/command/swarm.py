@@ -21,6 +21,8 @@ class SwarmCommand(PluginCommand):
             swarm leave [ARG...]
             swarm update [ARG...]
             swarm reload [ARG...]
+            swarm network create IMAGE [ARG...]
+            swarm network list [ARG...]
             swarm service create IMAGE [ARG...]
             swarm service list
             swarm node list
@@ -31,7 +33,12 @@ class SwarmCommand(PluginCommand):
             ADDR     Swarm Address
             TOKEN    Worker Token to join swarm
             URL      URL of docker API
-
+            [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Swarm Services
+                     and networks have a lot of customization options.These options are documented here
+                     http://docker-py.readthedocs.io/en/stable/index.html
+                     All the options are available by simply passing the values as a name value pair
+                     eg
+                     swarm service create NAME IMAGE hostname=?? networks=??
           Options:
              -v       verbose mode
    
@@ -39,6 +46,12 @@ class SwarmCommand(PluginCommand):
              Manages a virtual docker swarm on a cloud
 
         """
+
+        kwargs = {}
+        if arguments.ARG:
+            for j in arguments.ARG:
+                kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
+
         stopwatch = StopWatch()
         stopwatch.start('E2E')
 
@@ -95,6 +108,18 @@ class SwarmCommand(PluginCommand):
 
         if arguments.node and arguments.list:
             swarm.node_list()
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
+            swarm.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.network and arguments.list:
+            swarm.network_list(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

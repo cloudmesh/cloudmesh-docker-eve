@@ -16,11 +16,13 @@ class DockerCommand(PluginCommand):
 
           Usage:
             docker api URL
-            docker image list
+            docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
             docker container start NAME [ARG...]
             docker container stop NAME [ARG...]
-            docker container list
+            docker network create IMAGE [ARG...]
+            docker network list [ARG...]
+            docker container list [ARG...]
             docker container delete NAME [ARG...]
             docker container attach NAME [ARG...]
             docker container pause NAME [ARG...]
@@ -35,6 +37,12 @@ class DockerCommand(PluginCommand):
             IMAGE    Docker server images
             URL      URL of docker API
             CNAME    Config File Name
+            [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Docker Containers
+                     and networks have a lot of customization options.These options are documented here
+                     http://docker-py.readthedocs.io/en/stable/index.html
+                     All the options are available by simply passing the values as a name value pair
+                     eg
+                     docker container create NAME IMAGE network_mode=?? entrypoint=??
 
           Options:
             -v       verbose mode
@@ -44,12 +52,11 @@ class DockerCommand(PluginCommand):
 
         """
 
-        print (arguments)
+        kwargs = {}
         if arguments.ARG:
-            kwargs = {}
             for j in arguments.ARG:
                 kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
-            print(kwargs)
+
         stopwatch = StopWatch()
         stopwatch.start('E2E')
         Base = ConfigDict('cloudmesh_cmd5.yaml',
@@ -128,6 +135,18 @@ class DockerCommand(PluginCommand):
 
         if arguments.image and arguments.list:
             docker.images_list()
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
+            docker.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.network and arguments.list:
+            docker.network_list(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
