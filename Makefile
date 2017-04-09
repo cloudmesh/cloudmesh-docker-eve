@@ -96,3 +96,6 @@ install:
 
 dockerinstall:
 	docker build -f $(PWD)/docker/cloudmesh-docker-dockerfile .
+
+cloudmesh.docker:
+	docker run -it karvenka/cloudmesh.docker bash    
