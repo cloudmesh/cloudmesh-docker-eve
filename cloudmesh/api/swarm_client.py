@@ -13,7 +13,7 @@ class Swarm(object):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
 
-    def create(self,name,addr):
+    def create(self,name,addr,kwargs=None):
         """Creates docker Swarm
 
         :param str addr: Address of Swarm Manager
@@ -23,11 +23,11 @@ class Swarm(object):
 
 
         """
-        rcode = self.client.swarm.init(name=name,listen_addr=addr,advertise_addr =None)
+        rcode = self.client.swarm.init(name=name,listen_addr=addr,advertise_addr =None,**kwargs)
         print("Swarm is created" )
         return self.client.swarm.attrs['JoinTokens']
 
-    def get_attrbs(self):
+    def get_attrbs(self,kwargs=None):
         """Creates docker Swarm
 
         :returns: None
@@ -35,9 +35,9 @@ class Swarm(object):
 
 
         """
-        print(self.client.swarm.attrs)
+        print(self.client.swarm.attrs,**kwargs)
 
-    def leave(self):
+    def leave(self,kwargs=None):
         """Creates docker Swarm
 
         :returns: None
@@ -45,10 +45,10 @@ class Swarm(object):
 
 
         """
-        rcode = self.client.swarm.leave(True)
+        rcode = self.client.swarm.leave(True,**kwargs)
         print("Node left Swarm" )
 
-    def join(self,addr,token):
+    def join(self,addr,token,kwargs=None):
         """Creates docker Swarm
         :param str addr: Address of Swarm Manager
         :returns: None
@@ -58,10 +58,10 @@ class Swarm(object):
         """
         man_list = []
         man_list.append(addr)
-        rcode = self.client.swarm.join(remote_addrs =man_list,join_token =token,listen_addr = "0.0.0.0:2377")
+        rcode = self.client.swarm.join(remote_addrs =man_list,join_token =token,listen_addr = "0.0.0.0:2377",**kwargs)
         print("Node Joined Swarm" )
 
-    def node_list(self):
+    def node_list(self,kwargs=None):
         """List of docker containers
 
 
@@ -73,7 +73,7 @@ class Swarm(object):
         """
         try:
             print("I am here")
-            nodes = self.client.nodes.list()
+            nodes = self.client.nodes.list(**kwargs)
             print (nodes)
         except docker.errors.APIError as e:
             print(e.explanation)
@@ -85,7 +85,7 @@ class Swarm(object):
         for node in nodes:
             print(str(node.attrs['Status']['State']))
 
-    def service_list(self):
+    def service_list(self,kwargs=None):
         """List of docker images
 
 
@@ -95,7 +95,7 @@ class Swarm(object):
 
         """
         try:
-            services = self.client.services.list()
+            services = self.client.services.list(**kwargs)
         except docker.errors.APIError as e:
             print(e.explanation)
             return
@@ -109,7 +109,7 @@ class Swarm(object):
             print(str(service))
 
 
-    def service_create(self,image):
+    def service_create(self,image,kwargs=None):
         """List of docker images
 
         :param str image: Image for service
@@ -119,9 +119,52 @@ class Swarm(object):
 
         """
         try:
-            service = self.client.services.create(image, command=None)
+            service = self.client.services.create(image, command=None,**kwargs)
         except docker.errors.APIError as e:
             print(e.explanation)
             return
 
         print(str(service))
+
+    def network_create(self, image, networkName=None, kwargs=None):
+        """Creates docker network
+
+
+        :param str image: Available images for docker
+        :param str networkName: Name of docker container
+        :param list arg: custom args for container
+        :returns: str networkID: Id of the docker Container
+        :rtype: NoneType
+
+
+        """
+        try:
+            network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
+            print("Container %s is created" % network.id)
+            return network.id
+        except docker.errors.APIError as e:
+           print(e.explanation)
+           return
+
+    def network_list(self,kwargs=None):
+        """List of docker networks
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            networks = self.client.networks.list(**kwargs)
+        except docker.errors.APIError as e:
+            print(e.explanation)
+            return
+
+        if len(networks) == 0:
+            print("No network exist")
+            return
+
+        print("Id")
+        for network in networks:
+            print(str(network.id))
