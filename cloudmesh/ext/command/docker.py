@@ -45,6 +45,11 @@ class DockerCommand(PluginCommand):
         """
 
         print (arguments)
+        if arguments.ARG:
+            kwargs = {}
+            for j in arguments.ARG:
+                kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
+            print(kwargs)
         stopwatch = StopWatch()
         stopwatch.start('E2E')
         Base = ConfigDict('cloudmesh_cmd5.yaml',
@@ -61,21 +66,21 @@ class DockerCommand(PluginCommand):
             os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://x.x.x.x:yyyy): ")
 
         if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
-            docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments))
+            docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.container and arguments.start and arguments.NAME:
             status = "start"
-            docker.container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.container and arguments.stop and arguments.NAME:
             status = "stop"
-            docker.container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -88,27 +93,27 @@ class DockerCommand(PluginCommand):
             return
 
         if arguments.container and arguments.delete and arguments.NAME:
-            docker.container_delete("{NAME}".format(**arguments))
+            docker.container_delete("{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.container and arguments.attach and arguments.NAME:
-            docker.container_attach("{NAME}".format(**arguments))
+            docker.container_attach("{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.container and arguments.pause and arguments.NAME:
             status = "pause"
-            docker.container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.container and arguments.unpause and arguments.NAME:
             status = "unpause"
-            docker.container_status_change(status, "{NAME}".format(**arguments))
+            docker.container_status_change(status, "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
