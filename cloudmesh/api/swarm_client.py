@@ -4,10 +4,10 @@ from __future__ import print_function
 import cloudmesh
 import docker
 import os
-#from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
 import requests
 import json
 from cloudmesh.common.console import Console
+from cloudmesh.common.Printer import Printer
 
 class Swarm(object):
     def __init__(self, url):
@@ -81,8 +81,14 @@ class Swarm(object):
             Console.info("No nodes exist")
             return
 
+        n = 1
+        e = {}
         for node in nodes:
-            Console.ok(str(node.attrs['Status']['State']))
+            d = {}
+            d['Id'] = node.short_id
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id'])))
 
     def service_list(self,kwargs=None):
         """List of docker images
@@ -103,9 +109,15 @@ class Swarm(object):
             Console.info("No Services exist")
             return
 
-        Console.ok("Name")
+        n = 1
+        e = {}
         for service in services:
-            Console.ok(str(service))
+            d = {}
+            d['Id'] = service.short_id
+            d['Name'] = service.name
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name'])))
 
 
     def service_create(self,image,kwargs=None):
@@ -164,6 +176,13 @@ class Swarm(object):
             Console.info("No network exist")
             return
 
-        Console.ok("Id")
+        n = 1
+        e = {}
         for network in networks:
-            Console.ok(str(network.id))
+            d = {}
+            d['Id'] = network.short_id
+            d['Name'] = network.name
+            d['Containers'] = network.containers
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))

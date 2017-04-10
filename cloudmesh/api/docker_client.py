@@ -4,11 +4,11 @@ from __future__ import print_function
 import cloudmesh
 import docker
 import os
-#from cloudmesh.api.docker_instance import Cloudmeshdocker, Container, Images
 import requests
 import json
 import sys
 from cloudmesh.common.console import Console
+from cloudmesh.common.Printer import Printer
 
 class Docker(object):
     def __init__(self, url):
@@ -122,9 +122,17 @@ class Docker(object):
             print("No containers exist")
             return
 
-        Console.ok("Name\t\tImage\t\tStatus")
+        n = 1
+        e = {}
         for container in containers:
-            Console.ok(container.name + "\t\t" + str((container.attrs)['Config']['Image']) + "\t\t" + container.status)
+            d = {}
+            d['Id'] = container.short_id
+            d['Name'] = container.name
+            d['Image'] = str((container.attrs)['Config']['Image'])
+            d['Status'] = container.status
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Image','Status'])))
 
     def images_list(self,kwargs=None):
         """List of docker images
@@ -145,9 +153,16 @@ class Docker(object):
             Console.info("No images exist")
             return
 
-        Console.ok("Name")
+        n = 1
+        e = {}
         for image in images:
-            Console.ok(str(image.tags) )
+            d = {}
+            d['Id'] = image.short_id
+            d['Repository'] = image.tags[0]
+            d['Size'] = image.attrs['Size']
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Repository','Size'])))
 
     def network_create(self, image, networkName=None, kwargs=None):
         """Creates docker network
@@ -188,9 +203,16 @@ class Docker(object):
             Console.info("No network exist")
             return
 
-        Console.ok("Id")
+        n = 1
+        e = {}
         for network in networks:
-            Console.ok(str(network.id))
+            d = {}
+            d['Id'] = network.short_id
+            d['Name'] = network.name
+            d['Containers'] = network.containers
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))
 
     def process_config(self):
         Config =  ConfigDict("docker.yaml",
