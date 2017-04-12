@@ -1,1 +1,3 @@
-docker api http://52.53.120.5:4243
+cms docker image list
+cms docker container list
+cms docker network list
