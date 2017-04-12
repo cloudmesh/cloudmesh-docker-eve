@@ -16,12 +16,15 @@ class DockerCommand(PluginCommand):
 
           Usage:
             docker host URL
+            docker image refresh
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
             docker container start NAME [ARG...]
             docker container stop NAME [ARG...]
             docker network create IMAGE [ARG...]
+            docker network refresh
             docker network list [ARG...]
+            docker container refresh
             docker container list [ARG...]
             docker container delete NAME [ARG...]
             docker container attach NAME [ARG...]
@@ -104,6 +107,13 @@ class DockerCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
+        if arguments.container and arguments.refresh:
+            docker.container_refresh(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+
         if arguments.container and arguments.delete and arguments.NAME:
             docker.container_delete("{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
@@ -144,6 +154,12 @@ class DockerCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
+        if arguments.image and arguments.refresh:
+            docker.images_refresh(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
         if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
             docker.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
@@ -152,6 +168,12 @@ class DockerCommand(PluginCommand):
 
         if arguments.network and arguments.list:
             docker.network_list(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.network and arguments.refresh:
+            docker.network_refresh(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

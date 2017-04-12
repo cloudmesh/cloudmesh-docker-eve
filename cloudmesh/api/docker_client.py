@@ -9,6 +9,8 @@ import json
 import sys
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
+import json
+from  cloudmesh.api.evemongo_client import perform_post ,perform_delete
 
 class Docker(object):
     def __init__(self, url):
@@ -124,7 +126,9 @@ class Docker(object):
 
         n = 1
         e = {}
+        data = []
         for container in containers:
+            data.append(json.dumps (container.__dict__['attrs'],indent=4))
             d = {}
             d['Id'] = container.short_id
             d['Name'] = container.name
@@ -132,6 +136,41 @@ class Docker(object):
             d['Status'] = container.status
             e[n] = d
             n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Image','Status'])))
+
+    def container_refresh(self,kwargs=None):
+        """List of docker containers
+
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+           containers = self.client.containers.list(all,**kwargs)
+        except docker.errors.APIError as e:
+           Console.error(e.explanation)
+           return
+        if len(containers) == 0:
+            print("No containers exist")
+            return
+
+        n = 1
+        e = {}
+        data = []
+        for container in containers:
+            data.append(json.dumps (container.__dict__['attrs'],indent=4))
+            d = {}
+            d['Id'] = container.short_id
+            d['Name'] = container.name
+            d['Image'] = str((container.attrs)['Config']['Image'])
+            d['Status'] = container.status
+            e[n] = d
+            n = n+1
+        perform_delete('Container')
+        perform_post('Container',data)
         Console.ok(str(Printer.dict_table(e,order=['Id','Name','Image','Status'])))
 
     def images_list(self,kwargs=None):
@@ -155,7 +194,9 @@ class Docker(object):
 
         n = 1
         e = {}
+        data = []
         for image in images:
+            data.append(json.dumps(image.__dict__['attrs'],indent=4))
             d = {}
             d['Id'] = image.short_id
             d['Repository'] = image.tags[0]
@@ -163,6 +204,42 @@ class Docker(object):
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Id','Repository','Size'])))
+
+    def images_refresh(self, kwargs=None):
+        """List of docker images
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            images = self.client.images.list(**kwargs)
+        except docker.errors.APIError as e:
+            Console.error(e.explanation)
+            return
+
+        if len(images) == 0:
+            Console.info("No images exist")
+            return
+
+        n = 1
+        e = {}
+        data = []
+        for image in images:
+            data.append(json.dumps(image.__dict__['attrs'], indent=4))
+            d = {}
+            d['Id'] = image.short_id
+            d['Repository'] = image.tags[0]
+            d['Size'] = image.attrs['Size']
+            e[n] = d
+            n = n + 1
+        perform_delete('Image')
+        print ('After Delete')
+        perform_post('Image',data)
+        Console.ok(str(Printer.dict_table(e, order=['Id', 'Repository', 'Size'])))
+
 
     def network_create(self, image, networkName=None, kwargs=None):
         """Creates docker network
@@ -205,7 +282,9 @@ class Docker(object):
 
         n = 1
         e = {}
+        data = []
         for network in networks:
+            data.append(json.dumps(network.__dict__['attrs'],indent=4))
             d = {}
             d['Id'] = network.short_id
             d['Name'] = network.name
@@ -213,6 +292,41 @@ class Docker(object):
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))
+
+    def network_refresh(self,kwargs=None):
+        """List of docker networks
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            networks = self.client.networks.list(**kwargs)
+        except docker.errors.APIError as e:
+            Console.error(e.explanation)
+            return
+
+        if len(networks) == 0:
+            Console.info("No network exist")
+            return
+
+        n = 1
+        e = {}
+        data = []
+        for network in networks:
+            data.append(json.dumps(network.__dict__['attrs'],indent=4))
+            d = {}
+            d['Id'] = network.short_id
+            d['Name'] = network.name
+            d['Containers'] = network.containers
+            e[n] = d
+            n = n+1
+        perform_delete('Network')
+        perform_post('Network',data)
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))
+
 
     def process_config(self):
         Config =  ConfigDict("docker.yaml",
