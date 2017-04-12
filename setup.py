@@ -40,8 +40,8 @@ docker
 version = readfile("VERSION")[0].strip()
 readme = readfile('README.rst')
 
-NAME = "cloudmesh-docker-command"
-DESCRIPTION = "A command called command for the cloudmesh shell"
+NAME = "cloudmesh.docker"
+DESCRIPTION = "docker and swarm commands for the cloudmesh shell"
 AUTHOR = "Gregor von Laszewski"
 AUTHOR_EMAIL = "laszewski@gmail.com"
 URL = "https://github.com/cloudmesh/docker"
