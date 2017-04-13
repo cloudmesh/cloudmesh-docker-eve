@@ -84,6 +84,7 @@ class Swarm(object):
         n = 1
         e = {}
         for node in nodes:
+            print(json.dumps(node.__dict__['attrs'],indent=4))
             d = {}
             d['Id'] = node.short_id
             e[n] = d
@@ -112,6 +113,7 @@ class Swarm(object):
         n = 1
         e = {}
         for service in services:
+            print(json.dumps(service.__dict__['attrs'],indent=4))
             d = {}
             d['Id'] = service.short_id
             d['Name'] = service.name
