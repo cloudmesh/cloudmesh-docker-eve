@@ -29,20 +29,35 @@ def perform_post(resource, data):
     headers = {'Content-Type': 'application/json'}
     return requests.post(endpoint(resource), json.dumps(data), headers=headers)
 
-def perform_get(resource):
+def perform_get(resource,filter=None):
+    if filter:
+        url = endpoint(resource) + "?where=" + json.dumps(filter)
+    else:
+        url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
-    out =  requests.get(endpoint(resource),  headers=headers)
-    return out.status_code,json.loads(out.text)['_items']
-
-def perform_get_where(resource,filter):
-    headers = {'Content-Type': 'application/json'}
-    url = endpoint(resource) + "?where="+json.dumps(filter)
     out =  requests.get(url,  headers=headers)
     return out.status_code,json.loads(out.text)['_items']
 
-def perform_delete(resource):
+def perform_delete(resource,filter=None):
+    if filter:
+        url = endpoint(resource) + "?where=" + json.dumps(filter)
+    else:
+        url = endpoint(resource)
     return requests.delete(endpoint(resource))
 
+def perform_put(resource,data,filter=None):
+    if filter:
+        url = endpoint(resource) + "?where=" + json.dumps(filter)
+    else:
+        url = endpoint(resource)
+    headers = {'Content-Type': 'application/json'}
+    out =  requests.get(url,  headers=headers)
+    print(out.text)
+    if '_items' in json.loads(out.text).keys():
+        headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
+        url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
+        out = requests.put(url,json.dumps(data),headers=headers)
+    return out
 
 def endpoint(resource):
     ENTRY_POINT = 'localhost:5000'
@@ -63,7 +78,14 @@ if __name__ == '__main__':
         print (data1)
         filter ={}
         print (data[j])
-        filter['ID'] = data[j]["ID"]
-        status_code, data1 = perform_get_where(j, filter)
+        if 'ID' in data[j].keys():
+            key = 'ID'
+        else:
+            key = 'Id'
+        filter[key] = data[j][key]
+        status_code, data1 = perform_get(j, filter)
         print ('Get Where : ' + str(j) + "-" + str(status_code))
         print (data1)
+        r=perform_put(j,filter)
+        print ('Update : ' + str(j) + "-" + str(r.status_code))
+        break

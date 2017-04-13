@@ -189,6 +189,7 @@
             "IOMaximumBandwidth": 0
         },
         "Id": "2bbba5f61f1e394074166c90f62bf0075ae303e96a54311bbc619a076244647b",
+        "Ip": "10.10.10.10",
         "MountLabel": ""
     },
     "Network": {
@@ -254,6 +255,7 @@
             ]
         },
         "ID": "vfc2gr040go7vytuk5u5sm7s3",
+        "Ip": "10.10.10.10",
         "Version": {
             "Index": 12075
         },
@@ -416,6 +418,7 @@
         }
     },
     "ID": "o7chtcthj04cq082de3z1tcur",
+      "Ip": "10.10.10.10",
     "Version": {
         "Index": 12077
     },
