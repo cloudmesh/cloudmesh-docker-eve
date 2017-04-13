@@ -94,12 +94,12 @@ def post_works(ids):
 
 def perform_post(resource, data):
     headers = {'Content-Type': 'application/json'}
-    print(data)
     return requests.post(endpoint(resource), json.dumps(data), headers=headers)
 
 def perform_get(resource, data=None):
-    headers = {}
-    return requests.get(endpoint(resource)+data,  headers=headers)
+    headers = {'Content-Type': 'application/json'}
+    out =  requests.get(endpoint(resource),  headers=headers)
+    return json.loads(out.text)['_items']
 
 def delete():
     r = perform_delete('Image')
@@ -108,7 +108,6 @@ def delete():
 
 
 def perform_delete(resource):
-    print (resource)
     return requests.delete(endpoint(resource))
 
 
@@ -123,4 +122,4 @@ if __name__ == '__main__':
     #ids = post_Image()
     #post_works(ids)
     out = perform_get('Image',"sha256:8ff89f3e84fb7cbbe96dfd849851c304297d41f1ec3aadd10d05e597b2cde3c2")
-    print (out.url,out.text)
+    print (out)

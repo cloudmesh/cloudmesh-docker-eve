@@ -10,7 +10,7 @@ import sys
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
 import json
-from  cloudmesh.api.evemongo_client import perform_post ,perform_delete
+from  cloudmesh.api.evemongo_client import perform_post ,perform_delete,perform_get
 
 class Docker(object):
     def __init__(self, url):
@@ -116,7 +116,7 @@ class Docker(object):
 
         """
         try:
-           containers = self.client.containers.list(all,**kwargs)
+           containers = perform_get('Container')
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return
@@ -126,14 +126,12 @@ class Docker(object):
 
         n = 1
         e = {}
-        data = []
         for container in containers:
-            data.append(json.dumps (container.__dict__['attrs'],indent=4))
             d = {}
-            d['Id'] = container.short_id
-            d['Name'] = container.name
-            d['Image'] = str((container.attrs)['Config']['Image'])
-            d['Status'] = container.status
+            d['Id'] = container['Id']
+            d['Name'] = container['Name']
+            d['Image'] = container['Config']['Image']
+            d['Status'] = container['State']['Status']
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Id','Name','Image','Status'])))
@@ -160,13 +158,14 @@ class Docker(object):
         n = 1
         e = {}
         data = []
-        for container in containers:
-            data.append(json.dumps (container.__dict__['attrs'],indent=4))
+        for containerm in containers:
+            container = containerm.__dict__['attrs']
+            data.append(json.dumps (container,indent=4))
             d = {}
-            d['Id'] = container.short_id
-            d['Name'] = container.name
-            d['Image'] = str((container.attrs)['Config']['Image'])
-            d['Status'] = container.status
+            d['Id'] = container['Id']
+            d['Name'] = container['Name']
+            d['Image'] = container['Config']['Image']
+            d['Status'] = container['State']['Status']
             e[n] = d
             n = n+1
         perform_delete('Container')
@@ -183,7 +182,7 @@ class Docker(object):
 
         """
         try:
-           images = self.client.images.list(**kwargs)
+           images = perform_get('Image')
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return
@@ -194,13 +193,11 @@ class Docker(object):
 
         n = 1
         e = {}
-        data = []
         for image in images:
-            data.append(json.dumps(image.__dict__['attrs'],indent=4))
             d = {}
-            d['Id'] = image.short_id
-            d['Repository'] = image.tags[0]
-            d['Size'] = image.attrs['Size']
+            d['Id'] = image['Id']
+            d['Repository'] = image['RepoTags'][0]
+            d['Size'] = image['Size']
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Id','Repository','Size'])))
@@ -227,16 +224,16 @@ class Docker(object):
         n = 1
         e = {}
         data = []
-        for image in images:
-            data.append(json.dumps(image.__dict__['attrs'], indent=4))
+        for imagem in images:
+            image = imagem.__dict__['attrs']
+            data.append(json.dumps(image, indent=4))
             d = {}
-            d['Id'] = image.short_id
-            d['Repository'] = image.tags[0]
-            d['Size'] = image.attrs['Size']
+            d['Id'] = image['Id']
+            d['Repository'] = image['RepoTags'][0]
+            d['Size'] = image['Size']
             e[n] = d
             n = n + 1
         perform_delete('Image')
-        print ('After Delete')
         perform_post('Image',data)
         Console.ok(str(Printer.dict_table(e, order=['Id', 'Repository', 'Size'])))
 
@@ -271,7 +268,7 @@ class Docker(object):
 
         """
         try:
-            networks = self.client.networks.list(**kwargs)
+            networks = perform_get('Network')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -284,11 +281,10 @@ class Docker(object):
         e = {}
         data = []
         for network in networks:
-            data.append(json.dumps(network.__dict__['attrs'],indent=4))
             d = {}
-            d['Id'] = network.short_id
-            d['Name'] = network.name
-            d['Containers'] = network.containers
+            d['Id'] = network['Id']
+            d['Name'] = network['Name']
+            d['Containers'] = network['Containers']
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))
@@ -315,16 +311,18 @@ class Docker(object):
         n = 1
         e = {}
         data = []
-        for network in networks:
-            data.append(json.dumps(network.__dict__['attrs'],indent=4))
+        for networkm in networks:
+            network = networkm.__dict__['attrs']
+            data.append(json.dumps(network,indent=4))
             d = {}
-            d['Id'] = network.short_id
-            d['Name'] = network.name
-            d['Containers'] = network.containers
+            d['Id'] = network['Id']
+            d['Name'] = network['Name']
+            d['Containers'] = network['Containers']
             e[n] = d
             n = n+1
-        perform_delete('Network')
-        perform_post('Network',data)
+        r=perform_delete('Network')
+        r=perform_post('Network',data)
+        print (r.text)
         Console.ok(str(Printer.dict_table(e,order=['Id','Name','Containers'])))
 
 
