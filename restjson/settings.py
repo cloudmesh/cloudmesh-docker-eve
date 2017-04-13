@@ -46,6 +46,9 @@ Image = {
         'Id': {
             'type': 'string'
         },
+        'Ip': {
+            'type': 'string'
+        },
         'Containers': {
             'type': 'integer'
         },
@@ -548,6 +551,9 @@ Container = {
         'Id': {
             'type': 'string'
         },
+        'Ip': {
+            'type': 'string'
+        },
         'MountLabel': {
             'type': 'string'
         }
@@ -632,6 +638,9 @@ Network = {
         'Id': {
             'type': 'string'
         },
+        'Ip': {
+            'type': 'string'
+        },
         'Containers': {
             'type': 'dict',
             'schema': {}
@@ -709,6 +718,9 @@ Service = {
             }
         },
         'ID': {
+            'type': 'string'
+        },
+        'Ip': {
             'type': 'string'
         },
         'Version': {
@@ -1083,6 +1095,9 @@ Node = {
             }
         },
         'ID': {
+            'type': 'string'
+        },
+        'Ip': {
             'type': 'string'
         },
         'Version': {
