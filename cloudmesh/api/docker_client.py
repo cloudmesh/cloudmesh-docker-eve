@@ -31,9 +31,9 @@ class Docker(object):
         try:
             host = {}
             host['Name'] = hostName
-            host['ip'] = addr.split(':')[0]
-            host['port'] = addr.split(':')[1]
-            host['Swarmmanager'] = ' False'
+            host['Ip'] = addr.split(':')[0]
+            host['Port'] = int(addr.split(':')[1])
+            host['Swarmmanager'] = False
             r = perform_post('Host',host)
         except Exception as e:
            Console.error(e.message)
