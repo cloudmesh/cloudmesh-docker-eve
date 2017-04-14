@@ -1,46 +1,60 @@
 
 Host = {
+    'allow_unknown': True,
     'schema': {
         'Name': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Ip': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Port': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'Swarmmanager': {
-            'type': 'boolean'
+            'type': 'boolean',
+            'nullable': True
         }
     }
 }
 
 Image = {
+    'allow_unknown': True,
     'schema': {
         'Created': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'Labels': {
             'type': 'dict',
+            'nullable': True,
             'schema': {}
         },
         'VirtualSize': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'SharedSize': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'ParentId': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Size': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'RepoDigests': {
             'type': 'list',
+            'nullable': True,
             'schema': {
-                'type': 'string'
+                'type': 'string',
+                'nullable': True
             }
         },
         'Id': {
@@ -50,104 +64,134 @@ Image = {
             'type': 'string'
         },
         'Containers': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'RepoTags': {
             'type': 'list',
+            'nullable': True,
             'schema': {
-                'type': 'string'
+                'type': 'string',
+                'nullable': True
             }
         }
     }
 }
 
 Container = {
+    'allow_unknown': True,
     'schema': {
         'ExecIDs': {
             'nullable': True
         },
         'State': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Status': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Pid': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'OOMKilled': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Dead': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Paused': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Running': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'FinishedAt': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Restarting': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Error': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'StartedAt': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'ExitCode': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 }
             }
         },
         'Config': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Tty': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Cmd': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
-                        'type': 'string'
+                        'type': 'string',
+                        'nullable': True
                     }
                 },
                 'Volumes': {
                     'nullable': True
                 },
                 'Domainname': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'WorkingDir': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Image': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Hostname': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'StdinOnce': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Labels': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {}
                 },
                 'AttachStdin': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'User': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Env': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
-                        'type': 'string'
+                        'type': 'string',
+                        'nullable': True
                     }
                 },
                 'Entrypoint': {
@@ -157,120 +201,154 @@ Container = {
                     'nullable': True
                 },
                 'AttachStderr': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'AttachStdout': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'OpenStdin': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 }
             }
         },
         'ResolvConfPath': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'HostsPath': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Args': {
             'type': 'list',
+            'nullable': True,
             'schema': {}
         },
         'Driver': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Path': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'HostnamePath': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'RestartCount': {
-            'type': 'integer'
+            'type': 'integer',
+            'nullable': True
         },
         'Name': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Created': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'GraphDriver': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Data': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'MergedDir': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'WorkDir': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'LowerDir': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'UpperDir': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'Name': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'Mounts': {
             'type': 'list',
+            'nullable': True,
             'schema': {}
         },
         'ProcessLabel': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'NetworkSettings': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Bridge': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Networks': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'bridge': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'NetworkID': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'MacAddress': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'GlobalIPv6PrefixLen': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 },
                                 'Links': {
                                     'nullable': True
                                 },
                                 'GlobalIPv6Address': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'IPv6Gateway': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'IPAMConfig': {
                                     'nullable': True
                                 },
                                 'EndpointID': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'IPPrefixLen': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 },
                                 'IPAddress': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'Gateway': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'Aliases': {
                                     'nullable': True
@@ -283,46 +361,59 @@ Container = {
                     'nullable': True
                 },
                 'LinkLocalIPv6Address': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'HairpinMode': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'IPv6Gateway': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'SecondaryIPAddresses': {
                     'nullable': True
                 },
                 'SandboxID': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'MacAddress': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'GlobalIPv6Address': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Gateway': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'LinkLocalIPv6PrefixLen': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'EndpointID': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'SandboxKey': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'GlobalIPv6PrefixLen': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'IPPrefixLen': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'IPAddress': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Ports': {
                     'nullable': True
@@ -330,143 +421,181 @@ Container = {
             }
         },
         'AppArmorProfile': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Image': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'LogPath': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'HostConfig': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'CpuPeriod': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'MemorySwappiness': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'ContainerIDFile': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'KernelMemory': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'Memory': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'CpuQuota': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'UsernsMode': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'AutoRemove': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'BlkioDeviceReadIOps': {
                     'nullable': True
                 },
                 'Dns': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {}
                 },
                 'ExtraHosts': {
                     'nullable': True
                 },
                 'PidsLimit': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'DnsSearch': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {}
                 },
                 'Privileged': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'IOMaximumIOps': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'CpuPercent': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'NanoCpus': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'Ulimits': {
                     'nullable': True
                 },
                 'CpusetCpus': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'DiskQuota': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'CgroupParent': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'BlkioWeight': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'RestartPolicy': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'MaximumRetryCount': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'Name': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'OomScoreAdj': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'BlkioDeviceReadBps': {
                     'nullable': True
                 },
                 'VolumeDriver': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'ReadonlyRootfs': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'CpuShares': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'PublishAllPorts': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'MemoryReservation': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'BlkioWeightDevice': {
                     'nullable': True
                 },
                 'ConsoleSize': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
-                        'type': 'integer'
+                        'type': 'integer',
+                        'nullable': True
                     }
                 },
                 'NetworkMode': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'BlkioDeviceWriteBps': {
                     'nullable': True
                 },
                 'Isolation': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'GroupAdd': {
                     'nullable': True
                 },
                 'CpuRealtimeRuntime': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'Devices': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {}
                 },
                 'BlkioDeviceWriteIOps': {
@@ -476,19 +605,24 @@ Container = {
                     'nullable': True
                 },
                 'CpusetMems': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Cgroup': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'UTSMode': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'PidMode': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Runtime': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'VolumesFrom': {
                     'nullable': True
@@ -498,22 +632,27 @@ Container = {
                 },
                 'DnsOptions': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {}
                 },
                 'ShmSize': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'Links': {
                     'nullable': True
                 },
                 'CpuRealtimePeriod': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'IpcMode': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'PortBindings': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {}
                 },
                 'SecurityOpt': {
@@ -523,109 +662,140 @@ Container = {
                     'nullable': True
                 },
                 'CpuCount': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'MemorySwap': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 },
                 'OomKillDisable': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'LogConfig': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Config': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {}
                         },
                         'Type': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'IOMaximumBandwidth': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 }
             }
         },
         'Id': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Ip': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'MountLabel': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         }
     }
 }
 
 Network = {
+    'allow_unknown': True,
     'schema': {
         'Options': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'com.docker.network.bridge.name': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'com.docker.network.bridge.default_bridge': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'com.docker.network.bridge.enable_ip_masquerade': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'com.docker.network.driver.mtu': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'com.docker.network.bridge.host_binding_ipv4': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'com.docker.network.bridge.enable_icc': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'Name': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Created': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'EnableIPv6': {
-            'type': 'boolean'
+            'type': 'boolean',
+            'nullable': True
         },
         'Labels': {
             'type': 'dict',
+            'nullable': True,
             'schema': {}
         },
         'Driver': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Attachable': {
-            'type': 'boolean'
+            'type': 'boolean',
+            'nullable': True
         },
         'Internal': {
-            'type': 'boolean'
+            'type': 'boolean',
+            'nullable': True
         },
         'IPAM': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Config': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
                         'type': 'dict',
+                        'nullable': True,
                         'schema': {
                             'Subnet': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             },
                             'Gateway': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             }
                         }
                     }
                 },
                 'Driver': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Options': {
                     'nullable': True
@@ -633,7 +803,8 @@ Network = {
             }
         },
         'Scope': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Id': {
             'type': 'string'
@@ -643,52 +814,67 @@ Network = {
         },
         'Containers': {
             'type': 'dict',
+            'nullable': True,
             'schema': {}
         }
     }
 }
 
 Service = {
+    'allow_unknown': True,
     'schema': {
         'Endpoint': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'VirtualIPs': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
                         'type': 'dict',
+                        'nullable': True,
                         'schema': {
                             'NetworkID': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             },
                             'Addr': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             }
                         }
                     }
                 },
                 'Spec': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Mode': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'Ports': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'TargetPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'PublishedPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'Protocol': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     },
                                     'PublishMode': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
@@ -697,20 +883,26 @@ Service = {
                 },
                 'Ports': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
                         'type': 'dict',
+                        'nullable': True,
                         'schema': {
                             'TargetPort': {
-                                'type': 'integer'
+                                'type': 'integer',
+                                'nullable': True
                             },
                             'PublishedPort': {
-                                'type': 'integer'
+                                'type': 'integer',
+                                'nullable': True
                             },
                             'Protocol': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             },
                             'PublishMode': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             }
                         }
                     }
@@ -718,47 +910,61 @@ Service = {
             }
         },
         'ID': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Ip': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Version': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Index': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 }
             }
         },
         'PreviousSpec': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Name': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'EndpointSpec': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Mode': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'Ports': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'TargetPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'PublishedPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'Protocol': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     },
                                     'PublishMode': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
@@ -767,26 +973,33 @@ Service = {
                 },
                 'UpdateConfig': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'MaxFailureRatio': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'Parallelism': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'FailureAction': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'Mode': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Replicated': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Replicas': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 }
                             }
                         }
@@ -794,74 +1007,94 @@ Service = {
                 },
                 'Networks': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
                         'type': 'dict',
+                        'nullable': True,
                         'schema': {
                             'Target': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             }
                         }
                     }
                 },
                 'TaskTemplate': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Placement': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {}
                         },
                         'ContainerSpec': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Image': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'DNSConfig': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 },
                                 'Env': {
                                     'type': 'list',
+                                    'nullable': True,
                                     'schema': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
                         },
                         'Networks': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'Target': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
                         },
                         'RestartPolicy': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'MaxAttempts': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 },
                                 'Condition': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 }
                             }
                         },
                         'ForceUpdate': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'Resources': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Reservations': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 },
                                 'Limits': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 }
                             }
@@ -871,47 +1104,61 @@ Service = {
             }
         },
         'UpdatedAt': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'UpdateStatus': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'StartedAt': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'CompletedAt': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'Spec': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Name': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'EndpointSpec': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Mode': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'Ports': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'TargetPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'PublishedPort': {
-                                        'type': 'integer'
+                                        'type': 'integer',
+                                        'nullable': True
                                     },
                                     'Protocol': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     },
                                     'PublishMode': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
@@ -920,26 +1167,33 @@ Service = {
                 },
                 'UpdateConfig': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'MaxFailureRatio': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'Parallelism': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'FailureAction': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'Mode': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Replicated': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Replicas': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 }
                             }
                         }
@@ -947,74 +1201,94 @@ Service = {
                 },
                 'Networks': {
                     'type': 'list',
+                    'nullable': True,
                     'schema': {
                         'type': 'dict',
+                        'nullable': True,
                         'schema': {
                             'Target': {
-                                'type': 'string'
+                                'type': 'string',
+                                'nullable': True
                             }
                         }
                     }
                 },
                 'TaskTemplate': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Placement': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {}
                         },
                         'ContainerSpec': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Image': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 },
                                 'DNSConfig': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 },
                                 'Env': {
                                     'type': 'list',
+                                    'nullable': True,
                                     'schema': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
                         },
                         'Networks': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'Target': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
                         },
                         'RestartPolicy': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'MaxAttempts': {
-                                    'type': 'integer'
+                                    'type': 'integer',
+                                    'nullable': True
                                 },
                                 'Condition': {
-                                    'type': 'string'
+                                    'type': 'string',
+                                    'nullable': True
                                 }
                             }
                         },
                         'ForceUpdate': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'Resources': {
                             'type': 'dict',
+                            'nullable': True,
                             'schema': {
                                 'Reservations': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 },
                                 'Limits': {
                                     'type': 'dict',
+                                    'nullable': True,
                                     'schema': {}
                                 }
                             }
@@ -1024,120 +1298,152 @@ Service = {
             }
         },
         'CreatedAt': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         }
     }
 }
 
 Node = {
+    'allow_unknown': True,
     'schema': {
         'Status': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'State': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Addr': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'Description': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Engine': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'Plugins': {
                             'type': 'list',
+                            'nullable': True,
                             'schema': {
                                 'type': 'dict',
+                                'nullable': True,
                                 'schema': {
                                     'Type': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     },
                                     'Name': {
-                                        'type': 'string'
+                                        'type': 'string',
+                                        'nullable': True
                                     }
                                 }
                             }
                         },
                         'EngineVersion': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'Platform': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'OS': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         },
                         'Architecture': {
-                            'type': 'string'
+                            'type': 'string',
+                            'nullable': True
                         }
                     }
                 },
                 'Hostname': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Resources': {
                     'type': 'dict',
+                    'nullable': True,
                     'schema': {
                         'MemoryBytes': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         },
                         'NanoCPUs': {
-                            'type': 'integer'
+                            'type': 'integer',
+                            'nullable': True
                         }
                     }
                 }
             }
         },
         'ID': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Ip': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Version': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Index': {
-                    'type': 'integer'
+                    'type': 'integer',
+                    'nullable': True
                 }
             }
         },
         'ManagerStatus': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Reachability': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Leader': {
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'nullable': True
                 },
                 'Addr': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'UpdatedAt': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         },
         'Spec': {
             'type': 'dict',
+            'nullable': True,
             'schema': {
                 'Role': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 },
                 'Availability': {
-                    'type': 'string'
+                    'type': 'string',
+                    'nullable': True
                 }
             }
         },
         'CreatedAt': {
-            'type': 'string'
+            'type': 'string',
+            'nullable': True
         }
     }
 }

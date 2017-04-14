@@ -30,11 +30,11 @@ def perform_post(resource, data,filter=None):
     print(json.dumps(data,indent=4))
     if filter:
         scode,datao = perform_get(resource, filter)
-        print (datao)
         if len(datao) > 0:
             return perform_put(resource,data,filter)
     r = requests.post(endpoint(resource), json=data, headers=headers)
-    print(r)
+    if r.status_code > 399:
+        print(r.json)
     return r
 
 def perform_get(resource,filter=None):

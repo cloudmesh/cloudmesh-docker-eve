@@ -206,6 +206,7 @@ class Docker(object):
         e = {}
         for container in containers:
             d = {}
+            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             d['Id'] = container['Id']
             d['Name'] = container['Name']
             d['Image'] = container['Config']['Image']
