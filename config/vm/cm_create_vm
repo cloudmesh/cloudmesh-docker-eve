@@ -1,3 +1,3 @@
 cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.medium --secgroup=karvenkagroup --name=cmdocker --key=ssh
 cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.large --secgroup=karvenkagroup --name=elast2 --key=ssh
-cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.large --secgroup=karvenkagroup --name=elast2 --key=ssh
+cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.large --secgroup=karvenkagroup --name=elast1 --key=ssh

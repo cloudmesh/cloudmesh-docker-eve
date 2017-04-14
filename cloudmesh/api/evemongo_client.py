@@ -77,7 +77,7 @@ def endpoint(resource):
 
 
 if __name__ == '__main__':
-    with open('../../restjson/all.json') as data_file:
+    with open('../../config/restjson/all.json') as data_file:
         data = json.load(data_file)
     for j in data:
         r = perform_delete(j)
@@ -97,6 +97,6 @@ if __name__ == '__main__':
         status_code, data1 = perform_get(j, filter)
         print ('Get Where : ' + str(j) + "-" + str(status_code))
         print (data1)
-        r=perform_put(j,filter)
+        r=perform_put(j,data[j],filter)
         print ('Update : ' + str(j) + "-" + str(r.status_code))
         break
