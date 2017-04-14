@@ -1,10 +1,12 @@
 from __future__ import print_function
-from cloudmesh.shell.command import command
-from cloudmesh.shell.command import PluginCommand
-from cloudmesh.api.docker_client import Docker
+
 import os
 from cloudmesh.common.ConfigDict import ConfigDict
 from cloudmesh.common.StopWatch import StopWatch
+from cloudmesh.shell.command import PluginCommand
+from cloudmesh.shell.command import command
+
+from cloudmesh.api.docker_client import Docker
 
 
 class DockerCommand(PluginCommand):
@@ -83,6 +85,12 @@ class DockerCommand(PluginCommand):
         if arguments.container and arguments.create and arguments.NAME and arguments.IMAGE:
             docker.container_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
+            #
+            # I have not tested this yet but i added
+            #
+            # stopwatch.verbose = True    # doe snot print if set to false, default is true
+            # stopwatch.print('Time Taken:', 'E2E')
+            #
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
