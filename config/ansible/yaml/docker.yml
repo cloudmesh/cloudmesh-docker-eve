@@ -24,8 +24,12 @@
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
     shell: usermod -aG docker ubuntu
-  - name: Run docker setup11 enable remote
-    shell: sed -i 's/ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/$/ExecStart=\/usr\/bin\/docker daemon -H fd:\/\/ -H tcp:\/\/0\.0\.0\.0:4243/' /lib/systemd/system/docker.service
+  - name: Setup Docker Daemon
+    replace:
+    path: /lib/systemd/system/docker.service
+    regexp: '^ExecStart'
+    replace: 'ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243'
+    backup: yes
   - name: Run docker setup11 enable remote
     shell: systemctl daemon-reload
   - name: Run docker setup11 enable remote

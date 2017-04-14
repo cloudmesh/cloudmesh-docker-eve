@@ -23,9 +23,12 @@
   - name: Run docker setup9
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
-    shell: usermod -aG docker cc    
-  - name: Run docker setup11 enable remote
-    shell: sed 's/ -H fd:\/\/$/ -H fd:\/\/ -H tcp:\/\/0\.0\.0\.0:4243\//' /lib/systemd/system/docker.service
+    shell: usermod -aG docker cc
+  - name: Setup Docker Daemon
+    replace:
+        dest: /lib/systemd/system/docker.service
+        regexp: '^ExecStart(.*)$'
+        replace: 'ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243'
   - name: Run docker setup11 enable remote
     shell: systemctl daemon-reload
   - name: Run docker setup11 enable remote
@@ -55,8 +58,11 @@
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
     shell: usermod -aG docker cc
-  - name: Run docker setup11 enable remote
-    shell: sed 's/ -H fd:\/\/$/ -H fd:\/\/ -H tcp:\/\/0\.0\.0\.0:4243\//' /lib/systemd/system/docker.service
+  - name: Setup Docker Daemon
+    replace:
+        dest: /lib/systemd/system/docker.service
+        regexp: '^ExecStart(.*)$'
+        replace: 'ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243'
   - name: Run docker setup11 enable remote
     shell: systemctl daemon-reload
   - name: Run docker setup11 enable remote
