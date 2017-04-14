@@ -79,6 +79,7 @@ class DockerCommand(PluginCommand):
 
         if arguments.host :
             docker = Docker("{ADDR}".format(**arguments))
+            docker.host_create("{ADDR}".format(**arguments),"{NAME}".format(**arguments))
             stopwatch.stop('E2E')
             Base['cloudmesh']['container']['docker']['work']['host'] = "{ADDR}".format(**arguments)
             Base.save()
