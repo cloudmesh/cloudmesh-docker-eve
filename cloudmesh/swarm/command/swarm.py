@@ -14,8 +14,9 @@ class SwarmCommand(PluginCommand):
         ::
 
           Usage:
-            swarm host URL
             swarm host list
+            swarm host delete ADDR
+            swarm host NAME ADDR
             swarm create NAME ADDR [ARG...]
             swarm join ADDR TOKEN [ARG...]
             swarm attrbs [ARG...]
@@ -58,16 +59,31 @@ class SwarmCommand(PluginCommand):
         Base = ConfigDict('cloudmesh_cmd5.yaml',
                             verbose=False)
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
-        if arguments.host :
-            swarm = Swarm("{URL}".format(**arguments))
+        if arguments.host and arguments.list:
+            swarm = Swarm(os.environ["DOCKER_HOST"])
+            swarm.host_list()
             stopwatch.stop('E2E')
-            Base['cloudmesh']['container']['docker']['work']['host'] = "{URL}".format(**arguments)
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host and arguments.delete:
+            swarm = Swarm(os.environ["DOCKER_HOST"])
+            swarm.host_delete("{ADDR}".format(**arguments))
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host :
+            swarm = Swarm("{ADDR}".format(**arguments))
+            swarm.host_create("{ADDR}".format(**arguments),"{NAME}".format(**arguments))
+            stopwatch.stop('E2E')
+            Base['cloudmesh']['container']['docker']['work']['host'] = "{ADDR}".format(**arguments)
             Base.save()
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter Swarm Node api url(eg:http://x.x.x.x:yyyy): ")
+            os.environ["DOCKER_HOST"] = raw_input("Please enter docker swarm api host(IP or Name : Port )")
 
         swarm = Swarm(os.environ["DOCKER_HOST"])
 
