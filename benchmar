@@ -1,2 +1,0 @@
-cm vm boot --name=docker01 --secgroup=karvenkagroup --key=ssh --flavor=m1.medium --image=CC-Ubuntu16.04
-cm vm ip assign
