@@ -15,6 +15,7 @@ class SwarmCommand(PluginCommand):
 
           Usage:
             swarm host URL
+            swarm host list
             swarm create NAME ADDR [ARG...]
             swarm join ADDR TOKEN [ARG...]
             swarm attrbs [ARG...]

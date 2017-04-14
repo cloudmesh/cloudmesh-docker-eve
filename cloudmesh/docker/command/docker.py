@@ -16,6 +16,7 @@ class DockerCommand(PluginCommand):
 
           Usage:
             docker host URL
+            docker host list
             docker image refresh
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
