@@ -72,7 +72,6 @@ class DockerCommand(PluginCommand):
 
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
 
-        print (arguments)
 
         if arguments.host and arguments.list:
             docker = Docker(os.environ["DOCKER_HOST"])

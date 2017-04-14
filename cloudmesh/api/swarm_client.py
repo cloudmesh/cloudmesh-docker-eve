@@ -8,11 +8,91 @@ import requests
 import json
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
+from  cloudmesh.api.evemongo_client import perform_post ,perform_delete,perform_get
 
 class Swarm(object):
     def __init__(self, url):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
+
+
+    def host_create(self, addr, hostName=None):
+        """Creates docker host
+
+
+        :param str addr: Address for docker
+        :param str hostName: Name of docker host
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            host = {}
+            host['Name'] = hostName
+            host['Ip'] = addr.split(':')[0]
+            host['Port'] = int(addr.split(':')[1])
+            host['Swarmmanager'] = False
+            filter = {}
+            filter['Ip'] = addr.split(':')[0]
+            r = perform_post('Host',host,filter)
+        except Exception as e:
+           Console.error(e.message)
+           return
+
+    def host_list(self):
+        """List of docker containers
+
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+           scode,hosts = perform_get('Host')
+        except Exception as e:
+           Console.error(e.message)
+           return
+        if len(hosts) == 0:
+            print("No hosts exist")
+            return
+
+        n = 1
+        e = {}
+        for host in hosts:
+            d = {}
+            d['Ip'] = str(host['Ip'])
+            d['Name'] = str(host['Name'])
+            d['Port'] = str(host['Port'])
+            d['Swarmmanager'] = str(host['Swarmmanager'])
+            print (d)
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Name','Port','Swarmmanager'])))
+
+
+    def host_delete(self, addr):
+        """Deletes docker host
+
+
+        :param str addr: Address for docker
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            filter = {}
+            filter['Ip'] = addr.split(':')[0]
+            r = perform_delete('Host',filter)
+            #Delete Host should delete all Containers and Networks for the host
+            r = perform_delete('Container', filter)
+            r = perform_delete('Network', filter)
+        except Exception as e:
+           Console.error(e.message)
+           return
 
     def create(self,name,addr,kwargs=None):
         """Creates docker Swarm
