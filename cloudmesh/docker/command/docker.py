@@ -17,7 +17,8 @@ class DockerCommand(PluginCommand):
         ::
 
           Usage:
-            docker host URL
+            docker host NAME ADDR
+            docker host list
             docker image refresh
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
@@ -36,11 +37,11 @@ class DockerCommand(PluginCommand):
 
   
           Arguments:
-            NAME     The name of the docker
+            NAME     The name of the docker Host/Container/Network
             CLOUD    The name of the cloud on which the virtual docker
                      is to be deployed
             IMAGE    Docker server images
-            URL      URL of docker API
+            ADDR     IP or Name:port of docker API
             CNAME    Config File Name
             [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Docker Containers
                      and networks have a lot of customization options.These options are documented here
@@ -69,15 +70,25 @@ class DockerCommand(PluginCommand):
                             verbose=False)
 
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
-        if arguments.host :
-            docker = Docker("{URL}".format(**arguments))
+
+        if arguments.host and arguments.list:
+            docker = Docker(os.environ["DOCKER_HOST"])
             stopwatch.stop('E2E')
-            Base['cloudmesh']['container']['docker']['work']['host'] = "{URL}".format(**arguments)
+            Base['cloudmesh']['container']['docker']['work']['host'] = "{ADDR}".format(**arguments)
+            Base.save()
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host :
+            docker = Docker("{ADDR}".format(**arguments))
+            docker.host_create("{ADDR}".format(**arguments),"{NAME}".format(**arguments))
+            stopwatch.stop('E2E')
+            Base['cloudmesh']['container']['docker']['work']['host'] = "{ADDR}".format(**arguments)
             Base.save()
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
         if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter docker api url(eg:http://x.x.x.x:yyyy): ")
+            os.environ["DOCKER_HOST"] = raw_input("Please enter docker api host(IP or Name : Port )")
 
         docker = Docker(os.environ["DOCKER_HOST"])
 
