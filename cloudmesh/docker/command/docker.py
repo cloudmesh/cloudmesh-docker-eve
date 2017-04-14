@@ -17,8 +17,9 @@ class DockerCommand(PluginCommand):
         ::
 
           Usage:
-            docker host NAME ADDR
             docker host list
+            docker host delete ADDR
+            docker host NAME ADDR
             docker image refresh
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
@@ -71,11 +72,19 @@ class DockerCommand(PluginCommand):
 
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
 
+        print (arguments)
+
         if arguments.host and arguments.list:
             docker = Docker(os.environ["DOCKER_HOST"])
+            docker.host_list()
             stopwatch.stop('E2E')
-            Base['cloudmesh']['container']['docker']['work']['host'] = "{ADDR}".format(**arguments)
-            Base.save()
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host and arguments.delete:
+            docker = Docker(os.environ["DOCKER_HOST"])
+            docker.host_delete("{ADDR}".format(**arguments))
+            stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 

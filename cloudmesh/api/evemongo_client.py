@@ -25,9 +25,17 @@ def post_Image():
 
 
 
-def perform_post(resource, data):
+def perform_post(resource, data,filter=None):
     headers = {'Content-Type': 'application/json'}
-    return requests.post(endpoint(resource), json.dumps(data), headers=headers)
+    print(json.dumps(data,indent=4))
+    if filter:
+        scode,datao = perform_get(resource, filter)
+        print (datao)
+        if len(datao) > 0:
+            return perform_put(resource,data,filter)
+    r = requests.post(endpoint(resource), json=data, headers=headers)
+    print(r)
+    return r
 
 def perform_get(resource,filter=None):
     if filter:
@@ -36,16 +44,19 @@ def perform_get(resource,filter=None):
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
     out =  requests.get(url,  headers=headers)
-    return out.status_code,json.loads(out.text)['_items']
+    scode,datam = out.status_code, json.loads(out.text)['_items']
+    return scode,datam
 
 def perform_delete(resource,filter=None):
     if filter:
         url = endpoint(resource) + "?where=" + json.dumps(filter)
     else:
         url = endpoint(resource)
-    return requests.delete(endpoint(resource))
+    r = requests.delete(url)
+    print(r)
+    return r
 
-def perform_put(resource,data,filter=None):
+def perform_put(resource,data,filter):
     if filter:
         url = endpoint(resource) + "?where=" + json.dumps(filter)
     else:
