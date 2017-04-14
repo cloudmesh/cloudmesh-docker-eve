@@ -17,6 +17,28 @@ class Docker(object):
         os.environ["DOCKER_HOST"] = url
         self.client = docker.from_env()
 
+    def host_create(self, addr, hostName=None):
+        """Creates docker container
+
+
+        :param str addr: Address for docker
+        :param str hostName: Name of docker host
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            host = {}
+            host['Name'] = hostName
+            host['ip'] = addr.split(':')[0]
+            host['port'] = addr.split(':')[1]
+            host['Swarmmanager'] = ' False'
+            r = perform_post('Host',host)
+        except Exception as e:
+           Console.error(e.message)
+           return
+
     def container_create(self, image, containerName=None, kwargs=None):
         """Creates docker container
 
