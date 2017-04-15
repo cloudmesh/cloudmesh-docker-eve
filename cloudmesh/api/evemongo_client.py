@@ -27,14 +27,11 @@ def post_Image():
 
 def perform_post(resource, data,filter=None):
     headers = {'Content-Type': 'application/json'}
-    print(json.dumps(data,indent=4))
     if filter:
         scode,datao = perform_get(resource, filter)
         if len(datao) > 0:
             return perform_put(resource,data,filter)
     r = requests.post(endpoint(resource), json=data, headers=headers)
-    if r.status_code > 399:
-        print(r.json)
     return r
 
 def perform_get(resource,filter=None):
@@ -53,7 +50,6 @@ def perform_delete(resource,filter=None):
     else:
         url = endpoint(resource)
     r = requests.delete(url)
-    print(r)
     return r
 
 def perform_put(resource,data,filter):
@@ -63,7 +59,6 @@ def perform_put(resource,data,filter):
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
     out =  requests.get(url,  headers=headers)
-    print(out.text)
     if '_items' in json.loads(out.text).keys():
         headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
         url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']

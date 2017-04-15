@@ -2,7 +2,7 @@
 34.198.36.16  ansible_ssh_user=ubuntu  ansible_ssh_private_key_file="/mnt/c/Keys/LightsailDefaultPrivateKey.pem"
 52.53.120.5   ansible_ssh_user=ubuntu  ansible_ssh_private_key_file="/mnt/c/Keys/Mykey.pem"
 [docker-cluster-Chameleon]
-129.114.33.51 ansible_ssh_user=cc     
-129.114.33.3   ansible_ssh_user=cc    
+elast1 ansible_ssh_user=cc ansible_ssh_host=129.114.33.51    
+elast2 ansible_ssh_user=cc ansible_ssh_host=129.114.33.3
 [Benchmark-Tool-Server]
-129.114.32.107 ansible_ssh_user=cc     
+elastconfig ansible_ssh_user=cc ansible_ssh_host=129.114.32.107    
