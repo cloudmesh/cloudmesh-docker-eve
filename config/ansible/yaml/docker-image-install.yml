@@ -15,13 +15,11 @@
     - name: Copy file
       shell: cp ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/Dockerfile
     - name: build the image
-      shell: docker build -t elasticsearch:docker .
-      become: true
+      shell: docker build -t elasticsearch:docker -f ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/
     - name: change directory to /ansible/docker/docker-swarm-elasticsearch
       shell: cd ~/ansible/docker/docker-swarm-elasticsearch
     - name: build the image
-      shell: docker build -t elasticsearch:swarm .
-      become: true
+      shell: docker build -t elasticsearch:swarm -f ~/ansible/docker/docker-swarm-elasticsearch/Dockerfile ~/ansible/docker/docker-swarm-elasticsearch/
 - hosts: Benchmark-Tool-Server   
   tasks:
     - name: Check and install rsync package
@@ -35,18 +33,9 @@
       synchronize: src=../../docker dest=~/ansible
     - name: change directory to /ansible/docker
       shell: cd ~/ansible/docker/docker-Benchmark-config
-    - name: Copy file
-      shell: cp ~/ansible/docker/docker-Benchmark-config/cloudmesh-docker-dockerfile ~/ansible/docker/docker-Benchmark-config/Dockerfile
     - name: build the image
-      shell: docker build -t cloudmesh.docker:latest .
-      become: true
-    - name: Copy file
-      shell: cp ~/ansible/docker/docker-Benchmark-config/esrally-dockerfile ~/ansible/docker/docker-Benchmark-config/Dockerfile
+      shell: docker build -t cloudmesh.docker:latest -f ~/ansible/docker/docker-Benchmark-config/cloudmesh-docker-dockerfile ~/ansible/docker/docker-Benchmark-config/
     - name: build the image
-      shell: docker build -t esrally:latest .
-      become: true
-    - name: Copy file
-      shell: cp ~/ansible/docker/docker-Benchmark-config/kibana-dockerfile ~/ansible/docker/docker-Benchmark-config/Dockerfile
+      shell: docker build -t esrally:latest -f ~/ansible/docker/docker-Benchmark-config/esrally-dockerfile ~/ansible/docker/docker-Benchmark-config/
     - name: build the image
-      shell: docker build -t kibana:latest .
-      become: true
+      shell: docker build -t kibana:latest -f ~/ansible/docker/docker-Benchmark-config/kibana-dockerfile ~/ansible/docker/docker-Benchmark-config/
