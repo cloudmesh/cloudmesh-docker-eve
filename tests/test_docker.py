@@ -10,10 +10,8 @@ or
 nosetests -v tests/cm_basic/test_var.py
 
 """
-from cloudmesh_client.common.Shell import Shell
-from cloudmesh_client.common.util import HEADING
-
-from cloudmesh_client.var import Var
+from cloudmesh.common.Shell import Shell
+from cloudmesh.common.util import HEADING
 
 
 def run(command):
