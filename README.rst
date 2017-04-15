@@ -8,6 +8,11 @@ Requirements
 
 * Python 2.7.13
 
+WARNING
+-------
+
+WE HAVE NOT YET BUILD IN AUTHENTICATION INTO THE FRAMEWORK, SO RUNNING THIS IS INSECURE
+
 Installation from source
 ------------------------
 
@@ -26,21 +31,21 @@ Now you need to get two source directories. We assume yo place them in
 
     mkdir ~/github
     cd ~/github
-    git clone https://github.com/cloudmesh/common.git
-    git clone https://github.com/cloudmesh/cmd5.git
-    git clone https://github.com/cloudmesh/extdocker.git
+    git clone https://github.com/cloudmesh/cloudmesh.common.git
+    git clone https://github.com/cloudmesh/cloudmesh.cmd5.git
+    git clone https://github.com/cloudmesh/cloudmesh.docker.git
 
-The cmd5 repository contains the shell, while the extdocker directory
+The cmd5 repository contains the shell, while the cloudmesh.docker directory
 contains the commands docker and swarm.
 
 To install them simply to the following::
 
-    cd ~/github/common
-    python setup.py install
-    cd ~/github/cmd5
-    python setup.py install
-    cd ~/github/extdocker
-    python setup.py install
+    cd ~/github/cloudmesh.common
+    python setup.py install; pip install -e .
+    cd ~/github/cloudmesh.cmd5
+    python setup.py install; pip install -e .
+    cd ~/github/cloudmesh.docker
+    python setup.py install; pip install -e
 
 Execution
 ---------
@@ -142,24 +147,36 @@ swarm command
          Manages a virtual docker swarm on a cloud
 
 
+
+CMD5 configuration
+------------------
+
+To configure access to docker on a machine please use the cloudmesh_cmd5.yaml file
+
+You will have to do the following modifications:
+
+PLEASE FILL IN TEH DETAILS
+
+
 Docker Api
 ----------
 
 The CMD5 docker and swarm commands can be used to work on docker 
-installed on any server.The only requirement is to have docker api
+installed on any server. The only requirement is to have docker api
 exposed out in a certain port.
 
 As part of the project we are also building a dockerfile which will
 contain a docker image with setup files for installing docker on 
 remote VM using ansible.(This is currently WIP)
 
-Once docker is instlled on remove please ensure that the DOCKER_OPTS
+Once docker is installed please ensure that the DOCKER_OPTS
 value is set in the docker file in /etc/default as below::
 
     DOCKER_OPTS="-H unix:// -H tcp://0.0.0.0:3243"
 
 Setting the above value and restarting the docker service will ensure 
-docker api is exposed and accessible remotely
+docker api is exposed and accessible remotely.
+
 
 Steps to execute
 ----------------
@@ -182,3 +199,19 @@ set the docker api url::
     modest_volhard          ubuntu:latest           created
     condescending_heyrovsky         ubuntu:latest           exited
     sad_mccarthy            ubuntu          exited
+
+Unit Tests
+----------
+
+We are providing a simple set of tests that verify the integration of docker
+into cloudmesh. They can either be run with `nosetests` or `py.test`.
+
+Use::
+
+  py.test
+
+to check them out and see if the tests succeed.
+
+
+
+
