@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import json
 from cloudmesh.common.ConfigDict import ConfigDict
 from cloudmesh.common.StopWatch import StopWatch
 from cloudmesh.shell.command import PluginCommand
@@ -61,7 +62,12 @@ class DockerCommand(PluginCommand):
 
         if arguments.ARG:
             for j in arguments.ARG:
-                kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
+                kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
+                val = j.split('=',1)[1].strip()
+                if '[' in j.split('=',1)[1].strip() :
+                    val = val.replace('[','').replace(']','').split(',')
+                    kwargs[j.split('=', 1)[0].strip()] = val
+
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
