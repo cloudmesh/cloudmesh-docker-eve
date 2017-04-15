@@ -114,19 +114,22 @@ class Docker(object):
            Console.error(e.explanation)
            return
 
-    def container_attach(self, containerName=None,kwargs=None):
-        """Docker container attach
+    def container_run(self, image, containerName=None, kwargs=None):
+        """Creates docker container
 
 
+        :param str image: Available images for docker
         :param str containerName: Name of docker container
-        :returns: None
+        :param list arg: custom args for container
+        :returns: str containeID: Id of the docker Container
         :rtype: NoneType
 
 
         """
         try:
-           container = self.client.containers.get(containerName)
-           resp = container.attach(**kwargs)
+            container = self.client.containers.run(image,name=containerName,detach=True,**kwargs)
+            Console.ok("Container %s is created" % container.id)
+            return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return

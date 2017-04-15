@@ -32,7 +32,7 @@ class DockerCommand(PluginCommand):
             docker container refresh
             docker container list [ARG...]
             docker container delete NAME [ARG...]
-            docker container attach NAME [ARG...]
+            docker container run NAME IMAGE [ARG...]
             docker container pause NAME [ARG...]
             docker container unpause NAME [ARG...]
             docker process config CNAME
@@ -59,7 +59,7 @@ class DockerCommand(PluginCommand):
         """
 
         kwargs = {}
-
+        print(arguments)
         if arguments.ARG:
             for j in arguments.ARG:
                 kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
@@ -114,6 +114,13 @@ class DockerCommand(PluginCommand):
             # stopwatch.verbose = True    # doe snot print if set to false, default is true
             # stopwatch.print('Time Taken:', 'E2E')
             #
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+
+        if arguments.container and arguments.run and arguments.NAME and arguments.IMAGE:
+            docker.container_run("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+            stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 

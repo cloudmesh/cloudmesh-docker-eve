@@ -145,7 +145,7 @@ docker command
             docker container refresh
             docker container list [ARG...]
             docker container delete NAME [ARG...]
-            docker container attach NAME [ARG...]
+            docker container run NAME [ARG...]
             docker container pause NAME [ARG...]
             docker container unpause NAME [ARG...]
             docker process config CNAME
