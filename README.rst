@@ -59,7 +59,7 @@ To install them simply to the following::
     python setup.py install; pip install -e .
     cd ~/github/cloudmesh.cmd5
     python setup.py install; pip install -e .
-    cd ~/github/cloudmesh.eve
+    cd ~/github/cloudmesh.rest
     python setup.py install; pip install -e
     cd ~/github/cloudmesh.docker
     python setup.py install; pip install -e
