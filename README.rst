@@ -7,14 +7,15 @@ and is a mutitenant solution for manager docker standalone or docker swarm
 instances across multiple servers remotely.
 
 The repository also includes
-    Ansible scripts to install docker in remote hosts
-	Ansible scripts to install docker images(elasticsearch,esrally) in remote hosts based 
-	on dockerfile from local
-	Scripts leveraging cloudmesh.docker code to start a elasticsearch docker cluster on 
-	remote docker hosts
-	Scripts leveraging cloudmesh.docker code to start a elasticsearch swarm cluster on 
-	remote docker hosts
-	Benchmarking elasticsearch on the docker and swarm clusters using esrally 
+
+        - Ansible scripts to install docker in remote hosts
+	- Ansible scripts to install docker images(elasticsearch,esrally) in remote hosts based 
+	  on dockerfile from local
+	- Scripts leveraging cloudmesh.docker code to start a elasticsearch docker cluster on 
+	  remote docker hosts
+	- Scripts leveraging cloudmesh.docker code to start a elasticsearch swarm cluster on 
+	  remote docker hosts
+	- Benchmarking elasticsearch on the docker and swarm clusters using esrally 
 
 	
 Requirements
@@ -127,6 +128,8 @@ list commands pull the data from local.(This is yet to be fully integrated)
 docker command
 --------------
 
+    cms> docker::
+    
           Usage:
             docker host list
             docker host delete ADDR
@@ -169,6 +172,8 @@ docker command
 swarm command
 -------------
 
+    cms> swarm::
+    
          Usage:
             swarm host list
             swarm host delete ADDR
@@ -211,7 +216,7 @@ CMD5 configuration
 To configure access to docker on a machine please use the cloudmesh_cmd5.yaml file available
 in teh config directory.This file is to be copied to ~/.cloudmesh directory
 
-You will have to do the following modifications to match you machine:
+You will have to do the following modifications to match you machine::
 
     profile:
         firstname: TBD
@@ -306,6 +311,8 @@ set the docker api url::
 | x.x.x.x        | elast | 4243 | False        |
 +----------------+-------+------+--------------+
 
+::
+
     cms> docker image list
 +----------------+------------------------------------------+---------------------------------------+------------+
 | Ip             | Id                                       | Repository                            | Size       |
@@ -315,6 +322,8 @@ set the docker api url::
 | xxx.xxx.xx.xxx | sha256:a21e19753b0c86f2f45a3722e10c1c7f6 | docker.elastic.co/kibana/kibana:5.3.0 | 679453962  |
 |                | 2e767e0e4da09043b5ce49b29fa8582          |                                       |            |
 +----------------+------------------------------------------+---------------------------------------+------------+
+
+::
 
     cms> docker container list
 +----------------+------------------------------------------+----------+---------------------------------------+---------+
@@ -326,8 +335,12 @@ set the docker api url::
 |                | 15718f580d897f3452f1b85f                 |          |                                       |         |
 +----------------+------------------------------------------+----------+---------------------------------------+---------+
 
+::
+
     cms> docker container create cloudmesh karvenka/cloudmesh.docker:latest
 Container 41e9dd186159bc324ed287a0a8db464c723a041e2e29b019a06a35c52f4e613f is created
+
+::
 
     cms> docker container refresh
 
@@ -342,9 +355,11 @@ Container 41e9dd186159bc324ed287a0a8db464c723a041e2e29b019a06a35c52f4e613f is cr
 |                | 8fa42c574de747904d501942                 |            |                                       |         |
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
 
+::
+
     cms> docker container start 41e9dd186159bc324ed287a0a8db464c723a041e2e29b019a06a35c52f4e613f
-	
-	cms> docker container refresh
+    cms> docker container refresh
+    
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
 | Ip             | Id                                       | Name       | Image                                 | Status  |
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
@@ -356,7 +371,10 @@ Container 41e9dd186159bc324ed287a0a8db464c723a041e2e29b019a06a35c52f4e613f is cr
 |                | 8fa42c574de747904d501942                 |            |                                       |         |
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
 
+::
+
     cms> docker container list
+
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
 | Ip             | Id                                       | Name       | Image                                 | Status  |
 +----------------+------------------------------------------+------------+---------------------------------------+---------+
