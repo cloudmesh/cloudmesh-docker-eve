@@ -39,8 +39,6 @@ class DockerCommand(PluginCommand):
   
           Arguments:
             NAME     The name of the docker Host/Container/Network
-            CLOUD    The name of the cloud on which the virtual docker
-                     is to be deployed
             IMAGE    Docker server images
             ADDR     IP or Name:port of docker API
             CNAME    Config File Name

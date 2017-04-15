@@ -68,7 +68,6 @@ class Docker(object):
             d['Name'] = str(host['Name'])
             d['Port'] = str(host['Port'])
             d['Swarmmanager'] = str(host['Swarmmanager'])
-            print (d)
             e[n] = d
             n = n+1
         Console.ok(str(Printer.dict_table(e,order=['Ip','Name','Port','Swarmmanager'])))
