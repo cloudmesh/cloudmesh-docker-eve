@@ -7,6 +7,7 @@ python setup.py install; pip install . ; nosetests -v --nocapture tests/test_doc
 """
 from cloudmesh.common.Shell import Shell
 from cloudmesh.common.util import HEADING
+import os
 
 
 def run(command):
@@ -27,6 +28,11 @@ class Test_docker(object):
 
     def setup(self):
         pass
+
+    def test_0001(self):
+        HEADING("Install docker on hosts")
+        result = os.popen("cd config/ansible && ansible-playbook yaml/docker-chameleon.yml")
+        assert "Fail" not in result  # need to make real assertion
 
     def test_001(self):
         HEADING("Add docker hosts")
