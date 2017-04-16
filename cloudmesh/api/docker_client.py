@@ -136,6 +136,12 @@ class Docker(object):
         try:
             container = self.client.containers.run(image,name=containerName,detach=True,**kwargs)
             Console.ok("Container %s is created" % container.id)
+            data = []
+            container_dict = container.__dict__['attrs']
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
+            data.append(container_dict)
+            perform_post('Container', data)
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -361,7 +367,7 @@ class Docker(object):
         """
         try:
             network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
-            Console.ok("Container %s is created" % network.id)
+            Console.ok("Network %s is created" % network.id)
             return network.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
