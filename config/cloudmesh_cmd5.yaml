@@ -35,6 +35,8 @@ cloudmesh:
             default:
                 flavor: m1.small
                 image: Ubuntu-14.04-64
+            work:
+                host: 129.114.33.51:4243
     system:
         data: ~/.cloudmesh/cloudmesh_inventory.yaml
         console_color: true
