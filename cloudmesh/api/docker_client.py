@@ -11,6 +11,7 @@ from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
 import json
 from  cloudmesh.api.evemongo_client import perform_post ,perform_delete,perform_get
+import time
 
 class Docker(object):
     def __init__(self, url):
@@ -109,6 +110,12 @@ class Docker(object):
         try:
             container = self.client.containers.create(image,name=containerName,detach=True,**kwargs)
             Console.ok("Container %s is created" % container.id)
+            data = []
+            container_dict = container.__dict__['attrs']
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
+            data.append(container_dict)
+            perform_post('Container', data)
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -150,6 +157,14 @@ class Docker(object):
 
         try:
             container = self.client.containers.get(containerName)
+            # need to check this ..
+            filter = {}
+            container_dict = container.__dict__['attrs']
+            filter['Id'] = container_dict['Id']
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            print(container_dict)
+            print(filter)
+            perform_post('Container', filter)
             if status is "start" :
                 container.start(**kwargs)
             elif status is "pause":
@@ -181,6 +196,10 @@ class Docker(object):
         try:
            container = self.client.containers.get(containerName)
            container.remove(**kwargs)
+           filter = {}
+           filter['Id'] = container.__dict__['attrs']['Id']
+           filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+           perform_delete('Container', filter)
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return
@@ -213,9 +232,10 @@ class Docker(object):
             d['Name'] = container['Name']
             d['Image'] = container['Config']['Image']
             d['Status'] = container['State']['Status']
+            d['StartedAt'] = container['State']['StartedAt']
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
 
     def container_refresh(self,kwargs=None):
         """List of docker containers
@@ -249,11 +269,12 @@ class Docker(object):
             d['Name'] = container['Name']
             d['Image'] = container['Config']['Image']
             d['Status'] = container['State']['Status']
+            d['StartedAt'] = container['State']['StartedAt']
             e[n] = d
             n = n+1
         perform_delete('Container')
         perform_post('Container',data)
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
 
     def images_list(self,kwargs=None):
         """List of docker images
@@ -281,10 +302,11 @@ class Docker(object):
             d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             d['Id'] = image['Id']
             d['Repository'] = image['RepoTags'][0]
-            d['Size'] = image['Size']
+           # d['Size'] = image['Size']
+            d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)  ## Converting the size to GB
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Repository','Size'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Repository','Size(GB)'])))
 
     def images_refresh(self, kwargs=None):
         """List of docker images
@@ -316,12 +338,13 @@ class Docker(object):
             d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             d['Id'] = image['Id']
             d['Repository'] = image['RepoTags'][0]
-            d['Size'] = image['Size']
+           # d['Size'] = image['Size']
+            d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
             e[n] = d
             n = n + 1
         perform_delete('Image')
         perform_post('Image',data)
-        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Repository', 'Size'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Repository', 'Size(GB)'])))
 
 
     def network_create(self, image, networkName=None, kwargs=None):
