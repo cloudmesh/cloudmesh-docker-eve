@@ -17,23 +17,24 @@ class SwarmCommand(PluginCommand):
             swarm host list
             swarm host delete ADDR
             swarm host NAME ADDR
-            swarm create NAME ADDR [ARG...]
-            swarm join ADDR TOKEN [ARG...]
-            swarm attrbs [ARG...]
+            swarm create [ARG...]
+            swarm join ADDR TYPE [ARG...]
             swarm leave [ARG...]
-            swarm update [ARG...]
-            swarm reload [ARG...]
             swarm network create IMAGE [ARG...]
             swarm network list [ARG...]
-            swarm service create IMAGE [ARG...]
-            swarm service list
+            swarm service create NAME IMAGE [ARG...]
+            swarm service list [ARG...]
+            swarm service delete NAME
             swarm node list
+            swarm image refresh
+            swarm image list [ARG...]
+
 
           Arguments:
             NAME     The name of the docker swarm
             IMAGE    Docker server images
-            ADDR     Swarm Address
-            TOKEN    Worker Token to join swarm
+            ADDR     Address of host ip:port(if port no given default port is assumed)
+            TYPE     Whether the node is Manager or Worker
             URL      URL of docker API
             [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Swarm Services
                      and networks have a lot of customization options.These options are documented here
@@ -50,9 +51,15 @@ class SwarmCommand(PluginCommand):
         """
 
         kwargs = {}
+
         if arguments.ARG:
             for j in arguments.ARG:
-                kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
+                kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
+                val = j.split('=',1)[1].strip()
+                if '[' in j.split('=',1)[1].strip() :
+                    val = val.replace('[','').replace(']','').split(',')
+                    kwargs[j.split('=', 1)[0].strip()] = val
+
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
@@ -89,14 +96,8 @@ class SwarmCommand(PluginCommand):
 
 
         if arguments.create and not(arguments.service):
-            out=swarm.create("{NAME}".format(**arguments),"{ADDR}".format(**arguments),kwargs)
+            out=swarm.create(kwargs)
             print (out)
-            stopwatch.stop('E2E')
-            print ('Time Taken:' + str(stopwatch.get('E2E')))
-            return
-
-        if arguments.attrbs:
-            swarm.get_attrbs(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -107,20 +108,27 @@ class SwarmCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if arguments.join and arguments.ADDR and arguments.TOKEN:
-            swarm.join("{ADDR}".format(**arguments),"{TOKEN}".format(**arguments),kwargs)
+        if arguments.join and arguments.ADDR and arguments.TYPE:
+            swarm.join("{ADDR}".format(**arguments),"{TYPE}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.service and arguments.create:
-            swarm.service_create("{IMAGE}".format(**arguments),kwargs)
+            swarm.service_create("{NAME}".format(**arguments),"{IMAGE}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.service and arguments.list:
             swarm.service_list(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+
+        if arguments.service and arguments.delete:
+            swarm.service_delete("{NAME}".format(**arguments))
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -139,6 +147,18 @@ class SwarmCommand(PluginCommand):
 
         if arguments.network and arguments.list:
             swarm.network_list(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.image and arguments.list:
+            swarm.images_list(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.image and arguments.refresh:
+            swarm.images_refresh(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

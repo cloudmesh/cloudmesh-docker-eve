@@ -38,7 +38,7 @@ class Docker(object):
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             r = perform_post('Host',host,filter)
-            Console.ok('Host ' + hostName + ' is Added and is the default container')
+            Console.ok('Host ' + hostName + ' is Added and is the default host')
         except Exception as e:
            Console.error(e.message)
            return
