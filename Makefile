@@ -96,7 +96,7 @@ install:
 
 dockerinstall:
 	docker build -t cloudmesh.docker:latest .
-	docker run --name cloudmesh_docker -td cloudmesh.docker:latest bash
+	docker run --net=host --name cloudmesh_docker -td cloudmesh.docker:latest bash
 	
 
 cloudmesh.docker:

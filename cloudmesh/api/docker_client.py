@@ -11,6 +11,7 @@ from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
 import json
 from  cloudmesh.api.evemongo_client import perform_post ,perform_delete,perform_get
+import time
 
 class Docker(object):
     def __init__(self, url):
@@ -109,6 +110,12 @@ class Docker(object):
         try:
             container = self.client.containers.create(image,name=containerName,detach=True,**kwargs)
             Console.ok("Container %s is created" % container.id)
+            data = []
+            container_dict = container.__dict__['attrs']
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            #container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
+            data.append(container_dict)
+            perform_post('Container', data)
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -129,6 +136,12 @@ class Docker(object):
         try:
             container = self.client.containers.run(image,name=containerName,detach=True,**kwargs)
             Console.ok("Container %s is created" % container.id)
+            data = []
+            container_dict = container.__dict__['attrs']
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            #container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
+            data.append(container_dict)
+            perform_post('Container', data)
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -150,6 +163,7 @@ class Docker(object):
 
         try:
             container = self.client.containers.get(containerName)
+            # need to check this ..
             if status is "start" :
                 container.start(**kwargs)
             elif status is "pause":
@@ -161,6 +175,16 @@ class Docker(object):
             else:
                 Console.error ('Invalid Commmand')
                 return
+
+            container = self.client.containers.get(containerName)
+            filter = {}
+            container_dict = container.__dict__['attrs']
+            filter['Id'] = container_dict['Id']
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            print(container_dict)
+            print(filter)
+            perform_post('Container',container_dict, filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -181,6 +205,10 @@ class Docker(object):
         try:
            container = self.client.containers.get(containerName)
            container.remove(**kwargs)
+           filter = {}
+           filter['Id'] = container.__dict__['attrs']['Id']
+           filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+           perform_delete('Container', filter)
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return
@@ -208,14 +236,15 @@ class Docker(object):
         e = {}
         for container in containers:
             d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            d['Ip'] = container['Ip']
             d['Id'] = container['Id']
             d['Name'] = container['Name']
             d['Image'] = container['Config']['Image']
             d['Status'] = container['State']['Status']
+            d['StartedAt'] = container['State']['StartedAt']
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
 
     def container_refresh(self,kwargs=None):
         """List of docker containers
@@ -227,33 +256,40 @@ class Docker(object):
 
 
         """
-        try:
-           containers = self.client.containers.list(all,**kwargs)
-        except docker.errors.APIError as e:
-           Console.error(e.explanation)
-           return
-        if len(containers) == 0:
-            print("No containers exist")
-            return
-
+        scode, hosts = perform_get('Host')
+        filter = {}
         n = 1
         e = {}
         data = []
-        for containerm in containers:
-            container = containerm.__dict__['attrs']
-            container['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            data.append(container)
-            d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            d['Id'] = container['Id']
-            d['Name'] = container['Name']
-            d['Image'] = container['Config']['Image']
-            d['Status'] = container['State']['Status']
-            e[n] = d
-            n = n+1
-        perform_delete('Container')
+        for host in hosts:
+            os.environ["DOCKER_HOST"]=host['Ip'] + ":" + str(host['Port'])
+            self.client = docker.from_env()
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            try:
+               containers = self.client.containers.list(all,**kwargs)
+            except docker.errors.APIError as e:
+               Console.error(e.explanation)
+               continue
+            if len(containers) == 0:
+                print("No containers exist" + str(host['Ip']))
+                continue
+
+            for containerm in containers:
+                container = containerm.__dict__['attrs']
+                container['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(container)
+                d = {}
+                d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Id'] = container['Id']
+                d['Name'] = container['Name']
+                d['Image'] = container['Config']['Image']
+                d['Status'] = container['State']['Status']
+                d['StartedAt'] = container['State']['StartedAt']
+                e[n] = d
+                n = n+1
+            perform_delete('Container',filter)
         perform_post('Container',data)
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
 
     def images_list(self,kwargs=None):
         """List of docker images
@@ -264,6 +300,7 @@ class Docker(object):
 
 
         """
+
         try:
            scode,images = perform_get('Image')
         except docker.errors.APIError as e:
@@ -278,13 +315,14 @@ class Docker(object):
         e = {}
         for image in images:
             d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            d['Ip'] = image['Ip']
             d['Id'] = image['Id']
             d['Repository'] = image['RepoTags'][0]
-            d['Size'] = image['Size']
+           # d['Size'] = image['Size']
+            d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)  ## Converting the size to GB
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Repository','Size'])))
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Repository','Size(GB)'])))
 
     def images_refresh(self, kwargs=None):
         """List of docker images
@@ -295,33 +333,41 @@ class Docker(object):
 
 
         """
-        try:
-            images = self.client.images.list(**kwargs)
-        except docker.errors.APIError as e:
-            Console.error(e.explanation)
-            return
-
-        if len(images) == 0:
-            Console.info("No images exist")
-            return
-
+        scode, hosts = perform_get('Host')
+        filter = {}
         n = 1
         e = {}
         data = []
-        for imagem in images:
-            image = imagem.__dict__['attrs']
-            image['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            data.append(image)
-            d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            d['Id'] = image['Id']
-            d['Repository'] = image['RepoTags'][0]
-            d['Size'] = image['Size']
-            e[n] = d
-            n = n + 1
-        perform_delete('Image')
+        for host in hosts:
+            os.environ["DOCKER_HOST"]=host['Ip'] + ":" + str(host['Port'])
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            self.client = docker.from_env()
+            try:
+                images = self.client.images.list(**kwargs)
+            except docker.errors.APIError as e:
+                Console.error(e.explanation)
+                return
+
+            if len(images) == 0:
+                Console.info("No images exist")
+                return
+
+
+            for imagem in images:
+                image = imagem.__dict__['attrs']
+                image['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(image)
+                d = {}
+                d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Id'] = image['Id']
+                d['Repository'] = image['RepoTags'][0]
+               # d['Size'] = image['Size']
+                d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
+                e[n] = d
+                n = n + 1
+            perform_delete('Image',filter)
         perform_post('Image',data)
-        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Repository', 'Size'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Repository', 'Size(GB)'])))
 
 
     def network_create(self, image, networkName=None, kwargs=None):
@@ -338,7 +384,7 @@ class Docker(object):
         """
         try:
             network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
-            Console.ok("Container %s is created" % network.id)
+            Console.ok("Network %s is created" % network.id)
             return network.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -368,7 +414,7 @@ class Docker(object):
         data = []
         for network in networks:
             d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            d['Ip'] = network['Ip']
             d['Id'] = network['Id']
             d['Name'] = network['Name']
             d['Containers'] = network['Containers']
@@ -385,33 +431,39 @@ class Docker(object):
 
 
         """
-        try:
-            networks = self.client.networks.list(**kwargs)
-        except docker.errors.APIError as e:
-            Console.error(e.explanation)
-            return
-
-        if len(networks) == 0:
-            Console.info("No network exist")
-            return
-
+        scode, hosts = perform_get('Host')
+        filter = {}
         n = 1
         e = {}
         data = []
-        for networkm in networks:
-            network = networkm.__dict__['attrs']
-            network['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            data.append(network)
-            d = {}
-            d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            d['Id'] = network['Id']
-            d['Name'] = network['Name']
-            d['Containers'] = network['Containers']
-            e[n] = d
-            n = n+1
-        r=perform_delete('Network')
-        r=perform_post('Network',data)
-        print (r.text)
+        for host in hosts:
+            os.environ["DOCKER_HOST"]=host['Ip'] + ":" + str(host['Port'])
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            self.client = docker.from_env()
+            try:
+                networks = self.client.networks.list(**kwargs)
+            except docker.errors.APIError as e:
+                Console.error(e.explanation)
+                continue
+
+            if len(networks) == 0:
+                Console.info("No network exist" + host['Ip'] )
+                continue
+
+            for networkm in networks:
+                network = networkm.__dict__['attrs']
+                network['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(network)
+                d = {}
+                d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Id'] = network['Id']
+                d['Name'] = network['Name']
+                d['Containers'] = network['Containers']
+                e[n] = d
+                n = n+1
+            r=perform_delete('Network',filter)
+        r = perform_post('Network', data)
+        print(r.text)
         Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Containers'])))
 
 
