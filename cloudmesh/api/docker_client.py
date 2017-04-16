@@ -38,6 +38,7 @@ class Docker(object):
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             r = perform_post('Host',host,filter)
+            Console.ok('Host ' + hostName + ' is Added and is the default container')
         except Exception as e:
            Console.error(e.message)
            return
@@ -91,6 +92,7 @@ class Docker(object):
             #Delete Host should delete all Containers and Networks for the host
             r = perform_delete('Container', filter)
             r = perform_delete('Network', filter)
+            Console.ok('Host ' + addr + 'is deleted')
         except Exception as e:
            Console.error(e.message)
            return
@@ -109,13 +111,13 @@ class Docker(object):
         """
         try:
             container = self.client.containers.create(image,name=containerName,detach=True,**kwargs)
-            Console.ok("Container %s is created" % container.id)
             data = []
             container_dict = container.__dict__['attrs']
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             #container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
             data.append(container_dict)
             perform_post('Container', data)
+            Console.ok('Container ' + container.name + ' is Created')
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -142,6 +144,7 @@ class Docker(object):
             #container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
             data.append(container_dict)
             perform_post('Container', data)
+            Console.ok('Container ' + container.name + ' is Started')
             return container.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -182,9 +185,8 @@ class Docker(object):
             filter['Id'] = container_dict['Id']
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            print(container_dict)
-            print(filter)
             perform_post('Container',container_dict, filter)
+            Console.ok('Container ' + container.name + ' status changed to ' + status )
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -209,6 +211,7 @@ class Docker(object):
            filter['Id'] = container.__dict__['attrs']['Id']
            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
            perform_delete('Container', filter)
+           Console.ok('Container ' + container.name + ' is deleted')
         except docker.errors.APIError as e:
            Console.error(e.explanation)
            return
@@ -384,7 +387,7 @@ class Docker(object):
         """
         try:
             network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
-            Console.ok("Network %s is created" % network.id)
+            Console.ok("Network %s is created" % network.Name)
             return network.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
