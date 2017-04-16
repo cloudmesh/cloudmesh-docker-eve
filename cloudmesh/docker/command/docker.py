@@ -59,7 +59,7 @@ class DockerCommand(PluginCommand):
         """
 
         kwargs = {}
-        print(arguments)
+
         if arguments.ARG:
             for j in arguments.ARG:
                 kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
