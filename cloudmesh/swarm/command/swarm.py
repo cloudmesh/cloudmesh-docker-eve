@@ -5,6 +5,7 @@ from cloudmesh.api.swarm_client import Swarm
 from cloudmesh.common.ConfigDict import ConfigDict
 from cloudmesh.common.StopWatch import StopWatch
 import os
+import ast
 
 class SwarmCommand(PluginCommand):
 
@@ -20,14 +21,18 @@ class SwarmCommand(PluginCommand):
             swarm create [ARG...]
             swarm join ADDR TYPE [ARG...]
             swarm leave [ARG...]
-            swarm network create IMAGE [ARG...]
+            swarm network create NAME [ARG...]
             swarm network list [ARG...]
-            swarm service create NAME IMAGE [ARG...]
+            swarm network refresh
+            swarm network delete NAME
+            swarm service create NAME IMAGE  [ARG...]
             swarm service list [ARG...]
             swarm service delete NAME
             swarm node list
             swarm image refresh
             swarm image list [ARG...]
+            swarm container refresh
+            swarm container list [ARG...]
 
 
           Arguments:
@@ -51,14 +56,18 @@ class SwarmCommand(PluginCommand):
         """
 
         kwargs = {}
-
+        print (arguments)
         if arguments.ARG:
+            print (arguments.ARG)
             for j in arguments.ARG:
                 kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
                 val = j.split('=',1)[1].strip()
+                print (val)
                 if '[' in j.split('=',1)[1].strip() :
                     val = val.replace('[','').replace(']','').split(',')
                     kwargs[j.split('=', 1)[0].strip()] = val
+                if '{' in val:
+                    print (ast.literal_eval(val))
 
 
         stopwatch = StopWatch()
@@ -94,6 +103,11 @@ class SwarmCommand(PluginCommand):
 
         swarm = Swarm(os.environ["DOCKER_HOST"])
 
+        if arguments.network and arguments.create and arguments.NAME :
+            swarm.network_create("{NAME}".format(**arguments),kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
 
         if arguments.create and not(arguments.service):
             out=swarm.create(kwargs)
@@ -139,14 +153,16 @@ class SwarmCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
-            swarm.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+
+
+        if arguments.network and arguments.list:
+            swarm.network_list(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if arguments.network and arguments.list:
-            swarm.network_list(kwargs)
+        if arguments.network and arguments.refresh:
+            swarm.network_refresh(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -159,6 +175,25 @@ class SwarmCommand(PluginCommand):
 
         if arguments.image and arguments.refresh:
             swarm.images_refresh(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.container and arguments.list:
+            swarm.container_list(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.container and arguments.refresh:
+            swarm.container_refresh(kwargs)
+            stopwatch.stop('E2E')
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+
+        if arguments.network and arguments.delete:
+            swarm.network_delete("{NAME}".format(**arguments))
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

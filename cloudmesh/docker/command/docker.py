@@ -198,8 +198,8 @@ class DockerCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
-            docker.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+        if arguments.network and arguments.create and arguments.NAME :
+            docker.network_create( "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
