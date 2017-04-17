@@ -6,6 +6,7 @@ import docker
 import os
 import requests
 import json
+import ast
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
 from  cloudmesh.api.evemongo_client import perform_post ,perform_delete,perform_get
@@ -211,6 +212,28 @@ class Swarm(object):
 
         """
         try:
+            if kwargs:
+                j={}
+                ckwargs={}
+                for k in kwargs:
+                    if '.' in  k:
+                        val = k.split('.')
+                        if val[1] == 'replicas':
+                            kwargs[k] = int(kwargs[k])
+                        if val[0] in j:
+                            j[val[0]].update({val[1]:kwargs[k]})
+                        else:
+                            j[val[0]]={val[1]:kwargs[k]}
+                    else:
+                        ckwargs[k] = kwargs[k]
+
+                #Mapping to complex container spec types this needs to be enhanced in future
+                kwargs = ckwargs
+                for t in j:
+                    if t == 'ServiceMode':
+                        kwargs['mode'] = docker.types.ServiceMode(**j[t])
+                    if t == 'EndpointSpec':
+                        kwargs['endpoint_spec'] = docker.types.EndpointSpec(ports={9200: 9200,9300:9300})
             service = self.client.services.create(image, command=None,name=name,**kwargs)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -221,7 +244,7 @@ class Swarm(object):
     def service_delete(self,name):
         """List of docker images
 
-        :param str image: name for service
+        :param str name: name for service
         :returns: None
         :rtype: NoneType
 
@@ -236,7 +259,7 @@ class Swarm(object):
 
         Console.ok("Service " + name + " is deleted")
 
-    def network_create(self, image, networkName=None, kwargs=None):
+    def network_create(self,  networkName=None, kwargs=None):
         """Creates docker network
 
 
@@ -249,7 +272,13 @@ class Swarm(object):
 
         """
         try:
-            network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
+            ipam_pool = docker.types.IPAMPool(
+                subnet='10.0.10.0/24'
+            )
+            ipam_config = docker.types.IPAMConfig(
+                pool_configs=[ipam_pool])
+            Options = {"encrypted":""}
+            network = self.client.networks.create(name=networkName,options=Options,ipam=ipam_config,**kwargs)
             Console.ok("Network %s is created" % network.id)
             return network.id
         except docker.errors.APIError as e:
@@ -365,3 +394,142 @@ class Swarm(object):
         perform_post('Image', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Repository', 'Size(GB)'])))
 
+    def network_refresh(self,kwargs=None):
+        """List of docker networks
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        scode, hosts = perform_get('Host')
+        filter = {}
+        n = 1
+        e = {}
+        data = []
+        for host in hosts:
+            os.environ["DOCKER_HOST"]=host['Ip'] + ":" + str(host['Port'])
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            self.client = docker.from_env()
+            try:
+                networks = self.client.networks.list(**kwargs)
+            except docker.errors.APIError as e:
+                Console.error(e.explanation)
+                continue
+
+            if len(networks) == 0:
+                Console.info("No network exist" + host['Ip'] )
+                continue
+
+            for networkm in networks:
+                network = networkm.__dict__['attrs']
+                network['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(network)
+                d = {}
+                d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Id'] = network['Id']
+                d['Name'] = network['Name']
+                d['Containers'] = network['Containers']
+                e[n] = d
+                n = n+1
+            r=perform_delete('Network',filter)
+        r = perform_post('Network', data)
+        print(r.text)
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Containers'])))
+
+    def container_list(self,kwargs=None):
+        """List of docker containers
+
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+           scode,containers = perform_get('Container')
+        except docker.errors.APIError as e:
+           Console.error(e.explanation)
+           return
+        if len(containers) == 0:
+            print("No containers exist")
+            return
+
+        n = 1
+        e = {}
+        for container in containers:
+            d = {}
+            d['Ip'] = container['Ip']
+            d['Id'] = container['Id']
+            d['Name'] = container['Name']
+            d['Image'] = container['Config']['Image']
+            d['Status'] = container['State']['Status']
+            d['StartedAt'] = container['State']['StartedAt']
+            e[n] = d
+            n = n+1
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
+
+    def container_refresh(self,kwargs=None):
+        """List of docker containers
+
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        scode, hosts = perform_get('Host')
+        filter = {}
+        n = 1
+        e = {}
+        data = []
+        for host in hosts:
+            os.environ["DOCKER_HOST"]=host['Ip'] + ":" + str(host['Port'])
+            self.client = docker.from_env()
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            try:
+               containers = self.client.containers.list(all,**kwargs)
+            except docker.errors.APIError as e:
+               Console.error(e.explanation)
+               continue
+            if len(containers) == 0:
+                print("No containers exist" + str(host['Ip']))
+                continue
+
+            for containerm in containers:
+                container = containerm.__dict__['attrs']
+                container['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(container)
+                d = {}
+                d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Id'] = container['Id']
+                d['Name'] = container['Name']
+                d['Image'] = container['Config']['Image']
+                d['Status'] = container['State']['Status']
+                d['StartedAt'] = container['State']['StartedAt']
+                e[n] = d
+                n = n+1
+            perform_delete('Container',filter)
+        perform_post('Container',data)
+        Console.ok(str(Printer.dict_table(e,order=['Ip','Id','Name','Image','Status','StartedAt'])))
+
+    def network_delete(self,name):
+        """List of docker images
+
+        :param str name: name for network
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        try:
+            network = self.client.networks.get(name)
+            network.remove()
+        except docker.errors.APIError as e:
+            Console.error(e.explanation)
+            return
+
+        Console.ok("Network " + name + " is deleted")

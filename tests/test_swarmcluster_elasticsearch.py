@@ -85,37 +85,47 @@ class Test_swarm(object):
         assert "Ip" in result  # need to make real assertion
 
     def test_011(self):
-        HEADING("Swarm service create")
-        result = run("cms swarm service create elasticsearch elasticsearch:swarm")
+        HEADING("Swarm service network  create")
+        result = run('cms swarm network create elastic_cluster driver="overlay"')
         assert "Service" in result  # need to make real assertion
 
     def test_012(self):
+        HEADING("Swarm service create")
+        result = run('cms swarm service create elasticsearch elasticsearch:swarm ServiceMode.mode="replicated" ServiceMode.replicas=3 EndpointSpec.ports=["9200:9200"] networks=["elastic_cluster"] env=["SERVICE_NAME=elasticsearch"]')
+        assert "Service" in result  # need to make real assertion
+
+    def test_013(self):
         HEADING("Swarm service list")
         result = run("cms swarm service list")
         assert "Ip" in result  # need to make real assertion
 
-    def test_013(self):
+    def test_014(self):
         HEADING("Swarm container refresh")
         result = run("cms swarm container refresh")
         assert "Ip" in result  # need to make real assertion
 
-    def test_014(self):
+    def test_015(self):
         HEADING("Swarm container list")
         result = run("cms swarm container list")
         assert "Ip" in result  # need to make real assertion
-
-    def test_015(self):
+    '''
+    def test_016(self):
         HEADING("Swarm service delete")
         result = run("cms swarm service delete elasticsearch")
         assert "Service" in result  # need to make real assertion
-    '''
-    def test_014(self):
+
+    def test_017(self):
         HEADING("list docker networks")
         result = run("cms docker network list")
         assert "Ip" in result  # need to make real assertion
 		
-    def test_015(self):
+    def test_018(self):
         HEADING("refresh docker networks")
         result = run("cms docker network refresh")
+        assert "Ip" in result  # need to make real assertion
+
+    def test_019(self):
+        HEADING("refresh docker networks")
+        result = run("cms docker network delete elastic_cluster")
         assert "Ip" in result  # need to make real assertion
     '''

@@ -373,7 +373,7 @@ class Docker(object):
         Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Repository', 'Size(GB)'])))
 
 
-    def network_create(self, image, networkName=None, kwargs=None):
+    def network_create(self, networkName=None, kwargs=None):
         """Creates docker network
 
 
@@ -386,7 +386,7 @@ class Docker(object):
 
         """
         try:
-            network = self.client.networks.create(image,name=networkName,detach=True,**kwargs)
+            network = self.client.networks.create(name=networkName,**kwargs)
             Console.ok("Network %s is created" % network.Name)
             return network.id
         except docker.errors.APIError as e:
