@@ -7,6 +7,7 @@ from math import sqrt
 import logging
 import os
 import sys
+import csv
 
 total = {}
 started = {}
@@ -81,4 +82,27 @@ def format_array_line(line_array, column_header):
     return '\n'.join(return_string)
 
 if __name__=='__main__':
-    print (sys.argv[1:])
+    filename = sys.argv[1]
+    n = int(sys.argv[2])
+    with open(filename) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        command=[]
+        for row in readCSV:
+            command.append(row)
+    print(command)
+    for i in range(n):
+        for j in range(1 , len(command)):
+            if j == 1:
+                continue
+            start(command[j][0])
+            os.system(command[j][1])
+            stop(command[j][0])
+    a=[]
+    for k in total:
+        b=[]
+        b.append(k)
+        b = b + total[k]
+        a.append(b)
+    with open(filename+"_output.csv", "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(a)
