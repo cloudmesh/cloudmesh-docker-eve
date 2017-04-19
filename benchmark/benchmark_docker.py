@@ -6,8 +6,6 @@ from time import time
 from math import sqrt
 import logging
 import os
-import sys
-import csv
 
 total = {}
 started = {}
@@ -82,27 +80,65 @@ def format_array_line(line_array, column_header):
     return '\n'.join(return_string)
 
 if __name__=='__main__':
-    filename = sys.argv[1]
-    n = int(sys.argv[2])
-    with open(filename) as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        command=[]
-        for row in readCSV:
-            command.append(row)
-    print(command)
-    for i in range(n):
-        for j in range(1 , len(command)):
-            if j == 1:
-                continue
-            start(command[j][0])
-            os.system(command[j][1])
-            stop(command[j][0])
-    a=[]
-    for k in total:
-        b=[]
-        b.append(k)
-        b = b + total[k]
-        a.append(b)
-    with open(filename+"_output.csv", "wb") as f:
-        writer = csv.writer(f)
-        writer.writerows(a)
+    for i in range(10):
+            start('Host-Add')
+            os.system("cms docker host docker1 docker1:4243")
+            stop('Host-Add')
+
+            start('Host-Add')
+            os.system("cms docker host docker2 docker2:4243")
+            stop('Host-Add')
+
+            start('Host-List')
+            os.system("cms docker host list")
+            stop('Host-List')
+
+            start('Image-Refresh')
+            os.system("cms docker image refresh")
+            stop('Image-Refresh')
+
+            start('Image-List')
+            os.system("cms docker image list")
+            stop('Image-List')
+
+            start('Container-Refresh')
+            os.system("cms docker container refresh")
+            stop('Container-Refresh')
+
+            start('Container-List')
+            os.system("cms docker container list")
+            stop('Container-List)')
+
+            start('Container-Create')
+            os.system("cms docker container create test1 elasticsearch:docker")
+            stop('Container-Create')
+
+            start('Container-Start')
+            os.system("cms docker container start test1")
+            stop('Container-Start')
+
+            start('Container-List')
+            os.system("cms docker container list")
+            stop('Container-List')
+
+            start('Container-Stop')
+            os.system("cms docker container stop test1")
+            stop('Container-Stop')
+
+            start('Container-Delete')
+            os.system("cms docker container delete test1")
+            stop('Container-Delete')
+
+            start('Container-List')
+            os.system("cms docker container list")
+            stop('Container-List')
+
+            start('Network-List')
+            os.system("cms docker network list")
+            stop('Network-List')
+
+            start('Network-Refresh')
+            os.system("cms docker network refresh")
+            stop('Network-Refresh')
+
+    print_all()

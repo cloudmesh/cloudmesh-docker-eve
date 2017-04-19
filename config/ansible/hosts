@@ -1,8 +1,8 @@
-[docker-cluster]
-34.198.36.16  ansible_ssh_user=ubuntu  ansible_ssh_private_key_file="/mnt/c/Keys/LightsailDefaultPrivateKey.pem"
-52.53.120.5   ansible_ssh_user=ubuntu  ansible_ssh_private_key_file="/mnt/c/Keys/Mykey.pem"
 [docker-cluster-Chameleon]
-elast1 ansible_ssh_user=cc ansible_ssh_host=129.114.33.51    
-elast2 ansible_ssh_user=cc ansible_ssh_host=129.114.33.3
+docker1 ansible_ssh_user=cc ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+docker2 ansible_ssh_user=cc ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+[swarm-cluster-Chameleon]
+docker3 ansible_ssh_user=cc ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+docker4 ansible_ssh_user=cc ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
 [Benchmark-Tool-Server]
-elastconfig ansible_ssh_user=cc ansible_ssh_host=129.114.32.107    
+dockerconfig ansible_ssh_user=cc ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??

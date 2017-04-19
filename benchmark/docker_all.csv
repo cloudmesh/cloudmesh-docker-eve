@@ -1,0 +1,16 @@
+﻿Key,Command
+Host-Add,cms docker host docker1 docker1:4243
+Host-Add,cms docker host docker2 docker2:4243
+Host-List,cms docker host list
+Image-Refresh,cms docker image refresh
+Image-List,cms docker image list
+Container-Refresh,cms docker container refresh
+Container-List,cms docker container list
+Container-Create,cms docker container create test1 elasticsearch:docker
+Container-Start,cms docker container start test1
+Container-List,cms docker container list
+Sontainer-Stop,cms docker container stop test1
+Container-Delete,cms docker container delete test1
+Container-List,cms docker container list
+Network-List,cms docker network list
+Network-Refresh,cms docker network refresh
