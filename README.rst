@@ -59,7 +59,7 @@ To install them simply to the following::
     python setup.py install; pip install -e .
     cd ~/github/cloudmesh.cmd5
     python setup.py install; pip install -e .
-    cd ~/github/cloudmesh.eve
+    cd ~/github/cloudmesh.rest
     python setup.py install; pip install -e
     cd ~/github/cloudmesh.docker
     python setup.py install; pip install -e
@@ -145,7 +145,7 @@ docker command
             docker container refresh
             docker container list [ARG...]
             docker container delete NAME [ARG...]
-            docker container attach NAME [ARG...]
+            docker container run NAME [ARG...]
             docker container pause NAME [ARG...]
             docker container unpause NAME [ARG...]
             docker process config CNAME
@@ -174,27 +174,28 @@ swarm command
 
     cms> swarm::
     
-         Usage:
+          Usage:
             swarm host list
             swarm host delete ADDR
             swarm host NAME ADDR
-            swarm create NAME ADDR [ARG...]
-            swarm join ADDR TOKEN [ARG...]
-            swarm attrbs [ARG...]
+            swarm create [ARG...]
+            swarm join ADDR TYPE [ARG...]
             swarm leave [ARG...]
-            swarm update [ARG...]
-            swarm reload [ARG...]
             swarm network create IMAGE [ARG...]
             swarm network list [ARG...]
-            swarm service create IMAGE [ARG...]
-            swarm service list
+            swarm service create NAME IMAGE [ARG...]
+            swarm service list [ARG...]
+            swarm service delete NAME
             swarm node list
+            swarm image refresh
+            swarm image list [ARG...]
+
 
           Arguments:
             NAME     The name of the docker swarm
             IMAGE    Docker server images
-            ADDR     Swarm Address
-            TOKEN    Worker Token to join swarm
+            ADDR     Address of host ip:port(if port no given default port is assumed)
+            TYPE     Whether the node is Manager or Worker
             URL      URL of docker API
             [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Swarm Services
                      and networks have a lot of customization options.These options are documented here

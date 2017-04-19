@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import json
 from cloudmesh.common.ConfigDict import ConfigDict
 from cloudmesh.common.StopWatch import StopWatch
 from cloudmesh.shell.command import PluginCommand
@@ -31,7 +32,7 @@ class DockerCommand(PluginCommand):
             docker container refresh
             docker container list [ARG...]
             docker container delete NAME [ARG...]
-            docker container attach NAME [ARG...]
+            docker container run NAME IMAGE [ARG...]
             docker container pause NAME [ARG...]
             docker container unpause NAME [ARG...]
             docker process config CNAME
@@ -61,7 +62,12 @@ class DockerCommand(PluginCommand):
 
         if arguments.ARG:
             for j in arguments.ARG:
-                kwargs[j.split('=')[0].strip()] = j.split('=')[1].strip()
+                kwargs[j.split('=',1)[0].strip()] = j.split('=',1)[1].strip()
+                val = j.split('=',1)[1].strip()
+                if '[' in j.split('=',1)[1].strip() :
+                    val = val.replace('[','').replace(']','').split(',')
+                    kwargs[j.split('=', 1)[0].strip()] = val
+
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
@@ -108,6 +114,13 @@ class DockerCommand(PluginCommand):
             # stopwatch.verbose = True    # doe snot print if set to false, default is true
             # stopwatch.print('Time Taken:', 'E2E')
             #
+            print ('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+
+        if arguments.container and arguments.run and arguments.NAME and arguments.IMAGE:
+            docker.container_run("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+            stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
@@ -185,8 +198,8 @@ class DockerCommand(PluginCommand):
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if arguments.network and arguments.create and arguments.NAME and arguments.IMAGE:
-            docker.network_create("{IMAGE}".format(**arguments), "{NAME}".format(**arguments),kwargs)
+        if arguments.network and arguments.create and arguments.NAME :
+            docker.network_create( "{NAME}".format(**arguments),kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return

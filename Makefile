@@ -95,7 +95,9 @@ install:
 	python setup.py install; pip install .
 
 dockerinstall:
-	docker build -f $(PWD)/config/docker/cloudmesh-docker-dockerfile .
+	docker build -t cloudmesh.docker:latest .
+	docker run --net=host --name cloudmesh_docker -td cloudmesh.docker:latest bash
+	
 
 cloudmesh.docker:
-	docker run -it karvenka/cloudmesh.docker bash    
+	docker exec -it cloudmesh_docker bash    
