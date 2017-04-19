@@ -29,6 +29,7 @@ class Swarm(object):
 
         """
         try:
+            print('reaching here for swarm creation')
             host = {}
             host['Name'] = hostName
             host['Ip'] = addr.split(':')[0]
@@ -106,10 +107,11 @@ class Swarm(object):
 
 
         """
+        print("Trying to create a docker swarm")
         rcode = self.client.swarm.init(**kwargs)
         Console.ok("Swarm is created" )
+        print(rcode)
         return self.client.swarm.attrs['JoinTokens']
-
 
     def leave(self,kwargs=None):
         """Creates docker Swarm
@@ -132,12 +134,16 @@ class Swarm(object):
         """
         man_list = []
         man_list.append(addr)
+        print(addr)
         savehost = os.environ["DOCKER_HOST"]
+        print(savehost)
         os.environ["DOCKER_HOST"] = addr.split(':')[0] +":4243"
+        print(os.environ["DOCKER_HOST"])
         self.client = docker.from_env()
         if type not in ['Manager','Worker']:
             Console.error('Valid values are Manager or Worker')
             return
+        print(self.client)
         token = self.client.swarm.attrs['JoinTokens'][type]
         os.environ["DOCKER_HOST"] = savehost
         self.client = docker.from_env()
@@ -167,10 +173,18 @@ class Swarm(object):
         e = {}
         for node in nodes:
             d = {}
-            d['Id'] = node.short_id
+            # d['Id'] = node.short_id
+            node_dict = node.__dict__['attrs']
+            d['Id'] = node_dict['ID']
+            d['HostName'] = node_dict['Description']['Hostname']
+            d['Role']=node_dict['Spec']['Role']
+            d['ManagerStatus']=node_dict['ManagerStatus']['Reachability']
+            d['Manager Ip']=node_dict['ManagerStatus']['Addr']
+            print(node_dict)
+            print(node_dict['ManagerStatus'])
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Id'])))
+        Console.ok(str(Printer.dict_table(e,order=['Id','HostName','Role','ManagerStatus','Manager Ip'])))
 
     def service_list(self,kwargs=None):
         """List of docker images
@@ -182,10 +196,11 @@ class Swarm(object):
 
         """
         try:
-            services = self.client.services.list(**kwargs)
+           scode, services = perform_get('Service')
+        #     services = self.client.services.list(**kwargs)
         except docker.errors.APIError as e:
-            Console.error(e.explanation)
-            return
+             Console.error(e.explanation)
+             return
 
         if len(services) == 0:
             Console.info("No Services exist")
@@ -195,11 +210,14 @@ class Swarm(object):
         e = {}
         for service in services:
             d = {}
-            d['Id'] = service.short_id
-            d['Name'] = service.name
+            d['Id'] = service['ID']
+            d['Name'] = service['Spec']['Name']
+            d['Image']= service['Spec']['TaskTemplate']['ContainerSpec']['Image']
+            d['Replicas']=service['Spec']['Mode']['Replicated']['Replicas']
+            # need to seee if status needs to be added.
             e[n] = d
             n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Id','Name'])))
+        Console.ok(str(Printer.dict_table(e,order=['Id','Name','Image','Replicas'])))
 
 
     def service_create(self,name,image,kwargs=None):
@@ -235,6 +253,10 @@ class Swarm(object):
                     if t == 'EndpointSpec':
                         kwargs['endpoint_spec'] = docker.types.EndpointSpec(ports={9200: 9200,9300:9300})
             service = self.client.services.create(image, command=None,name=name,**kwargs)
+            print(service.attrs)
+            data=[]
+            data.append(service.attrs)
+            perform_post('Service',data)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -253,6 +275,10 @@ class Swarm(object):
         try:
             service = self.client.services.get(name)
             service.remove()
+            filter = {}
+            filter['ID']=service.id
+            filter['Name']=service.name
+            perform_delete('Service',filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
