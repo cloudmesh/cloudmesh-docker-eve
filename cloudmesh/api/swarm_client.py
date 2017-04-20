@@ -150,8 +150,8 @@ class Swarm(object):
         rcode = self.client.swarm.join(remote_addrs =man_list,join_token =token,listen_addr = "0.0.0.0:2377",**kwargs)
         Console.ok("Node Joined Swarm" )
 
-    def node_list(self,kwargs=None):
-        """List of docker containers
+    def node_refresh(self,kwargs=None):
+        """Refresh of swarm nodes
 
 
 
@@ -171,20 +171,62 @@ class Swarm(object):
 
         n = 1
         e = {}
+        data=[]
         for node in nodes:
             d = {}
-            # d['Id'] = node.short_id
             node_dict = node.__dict__['attrs']
             d['Id'] = node_dict['ID']
-            d['HostName'] = node_dict['Description']['Hostname']
-            d['Role']=node_dict['Spec']['Role']
-            d['ManagerStatus']=node_dict['ManagerStatus']['Reachability']
-            d['Manager Ip']=node_dict['ManagerStatus']['Addr']
+            data.append(node_dict)
+            d['Role'] = node_dict['Spec']['Role']
+            d['Status'] = node_dict['Status']['State']
+            if d['Role'] == 'manager':
+                d['Ip'] = node_dict['ManagerStatus']['Addr'].split(':')[0]
+                d['Manager Ip'] = ''
+            else:
+                d['Ip'] = node_dict['Status']['Addr']
+                d['Manager Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             print(node_dict)
-            print(node_dict['ManagerStatus'])
             e[n] = d
-            n = n+1
-        Console.ok(str(Printer.dict_table(e,order=['Id','HostName','Role','ManagerStatus','Manager Ip'])))
+            n = n + 1
+        Console.ok(str(Printer.dict_table(e, order=['Id', 'Role', 'Status', 'Ip', 'Manager Ip'])))
+        print(data)
+        perform_delete('Node')
+        perform_post('Node', data)
+
+    def node_list(self, kwargs=None):
+        """List of docker swarm nodes 
+
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        scode, nodes = perform_get('Node')
+        if len(nodes) == 0:
+            Console.info("No nodes exist")
+            return
+        n = 1
+        e = {}
+        data = []
+        for node in nodes:
+            d = {}
+            node_dict = node
+            d['Id'] = node_dict['ID']
+            data.append(node_dict)
+            d['Role'] = node_dict['Spec']['Role']
+            d['Status'] = node_dict['Status']['State']
+            if d['Role'] == 'manager':
+                d['Ip'] = node_dict['ManagerStatus']['Addr'].split(':')[0]
+                d['Manager Ip'] = ''
+            else:
+                d['Ip'] = node_dict['Status']['Addr']
+                d['Manager Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            print(node_dict)
+            e[n] = d
+            n = n + 1
+        Console.ok(str(Printer.dict_table(e, order=['Id', 'Role', 'Status', 'Ip', 'Manager Ip'])))
 
     def service_list(self,kwargs=None):
         """List of docker images
@@ -306,6 +348,8 @@ class Swarm(object):
             Options = {"encrypted":""}
             network = self.client.networks.create(name=networkName,options=Options,ipam=ipam_config,**kwargs)
             Console.ok("Network %s is created" % network.id)
+            print(network.__dict__['attrs'])
+            #perform_post('Network',network.__dict__['attrs'])
             return network.id
         except docker.errors.APIError as e:
            Console.error(e.explanation)
@@ -322,6 +366,7 @@ class Swarm(object):
         """
         try:
             networks = self.client.networks.list(**kwargs)
+            print(networks)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return

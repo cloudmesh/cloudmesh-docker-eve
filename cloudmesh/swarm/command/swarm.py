@@ -111,6 +111,7 @@ class SwarmCommand(PluginCommand):
 
         if arguments.create and not(arguments.service):
             out=swarm.create(kwargs)
+            swarm.node_refresh(kwargs)
             print (out)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
@@ -118,12 +119,14 @@ class SwarmCommand(PluginCommand):
 
         if arguments.leave:
             swarm.leave(kwargs)
+            swarm.node_refresh(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.join and arguments.ADDR and arguments.TYPE:
             swarm.join("{ADDR}".format(**arguments),"{TYPE}".format(**arguments),kwargs)
+            swarm.node_refresh(kwargs)
             stopwatch.stop('E2E')
             print ('Time Taken:' + str(stopwatch.get('E2E')))
             return
