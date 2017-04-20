@@ -716,27 +716,27 @@ Network = {
             'type': 'dict',
             'nullable': True,
             'schema': {
-                'com.docker.network.bridge.name': {
+                'com\uff0Edocker\uff0Enetwork\uff0Ebridge\uff0Ename': {
                     'type': 'string',
                     'nullable': True
                 },
-                'com.docker.network.bridge.default_bridge': {
+                'com\uff0Edocker\uff0Enetwork\uff0Ebridge\uff0Edefault_bridge': {
                     'type': 'string',
                     'nullable': True
                 },
-                'com.docker.network.bridge.enable_ip_masquerade': {
+                'com\uff0Edocker\uff0Enetwork\uff0Ebridge\uff0Eenable_ip_masquerade': {
                     'type': 'string',
                     'nullable': True
                 },
-                'com.docker.network.driver.mtu': {
+                'com\uff0Edocker\uff0Enetwork\uff0Edriver\uff0Emtu': {
                     'type': 'string',
                     'nullable': True
                 },
-                'com.docker.network.bridge.host_binding_ipv4': {
+                'com\uff0Edocker\uff0Enetwork\uff0Ebridge\uff0Ehost_binding_ipv4': {
                     'type': 'string',
                     'nullable': True
                 },
-                'com.docker.network.bridge.enable_icc': {
+                'com\uff0Edocker\uff0Enetwork\uff0Ebridge\uff0Eenable_icc': {
                     'type': 'string',
                     'nullable': True
                 }

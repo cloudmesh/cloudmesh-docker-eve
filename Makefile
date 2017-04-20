@@ -94,10 +94,12 @@ install:
 	cd ../cmd5; python setup.py install; pip install .
 	python setup.py install; pip install .
 
-dockerinstall:
+docker-build:
 	docker build -t cloudmesh.docker:latest .
-	docker run --net=host --name cloudmesh_docker -td cloudmesh.docker:latest bash
-	
 
-cloudmesh.docker:
-	docker exec -it cloudmesh_docker bash    
+docker-machine:
+	docker run --net=host -v ${PWD}:/app/cloudmesh.docker --name cloudmesh_docker -td cloudmesh.docker:latest bash
+	
+make docker-machine-login:
+	docker exec -it cloudmesh_docker bash
+
