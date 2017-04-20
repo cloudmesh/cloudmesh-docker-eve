@@ -272,9 +272,11 @@ class Docker(object):
                containers = self.client.containers.list(all,**kwargs)
             except docker.errors.APIError as e:
                Console.error(e.explanation)
+               perform_delete('Container', filter)
                continue
             if len(containers) == 0:
-                print("No containers exist" + str(host['Ip']))
+                print("No containers exist " + str(host['Ip']))
+                perform_delete('Container', filter)
                 continue
 
             for containerm in containers:
