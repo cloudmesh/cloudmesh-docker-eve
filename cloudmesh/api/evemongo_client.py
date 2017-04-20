@@ -6,32 +6,14 @@ import requests
 
 
 
-
-
-def post_Image():
-    Image=[]
-    r = perform_post('Image', json.dumps(Image))
-    print "'Image' posted", r.status_code
-
-    valids = []
-    if r.status_code == 201:
-        response = r.json()
-        if response['_status'] == 'OK':
-            for Image in response['_items']:
-                if Image['_status'] == "OK":
-                    valids.append(Image['_id'])
-
-    return valids
-
-
-
 def perform_post(resource, data,filter=None):
     headers = {'Content-Type': 'application/json'}
     if filter:
         scode,datao = perform_get(resource, filter)
         if len(datao) > 0:
             return perform_put(resource,data,filter)
-    r = requests.post(endpoint(resource), json=data, headers=headers)
+    datastr = json.dumps(data,indent=4).replace('.','\uff0E')
+    r = requests.post(endpoint(resource), datastr, headers=headers)
     return r
 
 def perform_get(resource,filter=None):
@@ -41,7 +23,8 @@ def perform_get(resource,filter=None):
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
     out =  requests.get(url,  headers=headers)
-    scode,datam = out.status_code, json.loads(out.text)['_items']
+    datastr = out.text.replace('\uff0e','.')
+    scode,datam = out.status_code, json.loads(datastr)['_items']
     return scode,datam
 
 def perform_delete(resource,filter=None):
@@ -62,7 +45,8 @@ def perform_put(resource,data,filter):
     if '_items' in json.loads(out.text).keys():
         headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
         url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
-        out = requests.put(url,json.dumps(data),headers=headers)
+        datastr = json.dumps(data, indent=4).replace('.', '\uff0E')
+        out = requests.put(url,datastr,headers=headers)
     return out
 
 def endpoint(resource):

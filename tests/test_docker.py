@@ -28,12 +28,12 @@ class Test_docker(object):
 
     def setup(self):
         pass
-
+    '''
     def test_0001(self):
         HEADING("Install docker on hosts")
         result = os.popen("cd config/ansible && ansible-playbook yaml/docker-chameleon.yml")
         assert "Fail" not in result  # need to make real assertion
-
+    '''
     def test_001(self):
         HEADING("Add docker hosts")
         result = run("cms docker host docker1 docker1:4243")
