@@ -67,20 +67,22 @@ To install them simply to the following::
 Installation from docker
 ------------------------
 
-We have also create a docker image for cloudmesh docker
-which has all dependencies installed.To install and start
+We strongly recommend using the docker install as it takes care of
+all dependencies.To install and start
 use below commands.Please note docker is to be installed
-on your local.Our image size is large we are working on tuning it
+on your local.
 
-::
+Create the cloudmesh docker image with the name ‘cloudmesh.dockers’::
 
-    make dockerinstall
+    make docker-build
 	
-to get into the image use below command
+Start a docker container::
 
-::
+    make docker-build
+	
+Login to the started vm so you can execute docker commands::
 
-    make cloudmesh.docker
+    make docker-machine-login
 	
 Execution
 ---------
@@ -390,11 +392,12 @@ Unit Tests
 ----------
 
 We are providing a simple set of tests that verify the integration of docker
-into cloudmesh. They can either be run with `nosetests` or `py.test`.
+into cloudmesh. They can either be run with `nosetests` .
 
 Use::
 
-  py.test
+  nosetests -v --nocapture tests/test_docker.py
+  nosetests -v --nocapture tests/test_swarm.py
 
 to check them out and see if the tests succeed.
 
