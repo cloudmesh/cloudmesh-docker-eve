@@ -18,7 +18,7 @@ def perform_post(resource, data,filter=None):
 
 def perform_get(resource,filter=None):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter)
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
     else:
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
@@ -29,20 +29,26 @@ def perform_get(resource,filter=None):
 
 def perform_delete(resource,filter=None):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter)
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
+        headers = {'Content-Type': 'application/json'}
+        out =  requests.get(url,  headers=headers)
+        if len(json.loads(out.text)['_items']) > 0:
+            headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
+            url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
+            out = requests.delete(url,headers=headers)
     else:
         url = endpoint(resource)
-    r = requests.delete(url)
-    return r
+        out = requests.delete(url)
+    return out
 
 def perform_put(resource,data,filter):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter)
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
     else:
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
     out =  requests.get(url,  headers=headers)
-    if '_items' in json.loads(out.text).keys():
+    if len(json.loads(out.text)['_items']) > 0:
         headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
         url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
         datastr = json.dumps(data, indent=4).replace('.', '\uff0E')

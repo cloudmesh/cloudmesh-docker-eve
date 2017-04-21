@@ -92,7 +92,7 @@ class Docker(object):
             #Delete Host should delete all Containers and Networks for the host
             r = perform_delete('Container', filter)
             r = perform_delete('Network', filter)
-            Console.ok('Host ' + addr + 'is deleted')
+            Console.ok('Host ' + addr + ' is deleted')
         except Exception as e:
            Console.error(e.message)
            return
