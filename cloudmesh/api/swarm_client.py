@@ -106,10 +106,21 @@ class Swarm(object):
 
 
         """
-        print("Trying to create a docker swarm")
+        print("Trying to create a docker swarm",os.environ["DOCKER_HOST"])
         rcode = self.client.swarm.init(**kwargs)
         Console.ok("Swarm is created")
-        print(rcode)
+        filter = {}
+        filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+        scode, hosts = perform_get('Host', filter)
+        d = {}
+        for host in hosts:
+            d['Ip'] = host['Ip']
+            d['Name'] = host['Name']
+            d['Port'] = host['Port']
+            d['Swarmmanager'] = 'Manager'
+        perform_delete('Host', filter)
+        perform_post('Host', d)
+
         return self.client.swarm.attrs['JoinTokens']
 
     def leave(self, kwargs=None):
@@ -120,8 +131,21 @@ class Swarm(object):
 
 
         """
-        rcode = self.client.swarm.leave(True, **kwargs)
-        Console.ok("Node left Swarm")
+
+        rcode = self.client.swarm.leave(True,**kwargs)
+        filter = {}
+        filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+        scode, hosts = perform_get('Host', filter)
+        d ={}
+        for host in hosts:
+            d['Ip'] = host['Ip']
+            d['Name'] = host['Name']
+            d['Port'] = host['Port']
+            d['Swarmmanager'] = 'Host'
+        perform_delete('Host',filter)
+        perform_post('Host',d)
+        Console.ok("Node left Swarm" )
+
 
     def join(self, addr, type, kwargs=None):
         """Creates docker Swarm
@@ -135,14 +159,12 @@ class Swarm(object):
         man_list.append(addr)
         print(addr)
         savehost = os.environ["DOCKER_HOST"]
-        print(savehost)
-        os.environ["DOCKER_HOST"] = addr.split(':')[0] + ":4243"
-        print(os.environ["DOCKER_HOST"])
+        os.environ["DOCKER_HOST"] = addr.split(':')[0] +":4243"
+
         self.client = docker.from_env()
         if type not in ['Manager', 'Worker']:
             Console.error('Valid values are Manager or Worker')
             return
-        print(self.client)
         token = self.client.swarm.attrs['JoinTokens'][type]
         os.environ["DOCKER_HOST"] = savehost
         self.client = docker.from_env()

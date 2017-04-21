@@ -1,14 +1,27 @@
-'''
-@author: Karthick
-This module enable its user to monitor the amount of time spend in between two commands start and stop.
-'''
+"""Run Benchmark based on CSV input.
+
+Name.
+Run shell commands for benchmark based on csv input
+
+Usage:
+   run_benchmark.py FILENAME N OUTFILENAME
+
+   FILENAME File with commands
+   N Number of iterations
+   OUTFILENAME Filename for results
+
+Options:
+  -h --help     Show this screen.
+
+
+"""
 from time import time
 from math import sqrt
 import logging
 import os
 import sys
 import csv
-
+from docopt import docopt
 total = {}
 started = {}
 
@@ -41,7 +54,7 @@ def print_all():
         sd = sqrt(sum((x-mean)**2 for x in values) / n)
         line_array.append([key, n,s,min(values),max(values),mean,sd])
         #logging.info("%s: n=%s\tsum=%s\tmin=%s\tmax=%s\tmean=%s\tstd_dev=%s"%(key,n,s,min(values),max(values),mean,sd))
-    print format_array_line(line_array, header)
+    print (format_array_line(line_array, header))
 
 
 def format_array_line(line_array, column_header):
@@ -82,8 +95,11 @@ def format_array_line(line_array, column_header):
     return '\n'.join(return_string)
 
 if __name__=='__main__':
+    arguments = docopt(__doc__)
+    print(arguments)
     filename = sys.argv[1]
     n = int(sys.argv[2])
+    outfilename = sys.argv[3]
     with open(filename) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         command=[]
@@ -103,6 +119,6 @@ if __name__=='__main__':
         b.append(k)
         b = b + total[k]
         a.append(b)
-    with open(filename+"_output.csv", "wb") as f:
+    with open(outfilename, "wb") as f:
         writer = csv.writer(f)
         writer.writerows(a)

@@ -34,9 +34,11 @@ def perform_delete(resource, filter=None):
         headers = {'Content-Type': 'application/json'}
         out = requests.get(url, headers=headers)
         if len(json.loads(out.text)['_items']) > 0:
-            headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
-            url = endpoint(resource) + json.loads(out.text)['_items'][0]['_id']
-            out = requests.delete(url, headers=headers)
+            for item in json.loads(out.text)['_items']:
+                headers['If-Match'] = item['_etag']
+                url = endpoint(resource)+item['_id']
+                out = requests.delete(url,headers=headers)
+
     else:
         url = endpoint(resource)
         out = requests.delete(url)
