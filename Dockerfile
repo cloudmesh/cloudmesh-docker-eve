@@ -13,11 +13,11 @@ RUN apt-get update
 RUN apt-get install -y git python-pip mongodb vim
 WORKDIR $HOME/app
 RUN git clone https://github.com/karvenka/cloudmesh.common.git
-RUN git clone https://github.com/cloudmesh/cloudmesh.cmd5.git
-RUN git clone https://github.com/cloudmesh/cloudmesh.rest.git
+RUN git clone https://github.com/karvenka/cmd5.git
+RUN git clone https://github.com/karvenka/cloudmesh.rest.git
 WORKDIR $HOME/app/cloudmesh.common
 RUN python setup.py install
-WORKDIR $HOME/app/cloudmesh.cmd5
+WORKDIR $HOME/app/cmd5
 RUN python setup.py install
 WORKDIR $HOME/app/cloudmesh.rest
 RUN python setup.py install
