@@ -78,7 +78,7 @@ Create the cloudmesh docker image with the name ‘cloudmesh.dockers’::
 	
 Start a docker container::
 
-    make docker-build
+    make docker-machine
 	
 Login to the started vm so you can execute docker commands::
 
