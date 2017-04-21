@@ -8,14 +8,14 @@ instances across multiple servers remotely.
 
 The repository also includes
 
-        - Ansible scripts to install docker in remote hosts
-	- Ansible scripts to install docker images(elasticsearch,esrally) in remote hosts based 
-	  on dockerfile from local
-	- Scripts leveraging cloudmesh.docker code to start a elasticsearch docker cluster on 
-	  remote docker hosts
-	- Scripts leveraging cloudmesh.docker code to start a elasticsearch swarm cluster on 
-	  remote docker hosts
-	- Benchmarking elasticsearch on the docker and swarm clusters using esrally 
+- Ansible scripts to install docker in remote hosts
+- Ansible scripts to install docker images(elasticsearch,esrally) in remote hosts based 
+  on dockerfile from local
+- Scripts leveraging cloudmesh.docker code to start a elasticsearch docker cluster on 
+  remote docker hosts
+- Scripts leveraging cloudmesh.docker code to start a elasticsearch swarm cluster on 
+  remote docker hosts
+- Benchmarking elasticsearch on the docker and swarm clusters using esrally 
 
 	
 Requirements
@@ -130,7 +130,9 @@ list commands pull the data from local.(This is yet to be fully integrated)
 docker command
 --------------
 
-    cms> docker::
+::
+
+    cms> docker
     
           Usage:
             docker host list
@@ -174,7 +176,9 @@ docker command
 swarm command
 -------------
 
-    cms> swarm::
+::
+
+    cms> swarm
     
           Usage:
             swarm host list
@@ -267,9 +271,7 @@ docker api is exposed and accessible remotely.
 Managing Mongo
 ^^^^^^^^^^^^^^
 
-Next you need to start the mongo service with
-
-::
+Next you need to start the mongo service with::
 
     cms admin mongo start
 
