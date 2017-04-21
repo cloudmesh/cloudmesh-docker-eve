@@ -97,6 +97,33 @@ class Docker(object):
             Console.error(e.message)
             return
 
+
+    def _container_action(self, action, msg, image, containerName=None, kwargs=None):
+        """Creates docker container
+
+
+        :param str image: Available images for docker 
+        :param str containerName: Name of docker container
+        :param list arg: custom args for container
+        :returns: str containeID: Id of the docker Container
+        :rtype: NoneType
+
+
+        """
+        try:
+            container = action(image, name=containerName, detach=True, **kwargs)
+            data = []
+            container_dict = container.__dict__['attrs']
+            container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            # container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
+            data.append(container_dict)
+            perform_post('Container', data)
+            Console.ok('Container ' + container.name + ' is ' + msg)
+            return container.id
+        except docker.errors.APIError as e:
+            Console.error(e.explanation)
+            return
+
     def container_create(self, image, containerName=None, kwargs=None):
         """Creates docker container
 
@@ -109,6 +136,12 @@ class Docker(object):
 
 
         """
+
+        # could possibly be replaced with
+        #
+        #  return self._container_action(self.client.containers.create, "Created", image, containerName=None, kwargs=None)
+        #
+
         try:
             container = self.client.containers.create(image, name=containerName, detach=True, **kwargs)
             data = []
@@ -135,6 +168,11 @@ class Docker(object):
 
 
         """
+        # could possibly be replaced with
+        #
+        #  return self._container_action(self.client.containers.run, "Started", image, containerName=None, kwargs=None)
+        #
+
         try:
             container = self.client.containers.run(image, name=containerName, detach=True, **kwargs)
             Console.ok("Container %s is created" % container.id)
