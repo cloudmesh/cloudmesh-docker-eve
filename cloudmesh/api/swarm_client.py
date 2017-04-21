@@ -255,7 +255,7 @@ class Swarm(object):
             d['Name'] = service['Spec']['Name']
             d['Image'] = service['Spec']['TaskTemplate']['ContainerSpec']['Image']
             d['Replicas'] = service['Spec']['Mode']['Replicated']['Replicas']
-            # need to seee if status needs to be added.
+            # need to see if status needs to be added.
             e[n] = d
             n = n + 1
         Console.ok(str(Printer.dict_table(e, order=['Id', 'Name', 'Image', 'Replicas'])))
