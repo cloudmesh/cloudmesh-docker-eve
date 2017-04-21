@@ -1,0 +1,3 @@
+Command Name#Command
+ansible-docker#ansible-playbook --inventory-file=../config/ansible/hosts.chameleon ../config/ansible/yaml/docker.yml
+ansible-hosts#ansible-playbook --inventory-file=../config/ansible/hosts.chameleon ../config/ansible/yaml/docker-hosts.yml
