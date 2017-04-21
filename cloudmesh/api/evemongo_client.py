@@ -5,60 +5,63 @@ import random
 import requests
 
 
-
-def perform_post(resource, data,filter=None):
+def perform_post(resource, data, filter=None):
     headers = {'Content-Type': 'application/json'}
     if filter:
-        scode,datao = perform_get(resource, filter)
+        scode, datao = perform_get(resource, filter)
         if len(datao) > 0:
-            return perform_put(resource,data,filter)
-    datastr = json.dumps(data,indent=4).replace('.','\uff0E')
+            return perform_put(resource, data, filter)
+    datastr = json.dumps(data, indent=4).replace('.', '\uff0E')
     r = requests.post(endpoint(resource), datastr, headers=headers)
     return r
 
-def perform_get(resource,filter=None):
+
+def perform_get(resource, filter=None):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e', '.')
     else:
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
-    out =  requests.get(url,  headers=headers)
-    datastr = out.text.replace('\uff0e','.')
-    scode,datam = out.status_code, json.loads(datastr)['_items']
-    return scode,datam
+    out = requests.get(url, headers=headers)
+    datastr = out.text.replace('\uff0e', '.')
+    scode, datam = out.status_code, json.loads(datastr)['_items']
+    return scode, datam
 
-def perform_delete(resource,filter=None):
+
+def perform_delete(resource, filter=None):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e', '.')
         headers = {'Content-Type': 'application/json'}
-        out =  requests.get(url,  headers=headers)
+        out = requests.get(url, headers=headers)
         if len(json.loads(out.text)['_items']) > 0:
             headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
-            url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
-            out = requests.delete(url,headers=headers)
+            url = endpoint(resource) + json.loads(out.text)['_items'][0]['_id']
+            out = requests.delete(url, headers=headers)
     else:
         url = endpoint(resource)
         out = requests.delete(url)
     return out
 
-def perform_put(resource,data,filter):
+
+def perform_put(resource, data, filter):
     if filter:
-        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e','.')
+        url = endpoint(resource) + "?where=" + json.dumps(filter).replace('\uff0e', '.')
     else:
         url = endpoint(resource)
     headers = {'Content-Type': 'application/json'}
-    out =  requests.get(url,  headers=headers)
+    out = requests.get(url, headers=headers)
     if len(json.loads(out.text)['_items']) > 0:
         headers['If-Match'] = json.loads(out.text)['_items'][0]['_etag']
-        url = endpoint(resource)+json.loads(out.text)['_items'][0]['_id']
+        url = endpoint(resource) + json.loads(out.text)['_items'][0]['_id']
         datastr = json.dumps(data, indent=4).replace('.', '\uff0E')
-        out = requests.put(url,datastr,headers=headers)
+        out = requests.put(url, datastr, headers=headers)
     return out
+
 
 def endpoint(resource):
     ENTRY_POINT = 'localhost:5000'
     return 'http://%s/%s/' % (
-        ENTRY_POINT , resource)
+        ENTRY_POINT, resource)
 
 
 if __name__ == '__main__':
@@ -67,12 +70,12 @@ if __name__ == '__main__':
     for j in data:
         r = perform_delete(j)
         print ('Delete : ' + str(j) + "-" + str(r.status_code))
-        r = perform_post(j,data[j])
+        r = perform_post(j, data[j])
         print ('Insert : ' + str(j) + "-" + str(r.status_code))
-        status_code,data1 = perform_get(j)
+        status_code, data1 = perform_get(j)
         print ('Get : ' + str(j) + "-" + str(status_code))
         print (data1)
-        filter ={}
+        filter = {}
         print (data[j])
         if 'ID' in data[j].keys():
             key = 'ID'
@@ -82,6 +85,6 @@ if __name__ == '__main__':
         status_code, data1 = perform_get(j, filter)
         print ('Get Where : ' + str(j) + "-" + str(status_code))
         print (data1)
-        r=perform_put(j,data[j],filter)
+        r = perform_put(j, data[j], filter)
         print ('Update : ' + str(j) + "-" + str(r.status_code))
         break
