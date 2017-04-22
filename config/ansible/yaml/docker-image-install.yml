@@ -1,5 +1,5 @@
 ---
-- hosts: docker-cluster-Chameleon
+- hosts: docker-cluster
   tasks:
     - name: Check and install rsync package
       apt:
@@ -16,6 +16,17 @@
       shell: cp ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/Dockerfile
     - name: build the image
       shell: docker build -t elasticsearch:docker -f ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/
+- hosts: swarm-cluster
+  tasks:
+    - name: Check and install rsync package
+      apt:
+        name: rsync
+        update_cache: yes
+      become: true
+    - name: Creates directory
+      file: path=~/ansible state=directory
+    - name: upload the elasticsearch-dockerfile directory to the docker host
+      synchronize: src=../../docker dest=~/ansible
     - name: change directory to /ansible/docker/docker-swarm-elasticsearch
       shell: cd ~/ansible/docker/docker-swarm-elasticsearch
     - name: build the image

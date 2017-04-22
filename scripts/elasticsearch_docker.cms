@@ -1,0 +1,20 @@
+Command Name#Command
+ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/hosts.chameleon ../config/ansible/yaml/docker-image-install.yml
+Host-Create1#cms docker host docker1 docker1:4243
+Container-Create1#cms docker container create elasticsearch1 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+Container-Create2#cms docker container create elasticsearch2 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+Container-Start1#cms docker container start elasticsearch1
+Sleep1#sleep 10
+Container-Start2#cms docker container start elasticsearch2
+Sleep2#sleep 10
+Container-List1#cms docker container list
+Container-Refresh1#cms docker container refresh
+Host-Creat2#cms docker host docker2 docker2:4243
+Container-Create3#cms docker container create elasticsearch3 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+Container-Create4#cms docker container create elasticsearch4 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+Container-Start3#cms docker container start elasticsearch3
+Sleep3#sleep 10
+Container-Start4#cms docker container start elasticsearch4
+Sleep5#sleep 10
+Container-List2#cms docker container list
+Container-Refresh2#cms docker container refresh
