@@ -58,14 +58,13 @@ class Test_swarm(object):
         HEADING("create swarm node")
         result = run("cms swarm create")
         assert "Ip" in result  # need to make real assertion
-	'''
-	
+
     def test_006(self):
         HEADING("list swarm nodes")
         result = run("cms swarm node list")
         print(result)
-        assert "cms" in result  # need to make real assertion
-        
+        assert "Ip" in result  # need to make real assertion
+    '''
     def test_007(self):
         HEADING("list swarm attrbs")
         result = run("cms swarm attrbs")
@@ -120,14 +119,24 @@ class Test_swarm(object):
         HEADING("Swarm service delete")
         result = run("cms swarm service delete elasticsearch")
         assert "Service" in result  # need to make real assertion
-    '''
+
     def test_018(self):
-        HEADING("list docker networks")
+        HEADING("list swarm networks")
         result = run("cms docker network list")
         assert "Ip" in result  # need to make real assertion
 		
     def test_019(self):
-        HEADING("refresh docker networks")
+        HEADING("refresh swarm networks")
         result = run("cms docker network refresh")
         assert "Ip" in result  # need to make real assertion
-    '''
+
+    def test_20(self):
+        HEADING("swarm leave")
+        result = run("cms swarm leave")
+        assert "Swarm" in result  # need to make real assertion
+
+    def test_21(self):
+        HEADING("swarm leave")
+        result = run("cms swarm host docker3 docker3:4243")
+        result = run("cms swarm leave")
+        assert "Swarm" in result  # need to make real assertion

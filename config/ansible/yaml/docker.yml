@@ -23,7 +23,7 @@
   - name: Run docker setup9
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
-    shell: usermod -aG docker cc
+    shell: usermod -aG docker {{ ansible_ssh_user }}
   - name: Setup Docker Daemon
     replace:
         dest: /lib/systemd/system/docker.service
@@ -57,7 +57,7 @@
   - name: Run docker setup9
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
-    shell: usermod -aG docker cc
+    shell: usermod -aG docker {{ ansible_ssh_user }}
   - name: Setup Docker Daemon
     replace:
         dest: /lib/systemd/system/docker.service
@@ -91,7 +91,7 @@
   - name: Run docker setup9
     shell: yes | apt-get install docker-ce
   - name: Run docker setup10
-    shell: usermod -aG docker cc
+    shell: usermod -aG docker {{ ansible_ssh_user }}
   - name: Setup Docker Daemon
     replace:
         dest: /lib/systemd/system/docker.service

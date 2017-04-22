@@ -14,7 +14,15 @@ Host = {
             'type': 'integer',
             'nullable': True
         },
-        'Swarmmanager': {
+        'SwarmmanagerIp': {
+            'type': 'string',
+            'nullable': True
+        },
+        'Swarmmode': {
+            'type': 'string',
+            'nullable': True
+        },
+        'Swarmhost': {
             'type': 'boolean',
             'nullable': True
         }

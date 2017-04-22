@@ -16,6 +16,9 @@
       shell: cp ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/Dockerfile
     - name: build the image
       shell: docker build -t elasticsearch:docker -f ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/
+    - name: Set sysctl
+      shell: sysctl -w "vm.max_map_count=262144"
+      become: true
 - hosts: swarm-cluster
   tasks:
     - name: Check and install rsync package
@@ -31,6 +34,9 @@
       shell: cd ~/ansible/docker/docker-swarm-elasticsearch
     - name: build the image
       shell: docker build -t elasticsearch:swarm -f ~/ansible/docker/docker-swarm-elasticsearch/Dockerfile ~/ansible/docker/docker-swarm-elasticsearch/
+    - name: Set sysctl
+      shell: sysctl -w "vm.max_map_count=262144"
+      become: true
 - hosts: Benchmark-Tool-Server   
   tasks:
     - name: Check and install rsync package

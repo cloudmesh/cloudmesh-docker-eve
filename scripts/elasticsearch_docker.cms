@@ -1,5 +1,5 @@
 Command Name#Command
-ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/hosts.chameleon ../config/ansible/yaml/docker-image-install.yml
+ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$hosts ../config/ansible/yaml/docker-image-install.yml
 Host-Create1#cms docker host docker1 docker1:4243
 Container-Create1#cms docker container create elasticsearch1 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
 Container-Create2#cms docker container create elasticsearch2 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]

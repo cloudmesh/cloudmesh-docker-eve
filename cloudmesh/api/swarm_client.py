@@ -29,15 +29,17 @@ class Swarm(object):
 
         """
         try:
-            print('reaching here for swarm creation')
             host = {}
             host['Name'] = hostName
             host['Ip'] = addr.split(':')[0]
             host['Port'] = int(addr.split(':')[1])
-            host['Swarmmanager'] = False
+            host['Swarmmode'] = ''
+            host['SwarmmanagerIp'] = ''
+            host['Swarmhost'] = ''
             filter = {}
             filter['Ip'] = addr.split(':')[0]
-            r = perform_post('Host', host, filter)
+            perform_delete('Host',filter)
+            r = perform_post('Host', host)
             Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
         except Exception as e:
             Console.error(e.message)
@@ -69,10 +71,11 @@ class Swarm(object):
             d['Ip'] = str(host['Ip'])
             d['Name'] = str(host['Name'])
             d['Port'] = str(host['Port'])
-            d['Swarmmanager'] = str(host['Swarmmanager'])
+            d['Swarmmode'] = str(host['Swarmmode'])
+            d['SwarmmanagerIp'] = str(host['SwarmmanagerIp'])
             e[n] = d
             n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Ip', 'Name', 'Port', 'Swarmmanager'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip', 'Name', 'Port', 'Swarmmode','SwarmmanagerIp'])))
 
     def host_delete(self, addr):
         """Deletes docker host
@@ -89,6 +92,7 @@ class Swarm(object):
             filter['Ip'] = addr.split(':')[0]
             r = perform_delete('Host', filter)
             # Delete Host should delete all Containers and Networks for the host
+            r = perform_delete('Service', filter)
             r = perform_delete('Container', filter)
             r = perform_delete('Network', filter)
             Console.ok('Host ' + addr + 'is deleted')
@@ -101,12 +105,11 @@ class Swarm(object):
 
         :param str addr: Address of Swarm Manager
         :param str name: Name of the Swarm
-        :returns: {Manager:"",Worker:""}
+        :returns: None
         :rtype: NoneType
 
 
         """
-        print("Trying to create a docker swarm",os.environ["DOCKER_HOST"])
         rcode = self.client.swarm.init(**kwargs)
         Console.ok("Swarm is created")
         filter = {}
@@ -117,11 +120,12 @@ class Swarm(object):
             d['Ip'] = host['Ip']
             d['Name'] = host['Name']
             d['Port'] = host['Port']
-            d['Swarmmanager'] = 'Manager'
-        perform_delete('Host', filter)
-        perform_post('Host', d)
+            d['Swarmmode'] = 'Manager'
+            d['SwarmmanagerIp'] = ''
+            d['Swarmhost'] = ''
+        perform_post('Host',d,filter)
+        self.node_refresh()
 
-        return self.client.swarm.attrs['JoinTokens']
 
     def leave(self, kwargs=None):
         """Creates docker Swarm
@@ -141,9 +145,11 @@ class Swarm(object):
             d['Ip'] = host['Ip']
             d['Name'] = host['Name']
             d['Port'] = host['Port']
-            d['Swarmmanager'] = 'Host'
-        perform_delete('Host',filter)
-        perform_post('Host',d)
+            d['Swarmmode'] = ''
+            d['SwarmmanagerIp'] = ''
+            d['Swarmhost'] = False
+        perform_post('Host',d,filter)
+        self.node_refresh()
         Console.ok("Node left Swarm" )
 
 
@@ -157,7 +163,6 @@ class Swarm(object):
         """
         man_list = []
         man_list.append(addr)
-        print(addr)
         savehost = os.environ["DOCKER_HOST"]
         os.environ["DOCKER_HOST"] = addr.split(':')[0] +":4243"
 
@@ -165,13 +170,27 @@ class Swarm(object):
         if type not in ['Manager', 'Worker']:
             Console.error('Valid values are Manager or Worker')
             return
-        token = self.client.swarm.attrs['JoinTokens'][type]
+
+        token = self.client.swarm.attrs['JoinTokens']
         os.environ["DOCKER_HOST"] = savehost
         self.client = docker.from_env()
-        rcode = self.client.swarm.join(remote_addrs=man_list, join_token=token, listen_addr="0.0.0.0:2377", **kwargs)
+        rcode = self.client.swarm.join(remote_addrs=man_list, join_token=token[type], listen_addr="0.0.0.0:2377", **kwargs)
+        filter = {}
+        filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+        scode, hosts = perform_get('Host', filter)
+        d = {}
+        for host in hosts:
+            d['Ip'] = host['Ip']
+            d['Name'] = host['Name']
+            d['Port'] = host['Port']
+            d['Swarmmode'] = type
+            d['SwarmmanagerIp'] = addr.split(':')[0]
+            d['Swarmhost'] = ''
+        perform_post('Host', d,filter)
+        self.node_refresh()
         Console.ok("Node Joined Swarm")
 
-    def node_refresh(self, kwargs=None):
+    def node_refresh(self):
         """Refresh of swarm nodes
 
 
@@ -181,36 +200,46 @@ class Swarm(object):
 
 
         """
-        try:
-            nodes = self.client.nodes.list(**kwargs)
-        except docker.errors.APIError as e:
-            Console.error(e.explanation)
-            return
-        if len(nodes) == 0:
-            Console.info("No nodes exist")
-            return
-
+        filter = {}
+        filter['Swarmmode'] = 'Manager'
+        scode, hosts = perform_get('Host',filter)
+        filter = {}
         n = 1
         e = {}
         data = []
-        for node in nodes:
-            d = {}
-            node_dict = node.__dict__['attrs']
-            d['Id'] = node_dict['ID']
-            data.append(node_dict)
-            d['Role'] = node_dict['Spec']['Role']
-            d['Status'] = node_dict['Status']['State']
-            if d['Role'] == 'manager':
-                d['Ip'] = node_dict['ManagerStatus']['Addr'].split(':')[0]
-                d['Manager Ip'] = ''
-            else:
-                d['Ip'] = node_dict['Status']['Addr']
-                d['Manager Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            print(node_dict)
-            e[n] = d
-            n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Id', 'Role', 'Status', 'Ip', 'Manager Ip'])))
-        print(data)
+        for host in hosts:
+            os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            self.client = docker.from_env()
+            try:
+                nodes = self.client.nodes.list()
+            except docker.errors.APIError as e:
+                Console.error(e.explanation)
+                return
+            if len(nodes) == 0:
+                Console.info("No nodes exist for manager" + os.environ["DOCKER_HOST"].split(':') )
+                continue
+
+            n = 1
+            e = {}
+            data = []
+            for node in nodes:
+                d = {}
+                node_dict = node.__dict__['attrs']
+                d['Id'] = node_dict['ID']
+                data.append(node_dict)
+                d['Role'] = node_dict['Spec']['Role']
+                d['Status'] = node_dict['Status']['State']
+                if d['Role'] == 'manager':
+                    d['Ip'] = node_dict['ManagerStatus']['Addr'].split(':')[0]
+                    d['Manager Ip'] = ''
+                else:
+                    d['Ip'] = node_dict['Status']['Addr']
+                    d['Manager Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                d['Host Name'] = node_dict['Description']['Hostname']
+                e[n] = d
+                n = n + 1
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Host Name','Id', 'Role', 'Status', 'Manager Ip'])))
         perform_delete('Node')
         perform_post('Node', data)
 
@@ -244,10 +273,11 @@ class Swarm(object):
             else:
                 d['Ip'] = node_dict['Status']['Addr']
                 d['Manager Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            print(node_dict)
+            d['Host Name'] =  node_dict['Description']['Hostname']
+
             e[n] = d
             n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Id', 'Role', 'Status', 'Ip', 'Manager Ip'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Host Name','Id', 'Role', 'Status', 'Manager Ip'])))
 
     def service_list(self, kwargs=None):
         """List of docker images
@@ -273,6 +303,7 @@ class Swarm(object):
         e = {}
         for service in services:
             d = {}
+            d['Ip'] = service['Ip']
             d['Id'] = service['ID']
             d['Name'] = service['Spec']['Name']
             d['Image'] = service['Spec']['TaskTemplate']['ContainerSpec']['Image']
@@ -280,7 +311,52 @@ class Swarm(object):
             # need to see if status needs to be added.
             e[n] = d
             n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Id', 'Name', 'Image', 'Replicas'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Image', 'Replicas'])))
+
+    def service_refresh(self, kwargs=None):
+        """List of docker images
+
+
+        :returns: None
+        :rtype: NoneType
+
+
+        """
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
+        filter = {}
+        n = 1
+        e = {}
+        data = []
+        for host in hosts:
+            os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            self.client = docker.from_env()
+            try:
+                services = self.client.services.list(**kwargs)
+            except docker.errors.APIError as e:
+                Console.error(e.explanation)
+                return
+
+            if len(services) == 0:
+                Console.info("No service exist on host" + host['Ip'])
+                return
+
+            for servicem in services:
+                d = {}
+                service = servicem.__dict__['attrs']
+                service['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+                data.append(service)
+                d['Ip'] = service['Ip']
+                d['Id'] = service['ID']
+                d['Name'] = service['Spec']['Name']
+                d['Image'] = service['Spec']['TaskTemplate']['ContainerSpec']['Image']
+                d['Replicas'] = service['Spec']['Mode']['Replicated']['Replicas']
+                e[n] = d
+                n = n + 1
+            perform_delete('Service', filter)
+        perform_post('Service', data)
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Image', 'Replicas'])))
 
     def service_create(self, name, image, kwargs=None):
         """List of docker images
@@ -315,9 +391,9 @@ class Swarm(object):
                     if t == 'EndpointSpec':
                         kwargs['endpoint_spec'] = docker.types.EndpointSpec(ports={9200: 9200, 9300: 9300})
             service = self.client.services.create(image, command=None, name=name, **kwargs)
-            print(service.attrs)
             data = []
             data.append(service.attrs)
+            data[0]['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             perform_post('Service', data)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -340,6 +416,7 @@ class Swarm(object):
             filter = {}
             filter['ID'] = service.id
             filter['Name'] = service.name
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             perform_delete('Service', filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -367,8 +444,12 @@ class Swarm(object):
                 pool_configs=[ipam_pool])
             Options = {"encrypted": ""}
             network = self.client.networks.create(name=networkName, options=Options, ipam=ipam_config, **kwargs)
+            data = []
+            network_dict = network.__dict__['attrs']
+            network_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            data.append(network_dict)
+            perform_post('Network', data)
             Console.ok("Network %s is created" % network.id)
-            print(network.__dict__['attrs'])
             # perform_post('Network',network.__dict__['attrs'])
             return network.id
         except docker.errors.APIError as e:
@@ -386,7 +467,6 @@ class Swarm(object):
         """
         try:
             networks = self.client.networks.list(**kwargs)
-            print(networks)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -399,12 +479,13 @@ class Swarm(object):
         e = {}
         for network in networks:
             d = {}
-            d['Id'] = network.short_id
-            d['Name'] = network.name
-            d['Containers'] = network.containers
+            d['Ip'] = network['Ip']
+            d['Id'] = network['Id']
+            d['Name'] = network['Name']
+            d['Containers'] = network['Containers']
             e[n] = d
             n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Id', 'Name', 'Containers'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Containers'])))
 
     def images_list(self, kwargs=None):
         """List of docker images
@@ -432,7 +513,10 @@ class Swarm(object):
             d = {}
             d['Ip'] = image['Ip']
             d['Id'] = image['Id']
-            d['Repository'] = image['RepoTags'][0]
+            if image['RepoTags'] == None:
+                d['Repository'] = image['RepoDigests'][0]
+            else:
+                d['Repository'] = image['RepoTags'][0]
             # d['Size'] = image['Size']
             d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)  # Converting the size to GB
             e[n] = d
@@ -448,7 +532,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -464,8 +549,8 @@ class Swarm(object):
                 return
 
             if len(images) == 0:
-                Console.info("No images exist")
-                return
+                Console.info("No images exist on host " + host['Ip'])
+                continue
 
             for imagem in images:
                 image = imagem.__dict__['attrs']
@@ -474,7 +559,10 @@ class Swarm(object):
                 d = {}
                 d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
                 d['Id'] = image['Id']
-                d['Repository'] = image['RepoTags'][0]
+                if image['RepoTags'] == None:
+                    d['Repository'] = image['RepoDigests'][0]
+                else:
+                    d['Repository'] = image['RepoTags'][0]
                 # d['Size'] = image['Size']
                 d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
                 e[n] = d
@@ -492,7 +580,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -524,7 +613,6 @@ class Swarm(object):
                 n = n + 1
             r = perform_delete('Network', filter)
         r = perform_post('Network', data)
-        print(r.text)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Containers'])))
 
     def container_list(self, kwargs=None):
@@ -570,7 +658,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -583,7 +672,7 @@ class Swarm(object):
                 containers = self.client.containers.list(all, **kwargs)
             except docker.errors.APIError as e:
                 Console.error(e.explanation)
-                continue
+                return
             if len(containers) == 0:
                 print("No containers exist" + str(host['Ip']))
                 continue

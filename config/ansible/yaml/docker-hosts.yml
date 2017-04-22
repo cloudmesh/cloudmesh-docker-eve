@@ -1,13 +1,26 @@
 ---
-- hosts: docker-cluster-Chameleon
-  sudo: yes
+- hosts: localhost
   tasks:
   - name: "Build hosts file"
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['ansible_ssh_host'] }} {{item}}" state=present
     with_items: "{{ groups['all'] }}"
+    become: true
+    ignore_errors: yes
+- hosts: docker-cluster
+  tasks:
+  - name: "Build hosts file"
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
+    with_items: "{{ groups['all'] }}"
+    become: true
+- hosts: swarm-cluster
+  tasks:
+  - name: "Build hosts file"
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
+    with_items: "{{ groups['all'] }}"
+    become: true
 - hosts: Benchmark-Tool-Server   
-  sudo: yes
   tasks:
   - name: "Build hosts file"
-    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['ansible_ssh_host'] }} {{item}}" state=present
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
     with_items: "{{ groups['all'] }}"
+    become: true

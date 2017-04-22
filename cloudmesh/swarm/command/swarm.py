@@ -28,7 +28,9 @@ class SwarmCommand(PluginCommand):
             swarm service create NAME IMAGE  [ARG...]
             swarm service list [ARG...]
             swarm service delete NAME
+            swarm service refresh
             swarm node list
+            swarm node refresh
             swarm image refresh
             swarm image list [ARG...]
             swarm container refresh
@@ -56,9 +58,7 @@ class SwarmCommand(PluginCommand):
         """
 
         kwargs = {}
-        print(arguments)
         if arguments.ARG:
-            print(arguments.ARG)
             for j in arguments.ARG:
                 kwargs[j.split('=', 1)[0].strip()] = j.split('=', 1)[1].strip()
                 val = j.split('=', 1)[1].strip()
@@ -66,8 +66,7 @@ class SwarmCommand(PluginCommand):
                 if '[' in j.split('=', 1)[1].strip():
                     val = val.replace('[', '').replace(']', '').split(',')
                     kwargs[j.split('=', 1)[0].strip()] = val
-                if '{' in val:
-                    print(ast.literal_eval(val))
+
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
@@ -109,23 +108,19 @@ class SwarmCommand(PluginCommand):
             return
 
         if arguments.create and not (arguments.service):
-            out = swarm.create(kwargs)
-            swarm.node_refresh(kwargs)
-            print(out)
+            swarm.create(kwargs)
             stopwatch.stop('E2E')
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.leave:
             swarm.leave(kwargs)
-            swarm.node_refresh(kwargs)
             stopwatch.stop('E2E')
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
         if arguments.join and arguments.ADDR and arguments.TYPE:
             swarm.join("{ADDR}".format(**arguments), "{TYPE}".format(**arguments), kwargs)
-            swarm.node_refresh(kwargs)
             stopwatch.stop('E2E')
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
@@ -142,6 +137,12 @@ class SwarmCommand(PluginCommand):
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
+        if arguments.service and arguments.refresh:
+            swarm.service_refresh(kwargs)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
         if arguments.service and arguments.delete:
             swarm.service_delete("{NAME}".format(**arguments))
             stopwatch.stop('E2E')
@@ -150,6 +151,12 @@ class SwarmCommand(PluginCommand):
 
         if arguments.node and arguments.list:
             swarm.node_list(kwargs)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.node and arguments.refresh:
+            swarm.node_refresh()
             stopwatch.stop('E2E')
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return

@@ -4,7 +4,7 @@ Name.
 Run shell commands based on csv input
 
 Usage:
-   run_script.py FILENAME
+   run_script.py FILENAME HOSTFILE
 
 Options:
   -h --help     Show this screen.
@@ -98,14 +98,16 @@ if __name__ == '__main__':
     arguments = docopt(__doc__)
     print(arguments)
     filename = sys.argv[1]
+    hosts = sys.argv[2]
     with open(filename) as csvfile:
         readCSV = csv.reader(csvfile, delimiter='#')
         command = []
         for row in readCSV:
+            row[1]=row[1].replace('$host',hosts)
             command.append(row)
-    print(command)
     for j in range(1, len(command)):
             start(command[j][0])
+            print (command[j][1])
             os.system(command[j][1])
             stop(command[j][0])
     print_all()
