@@ -310,7 +310,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Service')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -326,7 +327,7 @@ class Swarm(object):
                 return
 
             if len(services) == 0:
-                Console.info("No images exist")
+                Console.info("No service exist on host" + host['Ip'])
                 return
 
             for servicem in services:
@@ -516,7 +517,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -532,7 +534,7 @@ class Swarm(object):
                 return
 
             if len(images) == 0:
-                Console.info("No images exist")
+                Console.info("No images exist on host " + host['Ip'])
                 return
 
             for imagem in images:
@@ -560,7 +562,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -638,7 +641,8 @@ class Swarm(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        filter = {}
+        scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
         e = {}
