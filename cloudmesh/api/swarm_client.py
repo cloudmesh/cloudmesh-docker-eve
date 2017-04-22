@@ -323,6 +323,7 @@ class Swarm(object):
 
         """
         filter = {}
+        filter['Swarmmode'] = 'Manager'
         scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
@@ -533,6 +534,7 @@ class Swarm(object):
 
         """
         filter = {}
+        filter['Swarmmode'] = 'Manager'
         scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
@@ -581,6 +583,7 @@ class Swarm(object):
 
         """
         filter = {}
+        filter['Swarmmode'] = 'Manager'
         scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
