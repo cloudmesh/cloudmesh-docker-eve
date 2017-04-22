@@ -117,6 +117,7 @@ if __name__=='__main__':
     for i in range(n):
         for j in range(1 , len(command)):
             start(command[j][0])
+            print(command[j][1])
             os.system(command[j][1])
             stop(command[j][0])
     a=[]

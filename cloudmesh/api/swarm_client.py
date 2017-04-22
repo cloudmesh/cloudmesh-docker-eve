@@ -209,6 +209,7 @@ class Swarm(object):
         data = []
         for host in hosts:
             os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             self.client = docker.from_env()
             try:
@@ -331,6 +332,7 @@ class Swarm(object):
         data = []
         for host in hosts:
             os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             self.client = docker.from_env()
             try:
@@ -341,7 +343,7 @@ class Swarm(object):
 
             if len(services) == 0:
                 Console.info("No service exist on host" + host['Ip'])
-                return
+                continue
 
             for servicem in services:
                 d = {}
@@ -355,7 +357,7 @@ class Swarm(object):
                 d['Replicas'] = service['Spec']['Mode']['Replicated']['Replicas']
                 e[n] = d
                 n = n + 1
-            perform_delete('Service', filter)
+        perform_delete('Service')
         perform_post('Service', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Image', 'Replicas'])))
 
@@ -467,7 +469,7 @@ class Swarm(object):
 
         """
         try:
-            networks = self.client.networks.list(**kwargs)
+            scode, networks = perform_get('Network')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -534,7 +536,6 @@ class Swarm(object):
 
         """
         filter = {}
-        filter['Swarmmode'] = 'Manager'
         scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
@@ -542,7 +543,11 @@ class Swarm(object):
         data = []
         for host in hosts:
             os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            if host['Swarmmode'] == 'Worker':
+                perform_delete('Image', filter)
+                continue
             self.client = docker.from_env()
             try:
                 images = self.client.images.list(**kwargs)
@@ -583,7 +588,6 @@ class Swarm(object):
 
         """
         filter = {}
-        filter['Swarmmode'] = 'Manager'
         scode, hosts = perform_get('Host',filter)
         filter = {}
         n = 1
@@ -591,13 +595,17 @@ class Swarm(object):
         data = []
         for host in hosts:
             os.environ["DOCKER_HOST"] = host['Ip'] + ":" + str(host['Port'])
+            filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            if host['Swarmmode'] == 'Worker':
+                perform_delete('Network', filter)
+                continue
             self.client = docker.from_env()
             try:
                 networks = self.client.networks.list(**kwargs)
             except docker.errors.APIError as e:
                 Console.error(e.explanation)
-                continue
+                return
 
             if len(networks) == 0:
                 Console.info("No network exist" + host['Ip'])
@@ -709,6 +717,11 @@ class Swarm(object):
         try:
             network = self.client.networks.get(name)
             network.remove()
+            filter = {}
+            filter['ID'] = network.id
+            filter['Name'] = network.name
+            filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            perform_delete('Network', filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return

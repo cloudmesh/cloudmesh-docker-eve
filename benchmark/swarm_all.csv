@@ -16,8 +16,9 @@ Service-Refresh,cms swarm service refresh
 Container-Refresh,cms swarm container refresh
 Container-List,cms swarm container list
 Service-Delete,cms swarm service delete elasticsearch
-Network-List,cms docker network list
-Network-Refresh,cms docker network refresh
+Network-Refresh,cms swarm network refresh
+Network-List,cms swarm network list
+Network-Delete,cms swarm network delete elastic_cluster
 Swarm-Leave,cms swarm leave
 Host-Add,cms swarm host docker3 docker3:4243
 Swarm-Leave,cms swarm leave
