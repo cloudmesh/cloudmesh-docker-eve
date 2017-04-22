@@ -29,17 +29,19 @@ class Swarm(object):
 
         """
         try:
-            print('reaching here for swarm creation')
+            print('reaching here for host creation')
             host = {}
             host['Name'] = hostName
             host['Ip'] = addr.split(':')[0]
             host['Port'] = int(addr.split(':')[1])
             host['Swarmmode'] = ''
             host['SwarmmanagerIp'] = ''
-            host['Swarmhost'] = False
+            host['Swarmhost'] = ''
             filter = {}
             filter['Ip'] = addr.split(':')[0]
-            r = perform_post('Host', host, filter)
+            print(host)
+            perform_delete('Host',filter)
+            r = perform_post('Host', host)
             Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
         except Exception as e:
             Console.error(e.message)
@@ -57,6 +59,7 @@ class Swarm(object):
         """
         try:
             scode, hosts = perform_get('Host')
+            print(hosts)
         except Exception as e:
             Console.error(e.message)
             return
@@ -118,14 +121,17 @@ class Swarm(object):
         scode, hosts = perform_get('Host', filter)
         d = {}
         for host in hosts:
+            print('reaching here')
             d['Ip'] = host['Ip']
             d['Name'] = host['Name']
             d['Port'] = host['Port']
             d['Swarmmode'] = 'Manager'
             d['SwarmmanagerIp'] = ''
-            d['Swarmhost'] = True
-        perform_delete('Host', filter)
-        perform_post('Host', d)
+            d['Swarmhost'] = ''
+        print(d)
+        perform_delete('Host',filter)
+        perform_post('Host',d)
+
 
         return self.client.swarm.attrs['JoinTokens']
 
@@ -171,13 +177,16 @@ class Swarm(object):
         if type not in ['Manager', 'Worker']:
             Console.error('Valid values are Manager or Worker')
             return
-        token = self.client.swarm.attrs['JoinTokens'][type]
+        print(self.client.swarm.attrs)
+        token = self.client.swarm.attrs['JoinTokens']
+        print(self.client.swarm.attrs)
         os.environ["DOCKER_HOST"] = savehost
         self.client = docker.from_env()
         rcode = self.client.swarm.join(remote_addrs=man_list, join_token=token, listen_addr="0.0.0.0:2377", **kwargs)
         filter = {}
         filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
         scode, hosts = perform_get('Host', filter)
+        print('hosts',hosts)
         d = {}
         for host in hosts:
             d['Ip'] = host['Ip']
@@ -185,8 +194,10 @@ class Swarm(object):
             d['Port'] = host['Port']
             d['Swarmmode'] = type
             d['SwarmmanagerIp'] = addr.split(':')[0]
-            d['Swarmhost'] = True
-        perform_post('Host', d, filter)
+            d['Swarmhost'] = ''
+        perform_delete('Host',filter)
+        print(d)
+        perform_post('Host', d)
         Console.ok("Node Joined Swarm")
 
     def node_refresh(self, kwargs=None):
