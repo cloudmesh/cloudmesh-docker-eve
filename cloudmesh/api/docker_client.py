@@ -35,7 +35,9 @@ class Docker(object):
             host['Name'] = hostName
             host['Ip'] = addr.split(':')[0]
             host['Port'] = int(addr.split(':')[1])
-            host['Swarmmanager'] = False
+            host['Swarmmode'] = ''
+            host['SwarmmanagerIp'] = ''
+            host['Swarmhost'] = False
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             r = perform_post('Host', host, filter)
@@ -70,10 +72,10 @@ class Docker(object):
             d['Ip'] = str(host['Ip'])
             d['Name'] = str(host['Name'])
             d['Port'] = str(host['Port'])
-            d['Swarmmanager'] = str(host['Swarmmanager'])
+            d['Swarmmode'] = str(host['Swarmmode'])
             e[n] = d
             n = n + 1
-        Console.ok(str(Printer.dict_table(e, order=['Ip', 'Name', 'Port', 'Swarmmanager'])))
+        Console.ok(str(Printer.dict_table(e, order=['Ip', 'Name', 'Port', 'Swarmmode'])))
 
     def host_delete(self, addr):
         """Deletes docker host
@@ -384,6 +386,11 @@ class Docker(object):
         """
         try:
             network = self.client.networks.create(name=networkName, **kwargs)
+            data = []
+            network_dict = network.__dict__['attrs']
+            network_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
+            data.append(network_dict)
+            perform_post('Network', data)
             Console.ok("Network %s is created" % network.Name)
             return network.id
         except docker.errors.APIError as e:
@@ -463,7 +470,6 @@ class Docker(object):
                 n = n + 1
             r = perform_delete('Network', filter)
         r = perform_post('Network', data)
-        print(r.text)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Containers'])))
 
     def process_config(self):

@@ -71,6 +71,7 @@ if __name__ == '__main__':
         data = json.load(data_file)
     for j in data:
         r = perform_delete(j)
+        '''
         print ('Delete : ' + str(j) + "-" + str(r.status_code))
         r = perform_post(j, data[j])
         print ('Insert : ' + str(j) + "-" + str(r.status_code))
@@ -90,3 +91,4 @@ if __name__ == '__main__':
         r = perform_put(j, data[j], filter)
         print ('Update : ' + str(j) + "-" + str(r.status_code))
         break
+        '''

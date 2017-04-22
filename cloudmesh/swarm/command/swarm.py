@@ -28,6 +28,7 @@ class SwarmCommand(PluginCommand):
             swarm service create NAME IMAGE  [ARG...]
             swarm service list [ARG...]
             swarm service delete NAME
+            swarm service refresh
             swarm node list
             swarm image refresh
             swarm image list [ARG...]
@@ -56,9 +57,7 @@ class SwarmCommand(PluginCommand):
         """
 
         kwargs = {}
-        print(arguments)
         if arguments.ARG:
-            print(arguments.ARG)
             for j in arguments.ARG:
                 kwargs[j.split('=', 1)[0].strip()] = j.split('=', 1)[1].strip()
                 val = j.split('=', 1)[1].strip()
@@ -66,8 +65,7 @@ class SwarmCommand(PluginCommand):
                 if '[' in j.split('=', 1)[1].strip():
                     val = val.replace('[', '').replace(']', '').split(',')
                     kwargs[j.split('=', 1)[0].strip()] = val
-                if '{' in val:
-                    print(ast.literal_eval(val))
+
 
         stopwatch = StopWatch()
         stopwatch.start('E2E')
@@ -138,6 +136,12 @@ class SwarmCommand(PluginCommand):
 
         if arguments.service and arguments.list:
             swarm.service_list(kwargs)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.service and arguments.refresh:
+            swarm.service_refresh(kwargs)
             stopwatch.stop('E2E')
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
