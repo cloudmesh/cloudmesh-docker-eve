@@ -35,7 +35,7 @@ class Swarm(object):
             host['Port'] = int(addr.split(':')[1])
             host['Swarmmode'] = ''
             host['SwarmmanagerIp'] = ''
-            host['Swarmhost'] = ''
+            host['Swarmhost'] = False
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             perform_delete('Host',filter)
@@ -122,7 +122,7 @@ class Swarm(object):
             d['Port'] = host['Port']
             d['Swarmmode'] = 'Manager'
             d['SwarmmanagerIp'] = ''
-            d['Swarmhost'] = ''
+            d['Swarmhost'] = True
         perform_post('Host',d,filter)
         self.node_refresh()
 
@@ -185,7 +185,7 @@ class Swarm(object):
             d['Port'] = host['Port']
             d['Swarmmode'] = type
             d['SwarmmanagerIp'] = addr.split(':')[0]
-            d['Swarmhost'] = ''
+            d['Swarmhost'] = True
         perform_post('Host', d,filter)
         self.node_refresh()
         Console.ok("Node Joined Swarm")
