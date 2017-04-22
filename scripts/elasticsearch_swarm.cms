@@ -1,0 +1,11 @@
+Command Name#Command
+Host-Create1#cms swarm host docker3 docker3:4243
+Host-Create2#cms swarm host docker4 docker4:4243
+Swarm-Create#cms swarm create
+Host-Create3#cms swarm host docker3 docker3:4243
+Swarm-Join#cms swarm join docker4 Worker
+Host-Create4#cms swarm host docker4 docker4:4243
+Network-Create1#cms swarm network create elastic_cluster driver="overlay"
+Service-Create1#cms swarm service create elasticsearch elasticsearch:swarm ServiceMode.mode="replicated" ServiceMode.replicas=4 EndpointSpec.ports=["9200:9200"] networks=["elastic_cluster"] env=["SERVICE_NAME=elasticsearch"]
+Sleep1#sleep 15
+Container-Refresh1#cms swarm container refresh

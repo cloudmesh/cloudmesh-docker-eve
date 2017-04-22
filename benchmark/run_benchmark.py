@@ -4,11 +4,11 @@ Name.
 Run shell commands for benchmark based on csv input
 
 Usage:
-   run_benchmark.py FILENAME N OUTFILENAME
+   run_benchmark.py FILENAME N [CLOUD]
 
    FILENAME File with commands
    N Number of iterations
-   OUTFILENAME Filename for results
+   CLOUD Cloud Name
 
 Options:
   -h --help     Show this screen.
@@ -22,6 +22,9 @@ import os
 import sys
 import csv
 from docopt import docopt
+import datetime
+
+
 total = {}
 started = {}
 
@@ -99,7 +102,12 @@ if __name__=='__main__':
     print(arguments)
     filename = sys.argv[1]
     n = int(sys.argv[2])
-    outfilename = sys.argv[3]
+    now = datetime.datetime.now()
+    datestr=now.strftime("%Y%m%d%H%M%S")
+    if 'CLOUD' in arguments:
+        outfilename = filename.replace('.csv','-' + arguments['CLOUD'] + '-' + datestr + '.csv')
+    else:
+        outfilename = filename.replace('.csv','-'+datestr + '.csv')
     with open(filename) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         command=[]
@@ -108,8 +116,6 @@ if __name__=='__main__':
     print(command)
     for i in range(n):
         for j in range(1 , len(command)):
-            if j == 1:
-                continue
             start(command[j][0])
             os.system(command[j][1])
             stop(command[j][0])

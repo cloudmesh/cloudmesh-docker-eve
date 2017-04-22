@@ -1,0 +1,8 @@
+[docker-cluster]
+docker1 ansible_ssh_user=cc ansible_ssh_host=129.114.33.51 internal_ip=192.168.0.176
+docker2 ansible_ssh_user=cc ansible_ssh_host=129.114.33.3 internal_ip=192.168.0.18
+[swarm-cluster]
+docker3 ansible_ssh_user=cc ansible_ssh_host=129.114.33.236 internal_ip=192.168.0.103
+docker4 ansible_ssh_user=cc ansible_ssh_host=129.114.33.87 internal_ip=192.168.0.200
+[Benchmark-Tool-Server]
+dockerconfig ansible_ssh_user=cc ansible_ssh_host=129.114.33.221 internal_ip=192.168.0.183

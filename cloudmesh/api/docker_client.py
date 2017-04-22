@@ -321,7 +321,10 @@ class Docker(object):
             d = {}
             d['Ip'] = image['Ip']
             d['Id'] = image['Id']
-            d['Repository'] = image['RepoTags'][0]
+            if image['RepoTags'] == None:
+                d['Repository'] = image['RepoDigests'][0]
+            else:
+                d['Repository'] = image['RepoTags'][0]
             # d['Size'] = image['Size']
             d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)  # Converting the size to GB
             e[n] = d
@@ -354,7 +357,7 @@ class Docker(object):
 
             if len(images) == 0:
                 Console.info("No images exist")
-                return
+                continue
 
             for imagem in images:
                 image = imagem.__dict__['attrs']
@@ -363,7 +366,10 @@ class Docker(object):
                 d = {}
                 d['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
                 d['Id'] = image['Id']
-                d['Repository'] = image['RepoTags'][0]
+                if image['RepoTags'] == None:
+                    d['Repository'] = image['RepoDigests'][0]
+                else:
+                    d['Repository'] = image['RepoTags'][0]
                 # d['Size'] = image['Size']
                 d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
                 e[n] = d

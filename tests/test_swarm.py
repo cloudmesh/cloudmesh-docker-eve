@@ -63,7 +63,7 @@ class Test_swarm(object):
         HEADING("list swarm nodes")
         result = run("cms swarm node list")
         print(result)
-        assert "cms" in result  # need to make real assertion
+        assert "Ip" in result  # need to make real assertion
     '''
     def test_007(self):
         HEADING("list swarm attrbs")
