@@ -115,6 +115,7 @@ if __name__=='__main__':
             command.append(row)
     print(command)
     for i in range(n):
+        print ('Starting iteration ' + str(n))
         for j in range(1 , len(command)):
             start(command[j][0])
             print(command[j][1])
