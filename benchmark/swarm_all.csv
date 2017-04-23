@@ -1,16 +1,24 @@
 ﻿Key,Command
-Host-Add,cms docker host docker1 docker1:4243
-Host-Add,cms docker host docker2 docker2:4243
-Host-List,cms docker host list
-Image-Refresh,cms docker image refresh
-Image-List,cms docker image list
-Container-Refresh,cms docker container refresh
-Container-List,cms docker container list
-Container-Create,cms docker container create test1 elasticsearch:docker
-Container-Start,cms docker container start test1
-Container-List,cms docker container list
-Sontainer-Stop,cms docker container stop test1
-Container-Delete,cms docker container delete test1
-Container-List,cms docker container list
-Network-Refresh,cms docker network refresh
-Network-List,cms docker network list
+Host-Add,cms swarm host docker4 docker4:4243
+Host-List,cms swarm host list
+Swarm-Create,cms swarm create
+Node-List,cms swarm node list
+Node-Refresh,cms swarm node refresh
+Host-Add,cms swarm host docker3 docker3:4243
+Swarm-Join,cms swarm join docker4 Worker
+Host-Add,cms swarm host docker4 docker4:4243
+Image-List,cms swarm image list
+Image-Refresh,cms swarm image refresh
+Network-Create,cms swarm network create elastic_cluster driver="overlay"
+Service-Create,cms swarm service create elasticsearch elasticsearch:swarm ServiceMode.mode="replicated" ServiceMode.replicas=4 EndpointSpec.ports=["9200:9200"] networks=["elastic_cluster"] env=["SERVICE_NAME=elasticsearch"]
+Service-List,cms swarm service list
+Service-Refresh,cms swarm service refresh
+Container-Refresh,cms swarm container refresh
+Container-List,cms swarm container list
+Service-Delete,cms swarm service delete elasticsearch
+Network-Refresh,cms swarm network refresh
+Network-List,cms swarm network list
+Network-Delete,cms swarm network delete elastic_cluster
+Swarm-Leave,cms swarm leave
+Host-Add,cms swarm host docker3 docker3:4243
+Swarm-Leave,cms swarm leave
