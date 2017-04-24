@@ -273,16 +273,18 @@ available in the /config/ansible/YAML directory
 
 ::
 
-docker.yml -  Install Docker on remote hosts
-docker-hosts.yml - Make entry in /etc/hosts for every server
-                   in your host file with the host name as defined in
-				   the ansible inventory.txt so that we can refer to
-				   the hosts via standard names across across servers 
-				   without the need for using a Ip address
-docker-image-install.yml - Is a reference template for installing docker
-                           on remote hosts.This Playbook will automatically
-						   sync the /config/docker folder to the remote
-						   and run the Dockerfile in them to build the images.
+	docker.yml -       Install Docker on remote hosts
+	
+	docker-hosts.yml - Make entry in /etc/hosts for every server
+			   in your host file with the host name as defined in
+			   the ansible inventory.txt so that we can refer to
+			   the hosts via standard names across across servers 
+			   without the need for using a Ip address
+
+	docker-image-install.yml - Is a reference template for installing docker
+				   on remote hosts.This Playbook will automatically
+				   sync the /config/docker folder to the remote
+				   and run the Dockerfile in them to build the images.
 						   
 Ansible Inventory
 -----------------
