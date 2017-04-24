@@ -264,7 +264,7 @@ You will have to do the following modifications to match you machine::
         path: ~/app/cloudmesh.docker/config/
         base: /app/cloudmesh.docker/
 	
-Ansible Sripts
+Ansible Scripts
 --------------	
 
 The project includes multiple Ansible scripts available in the 
