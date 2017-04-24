@@ -10,19 +10,23 @@ WORKDIR $HOME/app
 RUN mkdir cloudmesh.docker
 COPY . $HOME/app/cloudmesh.docker/
 RUN apt-get update
-RUN apt-get install -y git python-pip mongodb vim
+RUN apt-get install -y git python-pip mongodb vim ansible
 WORKDIR $HOME/app
 RUN git clone https://github.com/karvenka/cloudmesh.common.git
 RUN git clone https://github.com/karvenka/cmd5.git
 RUN git clone https://github.com/karvenka/cloudmesh.rest.git
 WORKDIR $HOME/app/cloudmesh.common
 RUN python setup.py install
+RUN pip install -e .
 WORKDIR $HOME/app/cmd5
 RUN python setup.py install
+RUN pip install -e .
 WORKDIR $HOME/app/cloudmesh.rest
 RUN python setup.py install
+RUN pip install -e .
 WORKDIR $HOME/app/cloudmesh.docker
 RUN python setup.py install
+RUN pip install -e .
 RUN mkdir $HOME/.cloudmesh
 RUN mkdir $HOME/.cloudmesh/eve
 WORKDIR /root/.cloudmesh
