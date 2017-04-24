@@ -17,7 +17,9 @@ class SwarmCommand(PluginCommand):
           Usage:
             swarm host list
             swarm host delete ADDR
+            swarm host install HFILE
             swarm host NAME ADDR
+            swarm benchmark N
             swarm create [ARG...]
             swarm join ADDR TYPE [ARG...]
             swarm leave [ARG...]
@@ -40,6 +42,8 @@ class SwarmCommand(PluginCommand):
           Arguments:
             NAME     The name of the docker swarm
             IMAGE    Docker server images
+            HFILE    Ansible Inventory.txt to be used
+            N        Number of Benchmark iterations
             ADDR     Address of host ip:port(if port no given default port is assumed)
             TYPE     Whether the node is Manager or Worker
             URL      URL of docker API
@@ -72,6 +76,29 @@ class SwarmCommand(PluginCommand):
         stopwatch.start('E2E')
         Base = ConfigDict('cloudmesh_cmd5.yaml',
                           verbose=False)
+        if arguments.benchmark :
+            path = Base['cloudmesh']['config']['base']
+            os.chdir(path+'benchmark')
+            command = 'python run_benchmark.py swarm_all.csv ' + arguments.N
+            print(command)
+            os.system(command)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host and arguments.install:
+            if arguments.HFILE:
+                hosts = arguments.HFILE
+            else:
+                hosts = 'hosts'
+            path = Base['cloudmesh']['config']['base']
+            os.chdir(path+'scripts')
+            command = 'python run_script.py docker-server-setup.cms ' + hosts
+            print(command)
+            os.system(command)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
         if arguments.host and arguments.list:
             swarm = Swarm(os.environ["DOCKER_HOST"])

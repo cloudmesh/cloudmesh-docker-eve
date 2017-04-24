@@ -44,4 +44,5 @@ cloudmesh:
         file: ~/.cloudmesh/cloudmesh.log
         level: DEBUG
     config:
-        path: /home/ubuntu/git/cloudmesh.docker/config/
+        path: /app/cloudmesh.docker/config/
+        base: /app/cloudmesh.docker/

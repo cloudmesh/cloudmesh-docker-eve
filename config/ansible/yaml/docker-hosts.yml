@@ -4,7 +4,7 @@
   - name: "Build hosts file"
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['ansible_ssh_host'] }} {{item}}" state=present
     with_items: "{{ groups['all'] }}"
-    become: true
+    become: yes
     ignore_errors: yes
 - hosts: docker-cluster
   tasks:
