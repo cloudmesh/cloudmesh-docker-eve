@@ -94,10 +94,166 @@ So we strongly recommend using the above commands to use the repository .You can
 the standard docker commands to start the container however you will manually need to ensure 
 the mouting of the directories and networking requirements for the container.
 	
+Configuration
+------------------
+
+To configure access to docker on a machine please use the cloudmesh_cmd5.yaml file available
+in teh config directory.This file is to be copied to ~/.cloudmesh directory
+
+You will have to do the following modifications to match you machine::
+
+    profile:
+        firstname: TBD
+        lastname: TBD
+        email: TBD
+        user: TBD
+
+
+	system:
+        data: ~/.cloudmesh/cloudmesh_inventory.yaml
+        console_color: true
+    logging:
+        file: ~/.cloudmesh/cloudmesh.log
+        level: DEBUG
+    config:
+        path: ~/app/cloudmesh.docker/config/
+        base: /app/cloudmesh.docker/
+
+Managing Mongo
+^^^^^^^^^^^^^^
+
+Next you need to start the mongo service with::
+
+    cms admin mongo start
+
+You can look at the status and information about the service with ::
+
+    cms admin mongo info
+    cms admin mongo status
+
+If you need to stop the service you can use::
+
+    cms admin mongo stop
+
+Managing Eve
+^^^^^^^^^^^^^
+
+The settings.py file available as part of cloudmesh.docker/config/restjson needs to be copied to 
+~/.cloudmesh/eve directory.The setting.py file has the schema details of the mongo db objects used 
+by the client.
+
+Now it is time to start the REST service. THis is done in a separate window with the following commands::
+
+  cms admin rest start
+
+This file is than used by the start action to start the eve service.
+Please make sure that you execute this command in a separate window, as
+for debugging purposses you will be able to monitor this way interactions
+with this service
+
+Ansible Scripts
+--------------	
+
+The project includes multiple Ansible scripts available in the 
+/config/ansible directory.The Ansible playbook YML files are 
+available in the /config/ansible/YAML directory
+
+::
+
+	docker.yml -       Install Docker on remote hosts
+	
+	docker-hosts.yml - Make entry in /etc/hosts for every server
+			   in your host file with the host name as defined in
+			   the ansible inventory.txt so that we can refer to
+			   the hosts via standard names across across servers 
+			   without the need for using a Ip address
+
+	docker-image-install.yml - Is a reference template for installing docker
+				   on remote hosts.This Playbook will automatically
+				   sync the /config/docker folder to the remote
+				   and run the Dockerfile in them to build the images.
+						   
+Ansible Inventory
+-----------------
+
+A key requirement for using the repository is to build a host file.A template of the
+host file is available in /config/ansible.Please set this up before using the ansible
+scripts::
+
+        [docker-cluster]
+        docker1 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        docker2 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        [swarm-cluster]
+        docker3 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        docker4 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        [Benchmark-Tool-Server]
+        dockerconfig ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+	
+The docker-hosts ansible playbook uses the internal_ip field to setup the /etc/hosts
+entry in all the servers listed here.
+
+Also you would need to make entry for these hosts in the /etc/hosts of your local machine
+to start using the test scripts in the repo.
+
+We recommend that you maintain separate host files for each cloud against which you would
+like to use the client.eg
+
+::
+
+	hosts.chameleon
+	hosts.aws
+	hosts.jetstream
+
+We are currently looking at automating this process using cloudmesh client.However that is WIP.
+
+Run Ansible Scripts
+---------------------
+
+Once the host file setup is done installation of the docker in all the remote hosts is trivial.
+You can chose to use the cms command build to run the docker setup ansible scripts
+
+::
+
+	cms docker install hosts.chameleon
+	cms swarm install hosts.jetstream
+
+You can also run the playbooks manually at /config/ansible::
+
+	ansible-playbook -i hosts.chameleon docker.yml
+	ansible-playbook -i docker-hosts.yml
+
+
+Docker Api
+----------
+
+The CMD5 docker and swarm commands can be used to work on docker 
+installed on any server. The only requirement is to have docker api
+exposed out in a certain port.
+
+The repository includes a ansible script available in config/ansible
+directory to install docker on remote hosts as configured in the Hosts 
+file.
+
+The YML configs are available in config/ansible/yaml directory.
+
+The YML file docker.yml will install the latest docker
+on all the remote hosts configured in you hosts file and also enable
+your docker remote machines for remote acess .
+
+If you have installed docker manually on the remote hosts please
+ensure that the ExecStart
+value is set in the /lib/systemd/system/docker.service as below::
+
+    ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243
+
+Setting the above value and restarting the docker service will ensure 
+docker api is exposed and accessible remotely.
+
+
 Execution
 ---------
 
-to run the shell you can activate it with the cms command. cms stands
+To run the shell you can activate it with the cms command. cms stands
 for cloudmesh shell::
 
     $ cms
@@ -124,7 +280,7 @@ To see the list of commands you can say::
 To see the manula page for a specific command, please use::
 
     help COMMANDNAME
-
+    
 Commands
 ---------
 
@@ -238,165 +394,9 @@ swarm command
              Manages a virtual docker swarm on a cloud
 
 
+Sample Execution Steps
+----------------------
 
-CMD5 configuration
-------------------
-
-To configure access to docker on a machine please use the cloudmesh_cmd5.yaml file available
-in teh config directory.This file is to be copied to ~/.cloudmesh directory
-
-You will have to do the following modifications to match you machine::
-
-    profile:
-        firstname: TBD
-        lastname: TBD
-        email: TBD
-        user: TBD
-
-
-	system:
-        data: ~/.cloudmesh/cloudmesh_inventory.yaml
-        console_color: true
-    logging:
-        file: ~/.cloudmesh/cloudmesh.log
-        level: DEBUG
-    config:
-        path: ~/app/cloudmesh.docker/config/
-        base: /app/cloudmesh.docker/
-	
-Ansible Scripts
---------------	
-
-The project includes multiple Ansible scripts available in the 
-/config/ansible directory.The Ansible playbook YML files are 
-available in the /config/ansible/YAML directory
-
-::
-
-	docker.yml -       Install Docker on remote hosts
-	
-	docker-hosts.yml - Make entry in /etc/hosts for every server
-			   in your host file with the host name as defined in
-			   the ansible inventory.txt so that we can refer to
-			   the hosts via standard names across across servers 
-			   without the need for using a Ip address
-
-	docker-image-install.yml - Is a reference template for installing docker
-				   on remote hosts.This Playbook will automatically
-				   sync the /config/docker folder to the remote
-				   and run the Dockerfile in them to build the images.
-						   
-Ansible Inventory
------------------
-
-A key requirement for using the repository is to build a host file.A template of the
-host file is available in /config/ansible.Please set this up before using the ansible
-scripts::
-
-        [docker-cluster]
-        docker1 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-        docker2 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-        [swarm-cluster]
-        docker3 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-        docker4 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-        [Benchmark-Tool-Server]
-        dockerconfig ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-	
-The docker-hosts ansible playbook uses the internal_ip field to setup the /etc/hosts
-entry in all the servers listed here.
-
-Also you would need to make entry for these hosts in the /etc/hosts of your local machine
-to start using the test scripts in the repo.
-
-We recommend that you maintain separate host files for each cloud against which you would
-like to use the client.eg
-
-::
-
-	hosts.chameleon
-	hosts.aws
-	hosts.jetstream
-
-We are currently looking at automating this process using cloudmesh client.However that is WIP.
-
-Run Ansible Scripts
----------------------
-
-Once the host file setup is done installation of the docker in all the remote hosts is trivial.
-You can chose to use the cms command build to run the docker setup ansible scripts
-
-::
-
-	cms docker install hosts.chameleon
-	cms swarm install hosts.jetstream
-
-You can also run the playbooks manually at /config/ansible::
-
-	ansible-playbook -i hosts.chameleon docker.yml
-	ansible-playbook -i docker-hosts.yml
-
-
-Docker Api
-----------
-
-The CMD5 docker and swarm commands can be used to work on docker 
-installed on any server. The only requirement is to have docker api
-exposed out in a certain port.
-
-The repository includes a ansible script available in config/ansible
-directory to install docker on remote hosts as configured in the Hosts 
-file.
-
-The YML configs are available in config/ansible/yaml directory.
-
-The YML file docker.yml will install the latest docker
-on all the remote hosts configured in you hosts file and also enable
-your docker remote machines for remote acess .
-
-If you have installed docker manually on the remote hosts please
-ensure that the ExecStart
-value is set in the /lib/systemd/system/docker.service as below::
-
-    ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243
-
-Setting the above value and restarting the docker service will ensure 
-docker api is exposed and accessible remotely.
-
-Managing Mongo
-^^^^^^^^^^^^^^
-
-Next you need to start the mongo service with::
-
-    cms admin mongo start
-
-You can look at the status and information about the service with ::
-
-    cms admin mongo info
-    cms admin mongo status
-
-If you need to stop the service you can use::
-
-    cms admin mongo stop
-
-Managing Eve
-^^^^^^^^^^^^^
-
-The settings.py file available as part of cloudmesh.docker/config/restjson needs to be copied to 
-~/.cloudmesh/eve directory.The setting.py file has the schema details of the mongo db objects used 
-by the client.
-
-Now it is time to start the REST service. THis is done in a separate window with the following commands::
-
-  cms admin rest start
-
-This file is than used by the start action to start the eve service.
-Please make sure that you execute this command in a separate window, as
-for debugging purposses you will be able to monitor this way interactions
-with this service
-
-
-Steps to execute
-----------------
 Below are example usage of the command.The first step is always to
 set the docker api url
 
