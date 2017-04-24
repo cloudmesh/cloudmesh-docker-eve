@@ -38,8 +38,16 @@ class Swarm(object):
             host['Swarmhost'] = False
             filter = {}
             filter['Ip'] = addr.split(':')[0]
-            perform_delete('Host',filter)
-            r = perform_post('Host', host)
+            try:
+                scode, hosts = perform_get('Host')
+            except Exception as e:
+                Console.error(e.message)
+                return
+            if len(hosts) != 0:
+                Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
+                return
+
+            r = perform_post('Host', host,filter)
             Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
         except Exception as e:
             Console.error(e.message)
@@ -358,6 +366,9 @@ class Swarm(object):
                 e[n] = d
                 n = n + 1
         perform_delete('Service')
+        if len(data) == 0:
+            Console.info("No service exist ")
+            return
         perform_post('Service', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Image', 'Replicas'])))
 

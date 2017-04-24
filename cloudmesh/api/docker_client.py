@@ -40,6 +40,14 @@ class Docker(object):
             host['Swarmhost'] = False
             filter = {}
             filter['Ip'] = addr.split(':')[0]
+            try:
+                scode, hosts = perform_get('Host')
+            except Exception as e:
+                Console.error(e.message)
+                return
+            if len(hosts) != 0:
+                Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
+                return
             r = perform_post('Host', host, filter)
             Console.ok('Host ' + hostName + ' is Added and is the default host')
         except Exception as e:

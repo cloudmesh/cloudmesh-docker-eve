@@ -1,0 +1,139 @@
+,Operation ,Metric ,Unit ,Docker,Swarm
+Value ,,Flush time ,min ,0.9709 ,1.34333 
+Value ,,Heap used for doc values ,MB ,0.100285 ,0.0691528 
+Value ,,Heap used for norms ,MB ,0.0457153 ,0.0448608 
+Value ,,Heap used for points ,MB ,0.0103054 ,0.0108099 
+Value ,,Heap used for segments ,MB ,39.8686 ,39.4537 
+Value ,,Heap used for stored fields ,MB ,1.88846 ,1.8848 
+Value ,,Heap used for terms ,MB ,37.8238 ,37.4441 
+Value ,,Indexing time ,min ,117.888 ,136.951 
+Value ,,Merge throttle time ,min ,75.5648 ,87.8035 
+Value ,,Merge time ,min ,146.693 ,179.403 
+Value ,,Refresh time ,min ,27.4014 ,32.6458 
+Value ,,Segment count ,,141 ,128 
+Value ,,Total Old Gen GC ,s ,24.588 ,27.041 
+Value ,,Total Young Gen GC ,s ,231.828 ,335.841 
+Value ,articles_monthly_agg_cached ,100th percentile latency ,ms ,51.7109 ,77.7354 
+Value ,articles_monthly_agg_cached ,100th percentile service time ,ms ,51.573 ,77.5985 
+Value ,articles_monthly_agg_cached ,50.0th percentile latency ,ms ,5.45616 ,6.51137 
+Value ,articles_monthly_agg_cached ,50.0th percentile service time ,ms ,5.31472 ,6.37898 
+Value ,articles_monthly_agg_cached ,90.0th percentile latency ,ms ,6.43806 ,7.74444 
+Value ,articles_monthly_agg_cached ,90.0th percentile service time ,ms ,6.28921 ,7.55815 
+Value ,articles_monthly_agg_cached ,99.0th percentile latency ,ms ,17.9077 ,18.2691 
+Value ,articles_monthly_agg_cached ,99.0th percentile service time ,ms ,17.7734 ,17.9118 
+Value ,articles_monthly_agg_cached ,99.9th percentile latency ,ms ,37.209 ,52.9209 
+Value ,articles_monthly_agg_cached ,99.9th percentile service time ,ms ,37.0645 ,52.7847 
+Value ,articles_monthly_agg_cached ,Max Throughput ,ops/s ,20.0354 ,20.0353 
+Value ,articles_monthly_agg_cached ,Median Throughput ,ops/s ,20.0178 ,20.0175 
+Value ,articles_monthly_agg_cached ,Min Throughput ,ops/s ,20.0102 ,20.0117 
+Value ,articles_monthly_agg_cached ,error rate ,% ,0 ,0 
+Value ,articles_monthly_agg_uncached ,100th percentile latency ,ms ,103.956 ,139.99 
+Value ,articles_monthly_agg_uncached ,100th percentile service time ,ms ,103.857 ,139.894 
+Value ,articles_monthly_agg_uncached ,50.0th percentile latency ,ms ,30.3675 ,27.4561 
+Value ,articles_monthly_agg_uncached ,50.0th percentile service time ,ms ,30.2052 ,27.1005 
+Value ,articles_monthly_agg_uncached ,90.0th percentile latency ,ms ,38.4554 ,35.9678 
+Value ,articles_monthly_agg_uncached ,90.0th percentile service time ,ms ,38.2029 ,35.3591 
+Value ,articles_monthly_agg_uncached ,99.0th percentile latency ,ms ,51.652 ,80.9455 
+Value ,articles_monthly_agg_uncached ,99.0th percentile service time ,ms ,49.0652 ,57.4568 
+Value ,articles_monthly_agg_uncached ,99.9th percentile latency ,ms ,91.2886 ,137.866 
+Value ,articles_monthly_agg_uncached ,99.9th percentile service time ,ms ,91.1947 ,125.098 
+Value ,articles_monthly_agg_uncached ,Max Throughput ,ops/s ,20.0172 ,20.0229 
+Value ,articles_monthly_agg_uncached ,Median Throughput ,ops/s ,20.0085 ,20.0093 
+Value ,articles_monthly_agg_uncached ,Min Throughput ,ops/s ,19.9963 ,20.0017 
+Value ,articles_monthly_agg_uncached ,error rate ,% ,0 ,0 
+Value ,default ,100th percentile latency ,ms ,219.142 ,617.471 
+Value ,default ,100th percentile service time ,ms ,219.007 ,397.197 
+Value ,default ,50.0th percentile latency ,ms ,19.2227 ,31.5884 
+Value ,default ,50.0th percentile service time ,ms ,18.9815 ,31.0984 
+Value ,default ,90.0th percentile latency ,ms ,22.6703 ,43.851 
+Value ,default ,90.0th percentile service time ,ms ,22.3652 ,36.3304 
+Value ,default ,99.0th percentile latency ,ms ,43.4009 ,408.743 
+Value ,default ,99.0th percentile service time ,ms ,33.2778 ,66.2203 
+Value ,default ,99.9th percentile latency ,ms ,183.799 ,601.868 
+Value ,default ,99.9th percentile service time ,ms ,75.7667 ,354.816 
+Value ,default ,Max Throughput ,ops/s ,20.0256 ,20.0145 
+Value ,default ,Median Throughput ,ops/s ,20.0133 ,20.007 
+Value ,default ,Min Throughput ,ops/s ,19.9281 ,19.7644 
+Value ,default ,error rate ,% ,0 ,0 
+Value ,force-merge ,100th percentile latency ,ms ,569.697 ,1060.38 
+Value ,force-merge ,100th percentile service time ,ms ,569.697 ,1060.38 
+Value ,force-merge ,Max Throughput ,ops/s ,1.75528 ,0.943048 
+Value ,force-merge ,Median Throughput ,ops/s ,1.75528 ,0.943048 
+Value ,force-merge ,Min Throughput ,ops/s ,1.75528 ,0.943048 
+Value ,force-merge ,error rate ,% ,0 ,0 
+Value ,index-append ,100th percentile latency ,ms ,11635.4 ,39757.8 
+Value ,index-append ,100th percentile service time ,ms ,11635.4 ,39757.8 
+Value ,index-append ,50.0th percentile latency ,ms ,6773.83 ,7314 
+Value ,index-append ,50.0th percentile service time ,ms ,6773.83 ,7314 
+Value ,index-append ,90.0th percentile latency ,ms ,8716.37 ,9951.58 
+Value ,index-append ,90.0th percentile service time ,ms ,8716.37 ,9951.58 
+Value ,index-append ,99.0th percentile latency ,ms ,10315 ,18983.9 
+Value ,index-append ,99.0th percentile service time ,ms ,10315 ,18983.9 
+Value ,index-append ,Max Throughput ,docs/s ,547.955 ,470.403 
+Value ,index-append ,Median Throughput ,docs/s ,535.527 ,461.233 
+Value ,index-append ,Min Throughput ,docs/s ,514.154 ,435.892 
+Value ,index-append ,error rate ,% ,0.91 ,3.37 
+Value ,index-stats ,100th percentile latency ,ms ,90.484 ,39.5047 
+Value ,index-stats ,100th percentile service time ,ms ,90.3555 ,39.3637 
+Value ,index-stats ,50.0th percentile latency ,ms ,6.57743 ,6.85311 
+Value ,index-stats ,50.0th percentile service time ,ms ,6.42339 ,6.61642 
+Value ,index-stats ,90.0th percentile latency ,ms ,13.3716 ,9.27669 
+Value ,index-stats ,90.0th percentile service time ,ms ,9.51196 ,8.95994 
+Value ,index-stats ,99.0th percentile latency ,ms ,80.9107 ,25.5384 
+Value ,index-stats ,99.0th percentile service time ,ms ,18.75 ,22.3233 
+Value ,index-stats ,Max Throughput ,ops/s ,50.1464 ,50.3301 
+Value ,index-stats ,Median Throughput ,ops/s ,49.8993 ,50.2674 
+Value ,index-stats ,Min Throughput ,ops/s ,49.6522 ,50.2046 
+Value ,index-stats ,error rate ,% ,0 ,0 
+Value ,node-stats ,100th percentile latency ,ms ,75.0442 ,44.4468 
+Value ,node-stats ,100th percentile service time ,ms ,74.9391 ,44.3385 
+Value ,node-stats ,50.0th percentile latency ,ms ,7.60072 ,7.69104 
+Value ,node-stats ,50.0th percentile service time ,ms ,7.32819 ,7.50903 
+Value ,node-stats ,90.0th percentile latency ,ms ,10.765 ,15.0969 
+Value ,node-stats ,90.0th percentile service time ,ms ,9.42184 ,12.5087 
+Value ,node-stats ,99.0th percentile latency ,ms ,63.2225 ,33.6138 
+Value ,node-stats ,99.0th percentile service time ,ms ,14.0566 ,33.4812 
+Value ,node-stats ,Max Throughput ,ops/s ,50.2894 ,50.335 
+Value ,node-stats ,Median Throughput ,ops/s ,49.6913 ,50.2767 
+Value ,node-stats ,Min Throughput ,ops/s ,49.0932 ,50.2184 
+Value ,node-stats ,error rate ,% ,0 ,0 
+Value ,phrase ,100th percentile latency ,ms ,404.411 ,169.198 
+Value ,phrase ,100th percentile service time ,ms ,404.302 ,169.065 
+Value ,phrase ,50.0th percentile latency ,ms ,16.4737 ,20.0572 
+Value ,phrase ,50.0th percentile service time ,ms ,16.3188 ,19.9027 
+Value ,phrase ,90.0th percentile latency ,ms ,22.8253 ,26.8857 
+Value ,phrase ,90.0th percentile service time ,ms ,21.2294 ,26.5595 
+Value ,phrase ,99.0th percentile latency ,ms ,154.976 ,53.4421 
+Value ,phrase ,99.0th percentile service time ,ms ,38.7246 ,48.2137 
+Value ,phrase ,99.9th percentile latency ,ms ,369.804 ,139.336 
+Value ,phrase ,99.9th percentile service time ,ms ,223.302 ,58.2076 
+Value ,phrase ,Max Throughput ,ops/s ,20.0272 ,20.0265 
+Value ,phrase ,Median Throughput ,ops/s ,20.0127 ,20.0129 
+Value ,phrase ,Min Throughput ,ops/s ,19.8582 ,19.9664 
+Value ,phrase ,error rate ,% ,0 ,0 
+Value ,scroll ,100th percentile latency ,ms ,2.66441e+06 ,8.69099e+06 
+Value ,scroll ,100th percentile service time ,ms ,21113.9 ,74013.6 
+Value ,scroll ,50.0th percentile latency ,ms ,1.80647e+06 ,5.39651e+06 
+Value ,scroll ,50.0th percentile service time ,ms ,18339.4 ,67731.1 
+Value ,scroll ,90.0th percentile latency ,ms ,2.48762e+06 ,8.0226e+06 
+Value ,scroll ,90.0th percentile service time ,ms ,20013.9 ,70700.7 
+Value ,scroll ,99.0th percentile latency ,ms ,2.64596e+06 ,8.62655e+06 
+Value ,scroll ,99.0th percentile service time ,ms ,20727.3 ,71973.9 
+Value ,scroll ,Max Throughput ,ops/s ,1.33358 ,0.571741 
+Value ,scroll ,Median Throughput ,ops/s ,1.31822 ,0.457152 
+Value ,scroll ,Min Throughput ,ops/s ,1.25981 ,0.424209 
+Value ,scroll ,error rate ,% ,0 ,0 
+Value ,term ,100th percentile latency ,ms ,173.477 ,109.614 
+Value ,term ,100th percentile service time ,ms ,173.362 ,109.476 
+Value ,term ,50.0th percentile latency ,ms ,16.8886 ,22.2887 
+Value ,term ,50.0th percentile service time ,ms ,16.7469 ,22.1277 
+Value ,term ,90.0th percentile latency ,ms ,19.6872 ,26.9389 
+Value ,term ,90.0th percentile service time ,ms ,19.252 ,26.7475 
+Value ,term ,99.0th percentile latency ,ms ,47.3176 ,44.891 
+Value ,term ,99.0th percentile service time ,ms ,38.067 ,44.458 
+Value ,term ,99.9th percentile latency ,ms ,142.71 ,82.5915 
+Value ,term ,99.9th percentile service time ,ms ,103.65 ,53.26 
+Value ,term ,Max Throughput ,ops/s ,20.0256 ,20.0207 
+Value ,term ,Median Throughput ,ops/s ,20.0126 ,20.011 
+Value ,term ,Min Throughput ,ops/s ,20.009 ,19.9981 
+Value ,term ,error rate ,% ,0 ,0 

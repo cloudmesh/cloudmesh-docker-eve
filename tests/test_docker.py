@@ -100,11 +100,11 @@ class Test_docker(object):
         assert "Ip" in result  # need to make real assertion
 
     def test_014(self):
-        HEADING("list docker networks")
-        result = run("cms docker network list")
+        HEADING("refresh docker networks")
+        result = run("cms docker network refresh")
         assert "Ip" in result  # need to make real assertion
 		
     def test_015(self):
-        HEADING("refresh docker networks")
-        result = run("cms docker network refresh")
+        HEADING("list docker networks")
+        result = run("cms docker network list")
         assert "Ip" in result  # need to make real assertion

@@ -86,13 +86,13 @@ class Test_swarm(object):
         assert "Host" in result  # need to make real assertion
 
     def test_011(self):
-        HEADING("Swarm Image list")
-        result = run("cms swarm image list")
+        HEADING("Swarm Image refresh")
+        result = run("cms swarm image refresh")
         assert "Ip" in result  # need to make real assertion
 
     def test_012(self):
-        HEADING("Swarm Image Refresh")
-        result = run("cms swarm image refresh")
+        HEADING("Swarm Image list")
+        result = run("cms swarm image list")
         assert "Ip" in result  # need to make real assertion
 
     def test_013(self):
@@ -116,26 +116,32 @@ class Test_swarm(object):
         assert "Ip" in result  # need to make real assertion
 
     def test_017(self):
+        HEADING("Swarm service refresh")
+        result = run("cms swarm host list")
+        result = run("cms swarm service refresh")
+        assert "Ip" in result  # need to make real assertion
+
+    def test_018(self):
         HEADING("Swarm service delete")
         result = run("cms swarm service delete elasticsearch")
         assert "Service" in result  # need to make real assertion
 
-    def test_018(self):
-        HEADING("list swarm networks")
-        result = run("cms docker network list")
-        assert "Ip" in result  # need to make real assertion
-		
     def test_019(self):
         HEADING("refresh swarm networks")
         result = run("cms docker network refresh")
         assert "Ip" in result  # need to make real assertion
+		
+    def test_020(self):
+        HEADING("list swarm networks")
+        result = run("cms docker network list")
+        assert "Ip" in result  # need to make real assertion
 
-    def test_20(self):
+    def test_21(self):
         HEADING("swarm leave")
         result = run("cms swarm leave")
         assert "Swarm" in result  # need to make real assertion
 
-    def test_21(self):
+    def test_22(self):
         HEADING("swarm leave")
         result = run("cms swarm host docker3 docker3:4243")
         result = run("cms swarm leave")
