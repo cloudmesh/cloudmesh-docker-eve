@@ -104,7 +104,7 @@ if __name__=='__main__':
     n = int(sys.argv[2])
     now = datetime.datetime.now()
     datestr=now.strftime("%Y%m%d%H%M%S")
-    if 'CLOUD' in arguments:
+    if arguments['CLOUD']:
         outfilename = filename.replace('.csv','-' + arguments['CLOUD'] + '-' + datestr + '.csv')
     else:
         outfilename = filename.replace('.csv','-'+datestr + '.csv')
@@ -130,3 +130,4 @@ if __name__=='__main__':
     with open(outfilename, "wb") as f:
         writer = csv.writer(f)
         writer.writerows(a)
+    print('Results written to ' + outfilename)

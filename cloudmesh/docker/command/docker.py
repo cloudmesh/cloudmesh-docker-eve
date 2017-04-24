@@ -19,7 +19,9 @@ class DockerCommand(PluginCommand):
           Usage:
             docker host list
             docker host delete ADDR
+            docker host install HFILE
             docker host NAME ADDR
+            docker benchmark N
             docker image refresh
             docker image list [ARG...]
             docker container create NAME IMAGE [ARG...]
@@ -36,12 +38,15 @@ class DockerCommand(PluginCommand):
             docker container unpause NAME [ARG...]
             docker process config CNAME
 
+
   
           Arguments:
             NAME     The name of the docker Host/Container/Network
             IMAGE    Docker server images
             ADDR     IP or Name:port of docker API
             CNAME    Config File Name
+            HFILE    Ansible Inventory.txt to be used
+            N        Number of benchmark iterations
             [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Docker Containers
                      and networks have a lot of customization options.These options are documented here
                      http://docker-py.readthedocs.io/en/stable/index.html
@@ -72,6 +77,29 @@ class DockerCommand(PluginCommand):
         Base = ConfigDict('cloudmesh_cmd5.yaml',
                           verbose=False)
 
+        if arguments.benchmark :
+            path = Base['cloudmesh']['config']['base']
+            os.chdir(path+'benchmark')
+            command = 'python run_benchmark.py docker_all.csv ' + arguments.N
+            print(command)
+            os.system(command)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
+
+        if arguments.host and arguments.install:
+            if arguments.HFILE:
+                hosts = arguments.HFILE
+            else:
+                hosts = 'hosts'
+            path = Base['cloudmesh']['config']['base']
+            os.chdir(path+'scripts')
+            command = 'python run_script.py docker-server-setup.cms ' + hosts
+            print(command)
+            os.system(command)
+            stopwatch.stop('E2E')
+            print('Time Taken:' + str(stopwatch.get('E2E')))
+            return
         os.environ["DOCKER_HOST"] = Base['cloudmesh']['container']['docker']['work']['host']
 
         if arguments.host and arguments.list:
