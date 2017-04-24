@@ -271,6 +271,8 @@ The project includes multiple Ansible scripts available in the
 /config/ansible directory.The Ansible playbook YML files are 
 available in the /config/ansible/YAML directory
 
+::
+
 docker.yml -  Install Docker on remote hosts
 docker-hosts.yml - Make entry in /etc/hosts for every server
                    in your host file with the host name as defined in
@@ -289,14 +291,14 @@ A key requirement for using the repository is to build a host file.A template of
 host file is available in /config/ansible.Please set this up before using the ansible
 scripts::
 
-[docker-cluster]
-docker1 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-docker2 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-[swarm-cluster]
-docker3 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-docker4 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
-[Benchmark-Tool-Server]
-dockerconfig ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        [docker-cluster]
+        docker1 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        docker2 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        [swarm-cluster]
+        docker3 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        docker4 ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
+        [Benchmark-Tool-Server]
+        dockerconfig ansible_ssh_user=?? ansible_ssh_host=??.??.??.?? internal_ip=??.??.??.??
 	
 The docker-hosts ansible playbook uses the internal_ip field to setup the /etc/hosts
 entry in all the servers listed here.
@@ -305,11 +307,13 @@ Also you would need to make entry for these hosts in the /etc/hosts of your loca
 to start using the test scripts in the repo.
 
 We recommend that you maintain separate host files for each cloud against which you would
-like to use the client.eg::
+like to use the client.eg
 
-hosts.chameleon
-hosts.aws
-hosts.jetstream
+::
+
+	hosts.chameleon
+	hosts.aws
+	hosts.jetstream
 
 We are currently looking at automating this process using cloudmesh client.However that is WIP.
 
@@ -317,15 +321,17 @@ Run Ansible Scripts
 ---------------------
 
 Once the host file setup is done installation of the docker in all the remote hosts is trivial.
-You can chose to use the cms command build to run the docker setup ansible scripts::
+You can chose to use the cms command build to run the docker setup ansible scripts
 
-cms docker install hosts.chameleon
-cms swarm install hosts.jetstream
+::
+
+	cms docker install hosts.chameleon
+	cms swarm install hosts.jetstream
 
 You can also run the playbooks manually at /config/ansible::
 
-ansible-playbook -i hosts.chameleon docker.yml
-ansible-playbook -i docker-hosts.yml
+	ansible-playbook -i hosts.chameleon docker.yml
+	ansible-playbook -i docker-hosts.yml
 
 
 Docker Api
@@ -390,230 +396,248 @@ with this service
 Steps to execute
 ----------------
 Below are example usage of the command.The first step is always to
-set the docker api url::
-
-cms docker host docker1 docker1:4243
-Host docker1 is Added and is the default swarm host
-
-cms docker host docker2 docker2:4243
-Host docker2 is Added and is the default swarm host
-
-cms docker host list
-
-+---------+---------+------+-----------+
-| Ip      | Name    | Port | Swarmmode |
-+---------+---------+------+-----------+
-| docker1 | docker1 | 4243 |           |
-| docker2 | docker2 | 4243 |           |
-| docker4 | docker4 | 4243 |           |
-| docker3 | docker3 | 4243 |           |
-+---------+---------+------+-----------+
+set the docker api url
 
 ::
-cms docker image refresh
 
-+---------+------------------------------------------+------------------------------------------+----------+
-| Ip      | Id                                       | Repository                               | Size(GB) |
-+---------+------------------------------------------+------------------------------------------+----------+
-| docker1 | sha256:909af725a4032bf00f36b45b358c46d6a | elasticsearch:swarm                      | 0.2      |
-|         | 67f8b3201747c8992c920bc34d3148c          |                                          |          |
-| docker1 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker2 | sha256:f70df3612f57225cb85bc20442c42c744 | elasticsearch:swarm                      | 0.2      |
-|         | bf303e3cdcde08c0092c16a8d655748          |                                          |          |
-| docker2 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker4 | sha256:c66e748329975c1ca97ecc23b2b5fcc02 | elasticsearch:swarm                      | 0.2      |
-|         | f6781885053321add902e9267c42880          |                                          |          |
-| docker4 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker3 | sha256:ec53e8e805a81d93f3c8d812f3b179f08 | elasticsearch:swarm                      | 0.2      |
-|         | 9695fcfb7d8361ada89588c4da69c82          |                                          |          |
-| docker3 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-+---------+------------------------------------------+------------------------------------------+----------+
+	cms docker host docker1 docker1:4243
+	Host docker1 is Added and is the default swarm host
 
 ::
-cms docker image list
 
-+---------+------------------------------------------+------------------------------------------+----------+
-| Ip      | Id                                       | Repository                               | Size(GB) |
-+---------+------------------------------------------+------------------------------------------+----------+
-| docker1 | sha256:909af725a4032bf00f36b45b358c46d6a | elasticsearch:swarm                      | 0.2      |
-|         | 67f8b3201747c8992c920bc34d3148c          |                                          |          |
-| docker1 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker3 | sha256:ec53e8e805a81d93f3c8d812f3b179f08 | elasticsearch:swarm                      | 0.2      |
-|         | 9695fcfb7d8361ada89588c4da69c82          |                                          |          |
-| docker3 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker2 | sha256:f70df3612f57225cb85bc20442c42c744 | elasticsearch:swarm                      | 0.2      |
-|         | bf303e3cdcde08c0092c16a8d655748          |                                          |          |
-| docker2 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-| docker4 | sha256:c66e748329975c1ca97ecc23b2b5fcc02 | elasticsearch:swarm                      | 0.2      |
-|         | f6781885053321add902e9267c42880          |                                          |          |
-| docker4 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
-|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
-+---------+------------------------------------------+------------------------------------------+----------+
+	cms docker host docker2 docker2:4243
+	Host docker2 is Added and is the default swarm host
 
 ::
-cms docker container refresh
 
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
-|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
-| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
-|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
-| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
-|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
-| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
-|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	cms docker host list
+
+	+---------+---------+------+-----------+
+	| Ip      | Name    | Port | Swarmmode |
+	+---------+---------+------+-----------+
+	| docker1 | docker1 | 4243 |           |
+	| docker2 | docker2 | 4243 |           |
+	| docker4 | docker4 | 4243 |           |
+	| docker3 | docker3 | 4243 |           |
+	+---------+---------+------+-----------+
 
 ::
-cms docker container list
 
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
-|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
-| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
-|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
-| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
-|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
-| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
-|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	cms docker image refresh
 
-::
-cms docker container create test1 elasticsearch:docker
-Container test1 is Created
-
-::
-cms docker container start test1
-Container test1 status changed to start
-
-::
-cms docker container list
-
-+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
-| Ip      | Id                                       | Name            | Image                | Status  | StartedAt                      |
-+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
-| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited  | 2017-04-22T16:47:31.585424378Z |
-|         | c5cd6416db389e49df4d643e                 |                 |                      |         |                                |
-| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited  | 2017-04-22T16:47:39.25325675Z  |
-|         | 86cd0219b72178d9b75aec0b                 |                 |                      |         |                                |
-| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited  | 2017-04-22T16:48:06.191045149Z |
-|         | bcd85565f87f0dcffd9c4122                 |                 |                      |         |                                |
-| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited  | 2017-04-22T16:48:13.076917845Z |
-|         | 6195a7650129038b7e85895b                 |                 |                      |         |                                |
-| docker2 | ad271e34bfb32422b1bc134250daec2941461910 | /test1          | elasticsearch:docker | running | 2017-04-24T11:42:04.659965801Z |
-|         | 933ed3537a4705a26f93a67d                 |                 |                      |         |                                |
-+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
+	+---------+------------------------------------------+------------------------------------------+----------+
+	| Ip      | Id                                       | Repository                               | Size(GB) |
+	+---------+------------------------------------------+------------------------------------------+----------+
+	| docker1 | sha256:909af725a4032bf00f36b45b358c46d6a | elasticsearch:swarm                      | 0.2      |
+	|         | 67f8b3201747c8992c920bc34d3148c          |                                          |          |
+	| docker1 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker2 | sha256:f70df3612f57225cb85bc20442c42c744 | elasticsearch:swarm                      | 0.2      |
+	|         | bf303e3cdcde08c0092c16a8d655748          |                                          |          |
+	| docker2 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker4 | sha256:c66e748329975c1ca97ecc23b2b5fcc02 | elasticsearch:swarm                      | 0.2      |
+	|         | f6781885053321add902e9267c42880          |                                          |          |
+	| docker4 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker3 | sha256:ec53e8e805a81d93f3c8d812f3b179f08 | elasticsearch:swarm                      | 0.2      |
+	|         | 9695fcfb7d8361ada89588c4da69c82          |                                          |          |
+	| docker3 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	+---------+------------------------------------------+------------------------------------------+----------+
 
 ::
-cms docker container stop test1
-Container test1 status changed to stop
+
+	cms docker image list
+
+	+---------+------------------------------------------+------------------------------------------+----------+
+	| Ip      | Id                                       | Repository                               | Size(GB) |
+	+---------+------------------------------------------+------------------------------------------+----------+
+	| docker1 | sha256:909af725a4032bf00f36b45b358c46d6a | elasticsearch:swarm                      | 0.2      |
+	|         | 67f8b3201747c8992c920bc34d3148c          |                                          |          |
+	| docker1 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker3 | sha256:ec53e8e805a81d93f3c8d812f3b179f08 | elasticsearch:swarm                      | 0.2      |
+	|         | 9695fcfb7d8361ada89588c4da69c82          |                                          |          |
+	| docker3 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker2 | sha256:f70df3612f57225cb85bc20442c42c744 | elasticsearch:swarm                      | 0.2      |
+	|         | bf303e3cdcde08c0092c16a8d655748          |                                          |          |
+	| docker2 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	| docker4 | sha256:c66e748329975c1ca97ecc23b2b5fcc02 | elasticsearch:swarm                      | 0.2      |
+	|         | f6781885053321add902e9267c42880          |                                          |          |
+	| docker4 | sha256:ccec59a7dd849e99addc11a9bd11b15e9 | docker.elastic.co/elasticsearch/elastics | 0.19     |
+	|         | addf2dff7741cf82b603d01d0ccdb54          | earch:5.3.0                              |          |
+	+---------+------------------------------------------+------------------------------------------+----------+
 
 ::
-cms docker container delete test1
-Container test1 is deleted
+
+	cms docker container refresh
+
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
+	|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
+	| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
+	|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
+	| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
+	|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
+	| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
+	|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
 
 ::
-cms docker container list
 
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
-| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
-|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
-| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
-|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
-| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
-|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
-| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
-|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
-+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	cms docker container list
 
-::
-cms docker network refresh
-
-+---------+------------------------------------------+-----------------+------------+
-| Ip      | Id                                       | Name            | Containers |
-+---------+------------------------------------------+-----------------+------------+
-| docker1 | feb6b33ba133ccb1f72e881e9ac46974f1ea117d | none            | {}         |
-|         | b0b4db39fb087644d55c6342                 |                 |            |
-| docker1 | 4a3311f9f6acf4401461e2e2dc3ddb39c9143bed | host            | {}         |
-|         | 611b20d907b3d899b595e597                 |                 |            |
-| docker1 | 87209b9615716884e2ed8490b59ea805780598a8 | bridge          | {}         |
-|         | 5a18bee6c27ba03aad58f14a                 |                 |            |
-| docker2 | 57bcbb05a76f042e4c07b265d6b4cb2126abdcb6 | host            | {}         |
-|         | 0a07e0e2e173dfacb3d09769                 |                 |            |
-| docker2 | 9f44589db4def03fe5c11e0f560b357909d46528 | bridge          | {}         |
-|         | f02b8ce4161acf58f57202c4                 |                 |            |
-| docker2 | bc39e454661b05050da6b933ee2ec52fbf466caa | none            | {}         |
-|         | 565de287de1941760babbec0                 |                 |            |
-| docker2 | da862dc075bd3458063579675ed2007c65425261 | docker_gwbridge | {}         |
-|         | dd937f49c3231699b86057a3                 |                 |            |
-| docker4 | 92c7eed3ae09c5bf04ee2edcbcd9d8f40c3e52ec | bridge          | {}         |
-|         | d8efd268f7ade74fe2436b74                 |                 |            |
-| docker4 | 3c90bf98d4d991a17db762e07e5f4c3ab9df06f2 | none            | {}         |
-|         | 6f09679144e45236b995a6d3                 |                 |            |
-| docker4 | a134cbac21ea9c7e43d28314266f1aec4c8fcedd | docker_gwbridge | {}         |
-|         | 3ae60ba3041f0d7cc8ff7bbc                 |                 |            |
-| docker4 | c87d97dde5870d21e4f57052d4bd51d7e670d671 | host            | {}         |
-|         | 99a71552f5e5c9514e965e18                 |                 |            |
-| docker3 | 0db9de4744c642ea406aa3b22d2d185b46716e53 | docker_gwbridge | {}         |
-|         | 0c6e5dedbb90be1e4b59236e                 |                 |            |
-| docker3 | 861862abf66bec01af7d4149c91c28d979e1dda7 | host            | {}         |
-|         | 31266eb30bc5c76a7aae551f                 |                 |            |
-| docker3 | 109ed16096d208442f4697b1c25559e99565fd27 | bridge          | {}         |
-|         | 17bd3e5b2285de7513066d62                 |                 |            |
-| docker3 | ceee39512a4de82efdaefb6e6f24d3fc9f73c19e | none            | {}         |
-|         | 88be3886cb2c74f0d9b30e71                 |                 |            |
-+---------+------------------------------------------+-----------------+------------+
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
+	|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
+	| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
+	|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
+	| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
+	|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
+	| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
+	|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
 
 ::
-cms docker network list
 
-+---------+------------------------------------------+-----------------+------------+
-| Ip      | Id                                       | Name            | Containers |
-+---------+------------------------------------------+-----------------+------------+
-| docker1 | 4a3311f9f6acf4401461e2e2dc3ddb39c9143bed | host            | {}         |
-|         | 611b20d907b3d899b595e597                 |                 |            |
-| docker3 | 861862abf66bec01af7d4149c91c28d979e1dda7 | host            | {}         |
-|         | 31266eb30bc5c76a7aae551f                 |                 |            |
-| docker3 | ceee39512a4de82efdaefb6e6f24d3fc9f73c19e | none            | {}         |
-|         | 88be3886cb2c74f0d9b30e71                 |                 |            |
-| docker1 | feb6b33ba133ccb1f72e881e9ac46974f1ea117d | none            | {}         |
-|         | b0b4db39fb087644d55c6342                 |                 |            |
-| docker1 | 87209b9615716884e2ed8490b59ea805780598a8 | bridge          | {}         |
-|         | 5a18bee6c27ba03aad58f14a                 |                 |            |
-| docker2 | 57bcbb05a76f042e4c07b265d6b4cb2126abdcb6 | host            | {}         |
-|         | 0a07e0e2e173dfacb3d09769                 |                 |            |
-| docker2 | 9f44589db4def03fe5c11e0f560b357909d46528 | bridge          | {}         |
-|         | f02b8ce4161acf58f57202c4                 |                 |            |
-| docker2 | bc39e454661b05050da6b933ee2ec52fbf466caa | none            | {}         |
-|         | 565de287de1941760babbec0                 |                 |            |
-| docker2 | da862dc075bd3458063579675ed2007c65425261 | docker_gwbridge | {}         |
-|         | dd937f49c3231699b86057a3                 |                 |            |
-| docker4 | 92c7eed3ae09c5bf04ee2edcbcd9d8f40c3e52ec | bridge          | {}         |
-|         | d8efd268f7ade74fe2436b74                 |                 |            |
-| docker4 | 3c90bf98d4d991a17db762e07e5f4c3ab9df06f2 | none            | {}         |
-|         | 6f09679144e45236b995a6d3                 |                 |            |
-| docker4 | a134cbac21ea9c7e43d28314266f1aec4c8fcedd | docker_gwbridge | {}         |
-|         | 3ae60ba3041f0d7cc8ff7bbc                 |                 |            |
-| docker4 | c87d97dde5870d21e4f57052d4bd51d7e670d671 | host            | {}         |
-|         | 99a71552f5e5c9514e965e18                 |                 |            |
-| docker3 | 0db9de4744c642ea406aa3b22d2d185b46716e53 | docker_gwbridge | {}         |
-|         | 0c6e5dedbb90be1e4b59236e                 |                 |            |
-| docker3 | 109ed16096d208442f4697b1c25559e99565fd27 | bridge          | {}         |
-|         | 17bd3e5b2285de7513066d62                 |                 |            |
-+---------+------------------------------------------+-----------------+------------+
+	cms docker container create test1 elasticsearch:docker
+	Container test1 is Created
+
+::
+
+	cms docker container start test1
+	Container test1 status changed to start
+
+::
+
+	cms docker container list
+
+	+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
+	| Ip      | Id                                       | Name            | Image                | Status  | StartedAt                      |
+	+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
+	| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited  | 2017-04-22T16:47:31.585424378Z |
+	|         | c5cd6416db389e49df4d643e                 |                 |                      |         |                                |
+	| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited  | 2017-04-22T16:47:39.25325675Z  |
+	|         | 86cd0219b72178d9b75aec0b                 |                 |                      |         |                                |
+	| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited  | 2017-04-22T16:48:06.191045149Z |
+	|         | bcd85565f87f0dcffd9c4122                 |                 |                      |         |                                |
+	| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited  | 2017-04-22T16:48:13.076917845Z |
+	|         | 6195a7650129038b7e85895b                 |                 |                      |         |                                |
+	| docker2 | ad271e34bfb32422b1bc134250daec2941461910 | /test1          | elasticsearch:docker | running | 2017-04-24T11:42:04.659965801Z |
+	|         | 933ed3537a4705a26f93a67d                 |                 |                      |         |                                |
+	+---------+------------------------------------------+-----------------+----------------------+---------+--------------------------------+
+
+::
+
+	cms docker container stop test1
+	Container test1 status changed to stop
+
+::
+
+	cms docker container delete test1
+	Container test1 is deleted
+
+::
+
+	cms docker container list
+
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| Ip      | Id                                       | Name            | Image                | Status | StartedAt                      |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+	| docker1 | 31d3cfb389f14f3fbf3ff434584690590c70b37f | /elasticsearch1 | elasticsearch:docker | exited | 2017-04-22T16:47:31.585424378Z |
+	|         | c5cd6416db389e49df4d643e                 |                 |                      |        |                                |
+	| docker1 | 8a7e6543f9fa1052c05617cbdd4ac87824b402c0 | /elasticsearch2 | elasticsearch:docker | exited | 2017-04-22T16:47:39.25325675Z  |
+	|         | 86cd0219b72178d9b75aec0b                 |                 |                      |        |                                |
+	| docker2 | 42bd36cfb7a6b44bf423373f5cbbcb11d3a24313 | /elasticsearch4 | elasticsearch:docker | exited | 2017-04-22T16:48:06.191045149Z |
+	|         | bcd85565f87f0dcffd9c4122                 |                 |                      |        |                                |
+	| docker2 | cb06419167b6d403bd868fca0229637f4cc84fa1 | /elasticsearch3 | elasticsearch:docker | exited | 2017-04-22T16:48:13.076917845Z |
+	|         | 6195a7650129038b7e85895b                 |                 |                      |        |                                |
+	+---------+------------------------------------------+-----------------+----------------------+--------+--------------------------------+
+
+::
+
+	cms docker network refresh
+
+	+---------+------------------------------------------+-----------------+------------+
+	| Ip      | Id                                       | Name            | Containers |
+	+---------+------------------------------------------+-----------------+------------+
+	| docker1 | feb6b33ba133ccb1f72e881e9ac46974f1ea117d | none            | {}         |
+	|         | b0b4db39fb087644d55c6342                 |                 |            |
+	| docker1 | 4a3311f9f6acf4401461e2e2dc3ddb39c9143bed | host            | {}         |
+	|         | 611b20d907b3d899b595e597                 |                 |            |
+	| docker1 | 87209b9615716884e2ed8490b59ea805780598a8 | bridge          | {}         |
+	|         | 5a18bee6c27ba03aad58f14a                 |                 |            |
+	| docker2 | 57bcbb05a76f042e4c07b265d6b4cb2126abdcb6 | host            | {}         |
+	|         | 0a07e0e2e173dfacb3d09769                 |                 |            |
+	| docker2 | 9f44589db4def03fe5c11e0f560b357909d46528 | bridge          | {}         |
+	|         | f02b8ce4161acf58f57202c4                 |                 |            |
+	| docker2 | bc39e454661b05050da6b933ee2ec52fbf466caa | none            | {}         |
+	|         | 565de287de1941760babbec0                 |                 |            |
+	| docker2 | da862dc075bd3458063579675ed2007c65425261 | docker_gwbridge | {}         |
+	|         | dd937f49c3231699b86057a3                 |                 |            |
+	| docker4 | 92c7eed3ae09c5bf04ee2edcbcd9d8f40c3e52ec | bridge          | {}         |
+	|         | d8efd268f7ade74fe2436b74                 |                 |            |
+	| docker4 | 3c90bf98d4d991a17db762e07e5f4c3ab9df06f2 | none            | {}         |
+	|         | 6f09679144e45236b995a6d3                 |                 |            |
+	| docker4 | a134cbac21ea9c7e43d28314266f1aec4c8fcedd | docker_gwbridge | {}         |
+	|         | 3ae60ba3041f0d7cc8ff7bbc                 |                 |            |
+	| docker4 | c87d97dde5870d21e4f57052d4bd51d7e670d671 | host            | {}         |
+	|         | 99a71552f5e5c9514e965e18                 |                 |            |
+	| docker3 | 0db9de4744c642ea406aa3b22d2d185b46716e53 | docker_gwbridge | {}         |
+	|         | 0c6e5dedbb90be1e4b59236e                 |                 |            |
+	| docker3 | 861862abf66bec01af7d4149c91c28d979e1dda7 | host            | {}         |
+	|         | 31266eb30bc5c76a7aae551f                 |                 |            |
+	| docker3 | 109ed16096d208442f4697b1c25559e99565fd27 | bridge          | {}         |
+	|         | 17bd3e5b2285de7513066d62                 |                 |            |
+	| docker3 | ceee39512a4de82efdaefb6e6f24d3fc9f73c19e | none            | {}         |
+	|         | 88be3886cb2c74f0d9b30e71                 |                 |            |
+	+---------+------------------------------------------+-----------------+------------+
+
+::
+
+	cms docker network list
+
+	+---------+------------------------------------------+-----------------+------------+
+	| Ip      | Id                                       | Name            | Containers |
+	+---------+------------------------------------------+-----------------+------------+
+	| docker1 | 4a3311f9f6acf4401461e2e2dc3ddb39c9143bed | host            | {}         |
+	|         | 611b20d907b3d899b595e597                 |                 |            |
+	| docker3 | 861862abf66bec01af7d4149c91c28d979e1dda7 | host            | {}         |
+	|         | 31266eb30bc5c76a7aae551f                 |                 |            |
+	| docker3 | ceee39512a4de82efdaefb6e6f24d3fc9f73c19e | none            | {}         |
+	|         | 88be3886cb2c74f0d9b30e71                 |                 |            |
+	| docker1 | feb6b33ba133ccb1f72e881e9ac46974f1ea117d | none            | {}         |
+	|         | b0b4db39fb087644d55c6342                 |                 |            |
+	| docker1 | 87209b9615716884e2ed8490b59ea805780598a8 | bridge          | {}         |
+	|         | 5a18bee6c27ba03aad58f14a                 |                 |            |
+	| docker2 | 57bcbb05a76f042e4c07b265d6b4cb2126abdcb6 | host            | {}         |
+	|         | 0a07e0e2e173dfacb3d09769                 |                 |            |
+	| docker2 | 9f44589db4def03fe5c11e0f560b357909d46528 | bridge          | {}         |
+	|         | f02b8ce4161acf58f57202c4                 |                 |            |
+	| docker2 | bc39e454661b05050da6b933ee2ec52fbf466caa | none            | {}         |
+	|         | 565de287de1941760babbec0                 |                 |            |
+	| docker2 | da862dc075bd3458063579675ed2007c65425261 | docker_gwbridge | {}         |
+	|         | dd937f49c3231699b86057a3                 |                 |            |
+	| docker4 | 92c7eed3ae09c5bf04ee2edcbcd9d8f40c3e52ec | bridge          | {}         |
+	|         | d8efd268f7ade74fe2436b74                 |                 |            |
+	| docker4 | 3c90bf98d4d991a17db762e07e5f4c3ab9df06f2 | none            | {}         |
+	|         | 6f09679144e45236b995a6d3                 |                 |            |
+	| docker4 | a134cbac21ea9c7e43d28314266f1aec4c8fcedd | docker_gwbridge | {}         |
+	|         | 3ae60ba3041f0d7cc8ff7bbc                 |                 |            |
+	| docker4 | c87d97dde5870d21e4f57052d4bd51d7e670d671 | host            | {}         |
+	|         | 99a71552f5e5c9514e965e18                 |                 |            |
+	| docker3 | 0db9de4744c642ea406aa3b22d2d185b46716e53 | docker_gwbridge | {}         |
+	|         | 0c6e5dedbb90be1e4b59236e                 |                 |            |
+	| docker3 | 109ed16096d208442f4697b1c25559e99565fd27 | bridge          | {}         |
+	|         | 17bd3e5b2285de7513066d62                 |                 |            |
+	+---------+------------------------------------------+-----------------+------------+
 
 
 Unit Tests
@@ -651,48 +675,52 @@ We are providing a set of sample scripts to demonstrate the possible usecases of
 cloudmesh client.The scripts are available at /scripts directory.The scripts can be 
 run using the below command.
 
-Use::
+::
 
-python run_script.py FILENAME [HOSTFILE]
+	python run_script.py FILENAME [HOSTFILE]
 
-A sample script to setup elastic search cluster on docker::
+A sample script to setup elastic search cluster on docker
 
-Command Name#Command
-ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$hosts ../config/ansible/yaml/docker-image-install.yml
-Host-Create1#cms docker host docker1 docker1:4243
-Container-Create1#cms docker container create elasticsearch1 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
-Container-Create2#cms docker container create elasticsearch2 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
-Container-Start1#cms docker container start elasticsearch1
-Sleep1#sleep 10
-Container-Start2#cms docker container start elasticsearch2
-Sleep2#sleep 10
-Container-List1#cms docker container list
-Container-Refresh1#cms docker container refresh
-Host-Creat2#cms docker host docker2 docker2:4243
-Container-Create3#cms docker container create elasticsearch3 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
-Container-Create4#cms docker container create elasticsearch4 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
-Container-Start3#cms docker container start elasticsearch3
-Sleep3#sleep 10
-Container-Start4#cms docker container start elasticsearch4
-Sleep5#sleep 10
-Container-List2#cms docker container list
-Container-Refresh2#cms docker container refresh
+::
 
-A sample script to setup elastic search cluster on swarm::
+	Command Name#Command
+	ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$hosts ../config/ansible/yaml/docker-image-install.yml
+	Host-Create1#cms docker host docker1 docker1:4243
+	Container-Create1#cms docker container create elasticsearch1 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+	Container-Create2#cms docker container create elasticsearch2 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+	Container-Start1#cms docker container start elasticsearch1
+	Sleep1#sleep 10
+	Container-Start2#cms docker container start elasticsearch2
+	Sleep2#sleep 10
+	Container-List1#cms docker container list
+	Container-Refresh1#cms docker container refresh
+	Host-Creat2#cms docker host docker2 docker2:4243
+	Container-Create3#cms docker container create elasticsearch3 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+	Container-Create4#cms docker container create elasticsearch4 elasticsearch:docker network_mode=host environment=["http.host=0.0.0.0","transport.host=0.0.0.0","discovery.zen.ping.unicast.hosts=docker1,docker2"]
+	Container-Start3#cms docker container start elasticsearch3
+	Sleep3#sleep 10
+	Container-Start4#cms docker container start elasticsearch4
+	Sleep5#sleep 10
+	Container-List2#cms docker container list
+	Container-Refresh2#cms docker container refresh
 
-Command Name#Command
-ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$host ../config/ansible/yaml/docker-image-install.yml
-Host-Create1#cms swarm host docker3 docker3:4243
-Host-Create2#cms swarm host docker4 docker4:4243
-Swarm-Create#cms swarm create
-Host-Create3#cms swarm host docker3 docker3:4243
-Swarm-Join#cms swarm join docker4 Worker
-Host-Create4#cms swarm host docker4 docker4:4243
-Network-Create1#cms swarm network create elastic_cluster driver="overlay"
-Sleep1#sleep 10
-Service-Create1#cms swarm service create elasticsearch elasticsearch:swarm ServiceMode.mode="replicated" ServiceMode.replicas=4 EndpointSpec.ports=["9200:9200"] networks=["elastic_cluster"] env=["SERVICE_NAME=elasticsearch"]
-Sleep1#sleep 15
-Container-Refresh1#cms swarm container refresh
+A sample script to setup elastic search cluster on swarm
+
+::
+
+	Command Name#Command
+	ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$host ../config/ansible/yaml/docker-image-install.yml
+	Host-Create1#cms swarm host docker3 docker3:4243
+	Host-Create2#cms swarm host docker4 docker4:4243
+	Swarm-Create#cms swarm create
+	Host-Create3#cms swarm host docker3 docker3:4243
+	Swarm-Join#cms swarm join docker4 Worker
+	Host-Create4#cms swarm host docker4 docker4:4243
+	Network-Create1#cms swarm network create elastic_cluster driver="overlay"
+	Sleep1#sleep 10
+	Service-Create1#cms swarm service create elasticsearch elasticsearch:swarm ServiceMode.mode="replicated" ServiceMode.replicas=4 EndpointSpec.ports=["9200:9200"] networks=["elastic_cluster"] env=["SERVICE_NAME=elasticsearch"]
+	Sleep1#sleep 15
+	Container-Refresh1#cms swarm container refresh
 
 
 
