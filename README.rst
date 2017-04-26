@@ -220,7 +220,7 @@ You can chose to use the cms command build to run the docker setup ansible scrip
 You can also run the playbooks manually at /config/ansible::
 
 	ansible-playbook -i hosts.chameleon docker.yml
-	ansible-playbook -i docker-hosts.yml
+	ansible-playbook -i hosts.chameleon docker-hosts.yml
 
 
 Docker Api
