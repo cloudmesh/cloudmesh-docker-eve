@@ -123,8 +123,6 @@ class SwarmCommand(PluginCommand):
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
 
-        if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter docker swarm api host(IP or Name : Port )")
 
         swarm = Swarm(os.environ["DOCKER_HOST"])
 
