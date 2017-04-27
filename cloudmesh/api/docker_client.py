@@ -10,7 +10,7 @@ import sys
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
 import json
-from cloudmesh.api.evemongo_client import perform_post, perform_delete, perform_get
+from  cloudmesh.api.Rest_client import Rest
 import time
 
 
@@ -41,14 +41,14 @@ class Docker(object):
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             try:
-                scode, hosts = perform_get('Host')
+                scode, hosts = Rest.get('Host')
             except Exception as e:
                 Console.error(e.message)
                 return
             if len(hosts) != 0:
                 Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
                 return
-            r = perform_post('Host', host, filter)
+            r = Rest.post('Host', host, filter)
             Console.ok('Host ' + hostName + ' is Added and is the default host')
         except Exception as e:
             Console.error(e.message)
@@ -65,7 +65,7 @@ class Docker(object):
 
         """
         try:
-            scode, hosts = perform_get('Host')
+            scode, hosts = Rest.get('Host')
         except Exception as e:
             Console.error(e.message)
             return
@@ -98,10 +98,10 @@ class Docker(object):
         try:
             filter = {}
             filter['Ip'] = addr.split(':')[0]
-            r = perform_delete('Host', filter)
+            r = Rest.delete('Host', filter)
             # Delete Host should delete all Containers and Networks for the host
-            r = perform_delete('Container', filter)
-            r = perform_delete('Network', filter)
+            r = Rest.delete('Container', filter)
+            r = Rest.delete('Network', filter)
             Console.ok('Host ' + addr + ' is deleted')
         except Exception as e:
             Console.error(e.message)
@@ -127,7 +127,7 @@ class Docker(object):
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             # container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
             data.append(container_dict)
-            perform_post('Container', data)
+            Rest.post('Container', data)
             Console.ok('Container ' + container.name + ' is ' + msg)
             return container.id
         except docker.errors.APIError as e:
@@ -159,7 +159,7 @@ class Docker(object):
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             # container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
             data.append(container_dict)
-            perform_post('Container', data)
+            Rest.post('Container', data)
             Console.ok('Container ' + container.name + ' is Created')
             return container.id
         except docker.errors.APIError as e:
@@ -191,7 +191,7 @@ class Docker(object):
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             # container_dict['State']['StartedAt'] = time.asctime(time.localtime(time.time()))
             data.append(container_dict)
-            perform_post('Container', data)
+            Rest.post('Container', data)
             Console.ok('Container ' + container.name + ' is Started')
             return container.id
         except docker.errors.APIError as e:
@@ -233,7 +233,7 @@ class Docker(object):
             filter['Id'] = container_dict['Id']
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             container_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            perform_post('Container', container_dict, filter)
+            Rest.post('Container', container_dict, filter)
             Console.ok('Container ' + container.name + ' status changed to ' + status)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -255,7 +255,7 @@ class Docker(object):
             filter = {}
             filter['Id'] = container.__dict__['attrs']['Id']
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            perform_delete('Container', filter)
+            Rest.delete('Container', filter)
             Console.ok('Container ' + container.name + ' is deleted')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -272,7 +272,7 @@ class Docker(object):
 
         """
         try:
-            scode, containers = perform_get('Container')
+            scode, containers = Rest.get('Container')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -304,7 +304,7 @@ class Docker(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        scode, hosts = Rest.get('Host')
         filter = {}
         n = 1
         e = {}
@@ -317,11 +317,11 @@ class Docker(object):
                 containers = self.client.containers.list(all, **kwargs)
             except docker.errors.APIError as e:
                 Console.error(e.explanation)
-                perform_delete('Container', filter)
+                Rest.delete('Container', filter)
                 continue
             if len(containers) == 0:
                 print("No containers exist " + str(host['Ip']))
-                perform_delete('Container', filter)
+                Rest.delete('Container', filter)
                 continue
 
             for containerm in containers:
@@ -337,8 +337,8 @@ class Docker(object):
                 d['StartedAt'] = container['State']['StartedAt']
                 e[n] = d
                 n = n + 1
-            perform_delete('Container', filter)
-        perform_post('Container', data)
+            Rest.delete('Container', filter)
+        Rest.post('Container', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Image', 'Status', 'StartedAt'])))
 
     def images_list(self, kwargs=None):
@@ -352,7 +352,7 @@ class Docker(object):
         """
 
         try:
-            scode, images = perform_get('Image')
+            scode, images = Rest.get('Image')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -386,7 +386,7 @@ class Docker(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        scode, hosts = Rest.get('Host')
         filter = {}
         n = 1
         e = {}
@@ -420,8 +420,8 @@ class Docker(object):
                 d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
                 e[n] = d
                 n = n + 1
-            perform_delete('Image', filter)
-        perform_post('Image', data)
+            Rest.delete('Image', filter)
+        Rest.post('Image', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Repository', 'Size(GB)'])))
 
     def network_create(self, networkName=None, kwargs=None):
@@ -442,7 +442,7 @@ class Docker(object):
             network_dict = network.__dict__['attrs']
             network_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             data.append(network_dict)
-            perform_post('Network', data)
+            Rest.post('Network', data)
             Console.ok("Network %s is created" % network.Name)
             return network.id
         except docker.errors.APIError as e:
@@ -459,7 +459,7 @@ class Docker(object):
 
         """
         try:
-            scode, networks = perform_get('Network')
+            scode, networks = Rest.get('Network')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -490,7 +490,7 @@ class Docker(object):
 
 
         """
-        scode, hosts = perform_get('Host')
+        scode, hosts = Rest.get('Host')
         filter = {}
         n = 1
         e = {}
@@ -520,8 +520,8 @@ class Docker(object):
                 d['Containers'] = network['Containers']
                 e[n] = d
                 n = n + 1
-            r = perform_delete('Network', filter)
-        r = perform_post('Network', data)
+            r = Rest.delete('Network', filter)
+        r = Rest.post('Network', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Containers'])))
 
     def process_config(self):

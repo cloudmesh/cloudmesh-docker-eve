@@ -9,7 +9,8 @@ import json
 import ast
 from cloudmesh.common.console import Console
 from cloudmesh.common.Printer import Printer
-from cloudmesh.api.evemongo_client import perform_post, perform_delete, perform_get
+import cloudmesh.api.Rest_client
+from  cloudmesh.api.Rest_client import Rest
 
 
 class Swarm(object):
@@ -39,7 +40,7 @@ class Swarm(object):
             filter = {}
             filter['Ip'] = addr.split(':')[0]
             try:
-                scode, hosts = perform_get('Host')
+                scode, hosts = Rest.get('Host')
             except Exception as e:
                 Console.error(e.message)
                 return
@@ -47,7 +48,7 @@ class Swarm(object):
                 Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
                 return
 
-            r = perform_post('Host', host,filter)
+            r = Rest.post('Host', host,filter)
             Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
         except Exception as e:
             Console.error(e.message)
@@ -64,7 +65,7 @@ class Swarm(object):
 
         """
         try:
-            scode, hosts = perform_get('Host')
+            scode, hosts = Rest.get('Host')
         except Exception as e:
             Console.error(e.message)
             return
@@ -98,11 +99,11 @@ class Swarm(object):
         try:
             filter = {}
             filter['Ip'] = addr.split(':')[0]
-            r = perform_delete('Host', filter)
+            r = Rest.delete('Host', filter)
             # Delete Host should delete all Containers and Networks for the host
-            r = perform_delete('Service', filter)
-            r = perform_delete('Container', filter)
-            r = perform_delete('Network', filter)
+            r = Rest.delete('Service', filter)
+            r = Rest.delete('Container', filter)
+            r = Rest.delete('Network', filter)
             Console.ok('Host ' + addr + 'is deleted')
         except Exception as e:
             Console.error(e.message)
@@ -122,7 +123,7 @@ class Swarm(object):
         Console.ok("Swarm is created")
         filter = {}
         filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-        scode, hosts = perform_get('Host', filter)
+        scode, hosts = Rest.get('Host', filter)
         d = {}
         for host in hosts:
             d['Ip'] = host['Ip']
@@ -131,7 +132,7 @@ class Swarm(object):
             d['Swarmmode'] = 'Manager'
             d['SwarmmanagerIp'] = ''
             d['Swarmhost'] = True
-        perform_post('Host',d,filter)
+        Rest.post('Host',d,filter)
         self.node_refresh()
 
 
@@ -147,7 +148,7 @@ class Swarm(object):
         rcode = self.client.swarm.leave(True,**kwargs)
         filter = {}
         filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-        scode, hosts = perform_get('Host', filter)
+        scode, hosts = Rest.get('Host', filter)
         d ={}
         for host in hosts:
             d['Ip'] = host['Ip']
@@ -156,7 +157,7 @@ class Swarm(object):
             d['Swarmmode'] = ''
             d['SwarmmanagerIp'] = ''
             d['Swarmhost'] = False
-        perform_post('Host',d,filter)
+        Rest.post('Host',d,filter)
         self.node_refresh()
         Console.ok("Node left Swarm" )
 
@@ -185,7 +186,7 @@ class Swarm(object):
         rcode = self.client.swarm.join(remote_addrs=man_list, join_token=token[type], listen_addr="0.0.0.0:2377", **kwargs)
         filter = {}
         filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-        scode, hosts = perform_get('Host', filter)
+        scode, hosts = Rest.get('Host', filter)
         d = {}
         for host in hosts:
             d['Ip'] = host['Ip']
@@ -194,7 +195,7 @@ class Swarm(object):
             d['Swarmmode'] = type
             d['SwarmmanagerIp'] = addr.split(':')[0]
             d['Swarmhost'] = True
-        perform_post('Host', d,filter)
+        Rest.post('Host', d,filter)
         self.node_refresh()
         Console.ok("Node Joined Swarm")
 
@@ -210,7 +211,7 @@ class Swarm(object):
         """
         filter = {}
         filter['Swarmmode'] = 'Manager'
-        scode, hosts = perform_get('Host',filter)
+        scode, hosts = Rest.get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -249,8 +250,8 @@ class Swarm(object):
                 e[n] = d
                 n = n + 1
         Console.ok(str(Printer.dict_table(e, order=['Ip','Host Name','Id', 'Role', 'Status', 'Manager Ip'])))
-        perform_delete('Node')
-        perform_post('Node', data)
+        Rest.delete('Node')
+        Rest.post('Node', data)
 
     def node_list(self, kwargs=None):
         """List of docker swarm nodes 
@@ -262,7 +263,7 @@ class Swarm(object):
 
 
         """
-        scode, nodes = perform_get('Node')
+        scode, nodes = Rest.get('Node')
         if len(nodes) == 0:
             Console.info("No nodes exist")
             return
@@ -298,7 +299,7 @@ class Swarm(object):
 
         """
         try:
-            scode, services = perform_get('Service')
+            scode, services = Rest.get('Service')
         # services = self.client.services.list(**kwargs)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -333,7 +334,7 @@ class Swarm(object):
         """
         filter = {}
         filter['Swarmmode'] = 'Manager'
-        scode, hosts = perform_get('Host',filter)
+        scode, hosts = Rest.get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -365,11 +366,11 @@ class Swarm(object):
                 d['Replicas'] = service['Spec']['Mode']['Replicated']['Replicas']
                 e[n] = d
                 n = n + 1
-        perform_delete('Service')
+        Rest.delete('Service')
         if len(data) == 0:
             Console.info("No service exist ")
             return
-        perform_post('Service', data)
+        Rest.post('Service', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip','Id', 'Name', 'Image', 'Replicas'])))
 
     def service_create(self, name, image, kwargs=None):
@@ -408,7 +409,7 @@ class Swarm(object):
             data = []
             data.append(service.attrs)
             data[0]['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            perform_post('Service', data)
+            Rest.post('Service', data)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -431,7 +432,7 @@ class Swarm(object):
             filter['ID'] = service.id
             filter['Name'] = service.name
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            perform_delete('Service', filter)
+            Rest.delete('Service', filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -462,9 +463,9 @@ class Swarm(object):
             network_dict = network.__dict__['attrs']
             network_dict['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             data.append(network_dict)
-            perform_post('Network', data)
+            Rest.post('Network', data)
             Console.ok("Network %s is created" % network.id)
-            # perform_post('Network',network.__dict__['attrs'])
+            # Rest.post('Network',network.__dict__['attrs'])
             return network.id
         except docker.errors.APIError as e:
             Console.error(e.explanation)
@@ -480,7 +481,7 @@ class Swarm(object):
 
         """
         try:
-            scode, networks = perform_get('Network')
+            scode, networks = Rest.get('Network')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -512,7 +513,7 @@ class Swarm(object):
         """
 
         try:
-            scode, images = perform_get('Image')
+            scode, images = Rest.get('Image')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -547,7 +548,7 @@ class Swarm(object):
 
         """
         filter = {}
-        scode, hosts = perform_get('Host',filter)
+        scode, hosts = Rest.get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -557,7 +558,7 @@ class Swarm(object):
             filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             if host['Swarmmode'] == 'Worker':
-                perform_delete('Image', filter)
+                Rest.delete('Image', filter)
                 continue
             self.client = docker.from_env()
             try:
@@ -585,8 +586,8 @@ class Swarm(object):
                 d['Size(GB)'] = round(image['Size'] / float(1 << 30), 2)
                 e[n] = d
                 n = n + 1
-            perform_delete('Image', filter)
-        perform_post('Image', data)
+            Rest.delete('Image', filter)
+        Rest.post('Image', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Repository', 'Size(GB)'])))
 
     def network_refresh(self, kwargs=None):
@@ -599,7 +600,7 @@ class Swarm(object):
 
         """
         filter = {}
-        scode, hosts = perform_get('Host',filter)
+        scode, hosts = Rest.get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -609,7 +610,7 @@ class Swarm(object):
             filter = {}
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
             if host['Swarmmode'] == 'Worker':
-                perform_delete('Network', filter)
+                Rest.delete('Network', filter)
                 continue
             self.client = docker.from_env()
             try:
@@ -633,8 +634,8 @@ class Swarm(object):
                 d['Containers'] = network['Containers']
                 e[n] = d
                 n = n + 1
-            r = perform_delete('Network', filter)
-        r = perform_post('Network', data)
+            r = Rest.delete('Network', filter)
+        r = Rest.post('Network', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Containers'])))
 
     def container_list(self, kwargs=None):
@@ -648,7 +649,7 @@ class Swarm(object):
 
         """
         try:
-            scode, containers = perform_get('Container')
+            scode, containers = Rest.get('Container')
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
@@ -681,7 +682,7 @@ class Swarm(object):
 
         """
         filter = {}
-        scode, hosts = perform_get('Host',filter)
+        scode, hosts = Rest.get('Host',filter)
         filter = {}
         n = 1
         e = {}
@@ -712,8 +713,8 @@ class Swarm(object):
                 d['StartedAt'] = container['State']['StartedAt']
                 e[n] = d
                 n = n + 1
-            perform_delete('Container', filter)
-        perform_post('Container', data)
+            Rest.delete('Container', filter)
+        Rest.post('Container', data)
         Console.ok(str(Printer.dict_table(e, order=['Ip', 'Id', 'Name', 'Image', 'Status', 'StartedAt'])))
 
     def network_delete(self, name):
@@ -732,7 +733,7 @@ class Swarm(object):
             filter['ID'] = network.id
             filter['Name'] = network.name
             filter['Ip'] = os.environ["DOCKER_HOST"].split(':')[0]
-            perform_delete('Network', filter)
+            Rest.delete('Network', filter)
         except docker.errors.APIError as e:
             Console.error(e.explanation)
             return
