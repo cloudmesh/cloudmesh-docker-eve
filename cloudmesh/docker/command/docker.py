@@ -21,6 +21,8 @@ class DockerCommand(PluginCommand):
             docker host delete ADDR
             docker host install HFILE
             docker host NAME ADDR
+            docker cluster create N NAME
+            docker cluster delete
             docker benchmark N
             docker image refresh
             docker image list [ARG...]
@@ -46,7 +48,7 @@ class DockerCommand(PluginCommand):
             ADDR     IP or Name:port of docker API
             CNAME    Config File Name
             HFILE    Ansible Inventory.txt to be used
-            N        Number of benchmark iterations
+            N        Number of benchmark iterations/Number of VM
             [ARG..]  Denotes a extensible arguments that can be passed as a name value pair.Docker Containers
                      and networks have a lot of customization options.These options are documented here
                      http://docker-py.readthedocs.io/en/stable/index.html
