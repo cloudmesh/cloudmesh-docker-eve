@@ -126,8 +126,7 @@ class DockerCommand(PluginCommand):
             Base.save()
             print('Time Taken:' + str(stopwatch.get('E2E')))
             return
-        if "DOCKER_HOST" not in os.environ:
-            os.environ["DOCKER_HOST"] = raw_input("Please enter docker api host(IP or Name : Port )")
+
 
         docker = Docker(os.environ["DOCKER_HOST"])
 
