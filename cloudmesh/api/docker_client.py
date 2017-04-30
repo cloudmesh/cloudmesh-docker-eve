@@ -46,7 +46,7 @@ class Docker(object):
                 Console.error(e.message)
                 return
             if len(hosts) != 0:
-                Console.ok('Host ' + hostName + ' is Added and is the default swarm host')
+                Console.ok('Host ' + hostName + ' is Added and is the default docker host')
                 return
             r = Rest.post('Host', host, filter)
             Console.ok('Host ' + hostName + ' is Added and is the default host')

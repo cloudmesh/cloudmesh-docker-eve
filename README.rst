@@ -193,7 +193,13 @@ The docker-hosts ansible playbook uses the internal_ip field to setup the /etc/h
 entry in all the servers listed here.
 
 Also you would need to make entry for these hosts in the /etc/hosts of your local machine
-to start using the test scripts in the repo.
+to start using the test scripts in the repo.::
+
+		??.??.??.?? docker1
+		??.??.??.?? docker2
+		??.??.??.?? docker3
+		??.??.??.?? docker4
+		??.??.??.?? dockerconfig
 
 We recommend that you maintain separate host files for each cloud against which you would
 like to use the client.eg
@@ -204,7 +210,16 @@ like to use the client.eg
 	hosts.aws
 	hosts.jetstream
 
-We are currently looking at automating this process using cloudmesh client.However that is WIP.
+If you are using cloudmesh client you can use the below commands to setup a cluster of servers needed.
+
+::
+
+	cm secgroup add docker docker_cluster 1 65535 tcp 0.0.0.0/0
+	cm secgroup upload
+	cm cluster define --count 3 --image CC-Ubuntu16.04 --flavor m1.large --secgroup docker
+	cm cluster allocate
+    cm node list
+	
 
 Run Ansible Scripts
 ---------------------

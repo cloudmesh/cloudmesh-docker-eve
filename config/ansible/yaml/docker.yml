@@ -101,3 +101,37 @@
     shell: systemctl daemon-reload
   - name: Run docker setup11 enable remote
     shell: service docker restart
+- hosts: all
+  sudo: yes
+  tasks:
+  - name: Run docker setup1
+    shell: apt-get remove docker docker-engine
+    ignore_errors: yes
+  - name: Run docker setup2
+    shell: apt-get update
+  - name: Run docker setup3
+    shell: yes | apt-get install "linux-image-extra-$(uname -r)" "linux-image-extra-virtual"
+    ignore_errors: yes
+  - name: Run docker setup4
+    shell: yes | apt-get install apt-transport-https ca-certificates curl software-properties-common
+  - name: Run docker setup5
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  - name: Run docker setup6
+    shell: apt-key fingerprint 0EBFCD88
+  - name: Run docker setup7
+    shell: yes | add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - name: Run docker setup8
+    shell: apt-get update
+  - name: Run docker setup9
+    shell: yes | apt-get install docker-ce
+  - name: Run docker setup10
+    shell: usermod -aG docker {{ ansible_ssh_user }}
+  - name: Setup Docker Daemon
+    replace:
+        dest: /lib/systemd/system/docker.service
+        regexp: '^ExecStart(.*)$'
+        replace: 'ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243'
+  - name: Run docker setup11 enable remote
+    shell: systemctl daemon-reload
+  - name: Run docker setup11 enable remote
+    shell: service docker restart
