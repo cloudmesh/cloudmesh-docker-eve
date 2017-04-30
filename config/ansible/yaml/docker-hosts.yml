@@ -1,14 +1,7 @@
 ---
-- hosts: localhost
-  tasks:
-  - name: "Build hosts file"
-    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['ansible_ssh_host'] }} {{item}}" state=present
-    with_items: "{{ groups['all'] }}"
-    become: yes
-    ignore_errors: yes
 - hosts: docker-cluster
   tasks:
-  - name: "Build hosts file"
+  - name: "Build hosts file-Step1"
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
     with_items: "{{ groups['all'] }}"
     become: true
@@ -24,3 +17,14 @@
     lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
     with_items: "{{ groups['all'] }}"
     become: true
+- hosts: all
+  tasks:
+  - name: "Build hosts file-Step2"
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['ansible_ssh_host'] }} {{item}}" state=present
+    with_items: "{{ groups['all'] }}"
+    become: true
+  - name: "Build hosts file-Step1"
+    lineinfile: dest=/etc/hosts regexp='.*{{ item }}$' line="{{ hostvars[item]['internal_ip'] }} {{item}}" state=present
+    with_items: "{{ groups['all'] }}"
+    become: true
+    ignore_errors: yes

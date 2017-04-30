@@ -1,4 +1,4 @@
 Command Name#Command
-ansible-docker#ansible-playbook --inventory-file=../config/ansible/$host ../config/ansible/yaml/docker.yml
-ansible-hosts#ansible-playbook --inventory-file=../config/ansible/$host ../config/ansible/yaml/docker-hosts.yml
-ansible-docker-image#ansible-playbook --inventory-file=../config/ansible/$host ../config/ansible/yaml/docker-image-install.yml
+ansible-docker#yes |ansible-playbook --inventory-file=../config/ansible/$host -e 'host_key_checking=False' ../config/ansible/yaml/docker.yml
+ansible-hosts#yes |ansible-playbook --inventory-file=../config/ansible/$host -e 'host_key_checking=False' ../config/ansible/yaml/docker-hosts.yml
+ansible-docker-image#yes |ansible-playbook --inventory-file=../config/ansible/$host -e 'host_key_checking=False' ../config/ansible/yaml/docker-image-install.yml

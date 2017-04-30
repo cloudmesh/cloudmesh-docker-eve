@@ -1,3 +1,7 @@
-cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.medium --secgroup=karvenkagroup --name=cmdocker --key=ssh
-cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.large --secgroup=karvenkagroup --name=elast2 --key=ssh
-cm vm boot --image=CC-Ubuntu16.04 --flavor=m1.large --secgroup=karvenkagroup --key=ssh
+cm secgroup add docker docker_cluster 1 65535 tcp 0.0.0.0/0
+cm secgroup upload
+cm cluster define --count 3 --image CC-Ubuntu16.04 --flavor m1.large --secgroup docker --name docker_cluster
+cm cluster allocate	
+cm cluster inventory > ../config/ansible/host-list
+cms docker host install host-list
+	

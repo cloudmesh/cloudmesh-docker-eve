@@ -14,7 +14,7 @@
       shell: cd ~/ansible/docker/docker-cluster-elasticsearch
     - name: Copy file
       shell: cp ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/Dockerfile
-    - name: build the image
+    - name: build the image elasticsearch:docker
       shell: docker build -t elasticsearch:docker -f ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/
     - name: Set sysctl
       shell: sysctl -w "vm.max_map_count=262144"
@@ -32,7 +32,7 @@
       synchronize: src=../../docker dest=~/ansible
     - name: change directory to /ansible/docker/docker-swarm-elasticsearch
       shell: cd ~/ansible/docker/docker-swarm-elasticsearch
-    - name: build the image
+    - name: build the image elasticsearch:swarm
       shell: docker build -t elasticsearch:swarm -f ~/ansible/docker/docker-swarm-elasticsearch/Dockerfile ~/ansible/docker/docker-swarm-elasticsearch/
     - name: Set sysctl
       shell: sysctl -w "vm.max_map_count=262144"
@@ -50,9 +50,41 @@
       synchronize: src=../../docker dest=~/ansible
     - name: change directory to /ansible/docker
       shell: cd ~/ansible/docker/docker-Benchmark-config
-    - name: build the image
+    - name: build the image cloudmesh.docker:latest
       shell: docker build -t cloudmesh.docker:latest -f ~/ansible/docker/docker-Benchmark-config/cloudmesh-docker-dockerfile ~/ansible/docker/docker-Benchmark-config/
-    - name: build the image
+    - name: build the image esrally:latest
       shell: docker build -t esrally:latest -f ~/ansible/docker/docker-Benchmark-config/esrally-dockerfile ~/ansible/docker/docker-Benchmark-config/
-    - name: build the image
+    - name: build the image kibana:latest
       shell: docker build -t kibana:latest -f ~/ansible/docker/docker-Benchmark-config/kibana-dockerfile ~/ansible/docker/docker-Benchmark-config/
+- hosts: all
+  tasks:
+    - name: Check and install rsync package
+      apt:
+        name: rsync
+        update_cache: yes
+      become: true
+    - name: Creates directory
+      file: path=~/ansible state=directory
+    - name: upload the elasticsearch-dockerfile directory to the docker host
+      synchronize: src=../../docker dest=~/ansible
+    - name: change directory to /ansible/docker/docker-cluster-elasticsearch
+      shell: cd ~/ansible/docker/docker-cluster-elasticsearch
+    - name: Copy file
+      shell: cp ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/Dockerfile
+    - name: build the image elasticsearch:docker
+      shell: docker build -t elasticsearch:docker -f ~/ansible/docker/docker-cluster-elasticsearch/elasticsearch-dockerfile ~/ansible/docker/docker-cluster-elasticsearch/
+    - name: change directory to /ansible/docker/docker-swarm-elasticsearch
+      shell: cd ~/ansible/docker/docker-swarm-elasticsearch
+    - name: build the image elasticsearch:swarm
+      shell: docker build -t elasticsearch:swarm -f ~/ansible/docker/docker-swarm-elasticsearch/Dockerfile ~/ansible/docker/docker-swarm-elasticsearch/
+    - name: change directory to /ansible/docker
+      shell: cd ~/ansible/docker/docker-Benchmark-config
+    - name: build the image cloudmesh.docker:latest
+      shell: docker build -t cloudmesh.docker:latest -f ~/ansible/docker/docker-Benchmark-config/cloudmesh-docker-dockerfile ~/ansible/docker/docker-Benchmark-config/
+    - name: build the image esrally:latest
+      shell: docker build -t esrally:latest -f ~/ansible/docker/docker-Benchmark-config/esrally-dockerfile ~/ansible/docker/docker-Benchmark-config/
+    - name: build the image kibana:latest
+      shell: docker build -t kibana:latest -f ~/ansible/docker/docker-Benchmark-config/kibana-dockerfile ~/ansible/docker/docker-Benchmark-config/
+    - name: Set sysctl
+      shell: sysctl -w "vm.max_map_count=262144"
+      become: true
