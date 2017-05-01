@@ -218,7 +218,7 @@ If you are using cloudmesh client you can use the below commands to setup a clus
 	cm secgroup upload
 	cm cluster define --count 3 --image CC-Ubuntu16.04 --flavor m1.large --secgroup docker
 	cm cluster allocate
-    cm node list
+    	cm cluster nodes
 	
 
 Run Ansible Scripts
